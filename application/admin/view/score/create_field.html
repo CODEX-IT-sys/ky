@@ -1,0 +1,196 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="secWrap">
+    <div class="layui-container">
+        <form class="layui-form centerBox" id="form">
+
+                <div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '中文名称' : 'Chinese Name'}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '英文名称' : 'English Name'}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="english_name" id="english_name" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '数据类型' : 'Data Type'}</label>
+                        <div class="layui-input-block">
+                            <select name="field_type" lay-filter="field_type">
+                                <option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+                                <option value="int">{:session('language') == '中文'? '整数' : 'integer'}</option>
+                                <option value="float">{:session('language') == '中文'? '小数' : 'decimal'}</option>
+
+                                <!--<option value="varchar">{:session('language') == '中文'? '字符' : ' character '}</option>
+                                <option value="text">{:session('language') == '中文'? '文本' : ' text '}</option>-->
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '数据长度' : 'Data Length'}</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="data_length" name="data_length" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>-->
+
+                <input id="table" type="hidden" name="table" value="{$table}" />
+        </form>
+    </div>
+
+    <div class="layui-layer-btn layui-layer-btn- bottm_control">
+        <a class="layui-layer-btn0" id="submit">{:session('language') == '中文'? '确认' : 'OK'}</a>
+        <a class="layui-layer-btn1" id="cancel">{:session('language') == '中文'? '取消' : 'Cancel'}</a>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+<!--脚本-->
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        // 选择数据类型，显示长度字段(后端自动判断赋值)
+        /*form.on('select(field_type)', function (data) {
+            if(data.value === 'int'){
+                $('#data_length').val(11);
+            }else if(data.value === 'varchar'){
+                $('#data_length').val(255);
+            }else{
+                $('#data_length').val();
+            }
+        });*/
+
+        // 表单验证
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            validator.add('name', [{
+                rule: 'require',
+                msg: '中文名称不能为空'
+            }, {
+                rule: 'max:30',
+                msg: '名称不能超过30个字符'
+            }]);
+
+            validator.add('english_name', [{
+                rule: 'require',
+                msg: '英文名称不能为空'
+            }, {
+                rule: 'max:30',
+                msg: '英文名称不能超过30个字符'
+            }, {
+                rule: 'variate',
+                msg: '英文名称必须是以字母、数字、下划线(_)组成的'
+            }]);
+
+            return validator.start();
+        };
+
+        // 字段重名验证
+        $('#english_name').blur(function () {
+
+            var table = $('#table').val();
+
+            var name = $('#english_name').val();
+
+            // 获取数据 提交数据
+            $.ajax({
+                url: "{:url('score/check_name')}",
+                type: 'post',
+                dataType: 'json',
+                data: {table:table, name:name},
+                success: function (res) {
+
+                    if(res.code === 0){
+                        layer.alert(res.msg, {title: '提示'},
+                            function (index) {
+                            // 关闭alert
+                            layer.close(index);});
+
+                        $('#english_name').val('');
+
+                        return false;
+                    }
+                }
+            })
+
+        });
+
+
+        // 获取要提交的数据
+        var getSubmitData = function () {
+            // 字段节点公共的字段
+            var data = $('#form').find('[name=name], [name=table], [name=english_name], [name=field_type]').serialize();
+
+            return data;
+        };
+
+        // 表单提交
+        $('#submit').on('click', function () {
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+
+            //console.log(getSubmitData());
+
+            // 获取数据 提交数据
+            $.ajax({
+                url: "{:url('score/save_field')}",
+                type: 'post',
+                dataType: 'json',
+                data: getSubmitData()
+            }).done(function (res) {
+                layer.alert(res.msg, {title: '提示'}, function (index) {
+
+                    // 关闭alert
+                    layer.close(index);
+
+                    // 关闭表单弹窗
+                    var formIndex = top.layer.getFrameIndex(window.name);
+                    top.layer.close(formIndex);
+
+
+                    window.location.href = "{:url('score/index')}" + '?table=' + $('#table').val();
+                });
+            }).fail(function (jqXHR) {
+                if (jqXHR.status === 422) {
+                    layer.alert(jqXHR.responseText, {title: '提示'});
+                }
+            });
+        });
+
+        // 取消
+        function qx(){
+            var index = top.layer.getFrameIndex(window.name);
+            top.layer.close(index);
+        }
+
+        $('#cancel').on('click', function() {
+            qx();
+        });
+    });
+</script>
+{/block}

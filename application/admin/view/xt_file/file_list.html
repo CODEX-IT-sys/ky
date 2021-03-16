@@ -1,0 +1,287 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a href="{:url('xt_file/index')}">{:session('language') == '中文'? '文件管理' : 'File Management'}</a>
+                    <a>{:session('language') == '中文'? '文件列表' : 'File List'}</a>
+                    <a class="on">{$Project_Name}</a>
+                </div>
+
+                <div class="global_btn">
+                    <a class="layui-btn" id="add">{:session('language') == '中文'? '新增' : 'Add'}</a>
+                    <a class="layui-btn com_btn" id="download">{:session('language') == '中文'? '下载' : 'Download'}</a>
+                </div>
+
+            </div>
+            <div class="mainCt">
+                <div class="mainWrap">
+                    <div class="forwardTable">
+                        <table class="layui-hide" id="admin" lay-data="{id:'admin'}" lay-filter="admin"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+<!--搜索-->
+<script type="text/html" id="forwardBar">
+    <div class="forward">
+        <div class="forward_lead">
+            <div class="layui-form-item label_auto">
+                <label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
+                <div class="layui-input-inline">
+                    <select id="field" lay-verify="">
+                        <option value="">{:session('language') == '中文'? '请选择查找字段' : 'Please Select'}</option>
+                        <option value="file_name">{:session('language') == '中文'? '文件名称' : 'File Name'}</option>
+                        <option value="file_dir">{:session('language') == '中文'? '文件夹' : 'Folder'}</option>
+                        <option value="creator">{:session('language') == '中文'? '创建者' : 'Creator'}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="keyword" placeholder="{:session('language') == '中文'? '请输入查询内容' : 'Please input keyword'}" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="searchBtn">
+                <button class="layui-btn search_btn" type="button">
+                    <i class="iconfont icon-sousuo"></i>
+                    <span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!--行工具-->
+<script type="text/html" id="barDemo">
+    <div class="table_btn">
+        <a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
+        <a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
+        <a class="layui-btn layui-btn-xs com_btn" lay-event="download">{:session('language') == '中文'? '下载' : 'Download'}</a>
+    </div>
+</script>
+
+<!--文件类型-->
+<script type="text/html" id="type">
+    {{#  if(d.type == 1 ){ }}
+    <span class="layui-badge layui-bg-green">
+        {:session('language') == '中文'? '初始资料文件' : 'Source File'}
+    </span> 
+    {{#  } }}
+    {{#  if(d.type == 2 ){ }}
+    <span class="layui-badge layui-bg-blue">
+        {:session('language') == '中文'? '预排文件' : 'Preformat File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 3 ){ }}
+    <span class="layui-badge layui-bg-blue">
+        {:session('language') == '中文'? '预排完成文件' : 'Preformatted File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 4 ){ }}
+    <span class="layui-badge layui-bg-red">
+        {:session('language') == '中文'? '翻译完成文件' : 'Translated File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 5 ){ }}
+    <span class="layui-badge layui-bg-orange">
+        {:session('language') == '中文'? '校对完成文件' : 'Revised File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 6 ){ }}
+    <span class="layui-badge layui-bg-blue">
+        {:session('language') == '中文'? '后排完成文件' : 'Postformatted File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 7 ){ }}
+    <span class="layui-badge layui-bg-black">
+        {:session('language') == '中文'? '定稿文件' : 'Final File'}
+    </span>
+    {{#  } }}
+    {{#  if(d.type == 8 ){ }}
+    <span class="layui-badge layui-bg-black">
+        {:session('language') == '中文'? '客户反馈' : 'Customer Feedback'}
+    </span>
+    {{#  } }}
+
+</script>
+
+<!--脚本-->
+<script type="text/javascript">
+    var tableIns;  // 数据表格对象，用于重载
+
+    var Project_Name = "{$Project_Name}";
+
+    layui.use(['layer', 'table', 'element'], function () {
+        var layer = top.layer;
+        var table = layui.table;
+		var cols;
+		
+		// 切换语言
+		var language = "{:session('language') == '中文'? '中文' : 'english'}";
+		
+		if(language === '中文'){
+			cols = [[
+                {type: 'checkbox', fixed: 'left'},
+			    {field: 'file_name', title: '文件名称', sort:true, minWidth: 200},
+                {field: 'type', title: '类型', sort:true, minWidth: 200, templet:"#type"},
+                {field: 'file_dir', title: '文件夹', sort:true, minWidth: 200},
+                {field: 'creator', title: '创建者', sort:true, minWidth: 100},
+                {field: 'create_time', title: '创建时间', sort:true, minWidth: 130},
+                {width: 240, title: '操作', align: 'center', toolbar: '#barDemo'}
+			]]
+		}else{
+			cols = [[
+                {type: 'checkbox', fixed: 'left'},
+			    {field: 'file_name', title: 'File Name', sort:true, minWidth: 200},
+                {field: 'type', title: 'Type', sort:true, minWidth: 200, templet:"#type"},
+                {field: 'file_dir', title: 'Folder', sort:true, minWidth: 200},
+                {field: 'creator', title: 'Creator', sort:true, minWidth: 100},
+                {field: 'create_time', title: 'Create_time', sort:true, minWidth: 130},
+			    {width: 240, title: 'Action', align: 'center', toolbar: '#barDemo'}
+			]]
+		}
+
+        // 渲染表格数据
+        tableIns = table.render({
+            elem: '#admin',
+            toolbar: '#forwardBar',
+            url: replaceEditUrlId("{:url('xt_file/file_list', ['Project_Name' => 1])}", Project_Name),
+            method: 'get',
+            cols: cols,
+            page: true
+        });
+
+        // 搜索
+        $('.search_btn').click(function () {
+            var searchfield = $('#field').val();
+            var searchkeyword = $.trim($('#keyword').val());
+
+            if (!searchkeyword) {
+                layer.msg('搜索内容不能为空');
+                return false;
+            }
+
+            // 表格重载
+            table.reload('admin', {
+                url: replaceEditUrlId("{:url('xt_file/file_list', ['Project_Name' => 1])}", Project_Name),
+                where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
+                page: 1
+            });
+        });
+
+        // 新增
+        $("#add").bind("click", function () {
+
+            window.location.href = replaceEditUrlId("{:url('xt_file/create', ['Project_Name' => 1])}", Project_Name);
+
+        });
+
+        //监听工具条
+        table.on('tool(admin)', function (obj) {
+
+            var data = obj.data; //获得当前行数据
+            var id = obj.data.id; //获得当前行id
+            var layEvent = obj.event;//获得 lay-event 对应的值
+
+            if (layEvent === 'del') { //删除
+
+                var cjz = obj.data.creator;
+                var name = "{:session('administrator')['name']}";
+
+                // 不允许 删除别人文件
+                if(cjz != name){
+                    layer.alert('非本人文件，禁止操作');
+                    return;
+                }
+
+                layer.confirm('确认删除么？', function (index) {
+
+                    layer.close(index);
+
+                    // 向服务器发送删除请求
+                    $.ajax({
+                        type: 'delete',
+                        contentType: 'application/json',
+                        url: replaceEditUrlId("{:url('xt_file/delete', ['id' => 1])}", id),
+                        dataType: 'json',
+                        success: function (res) {
+                            layer.alert(res.msg, {title: '提示'}, function (index) {
+                                // 删除成功
+                                // 表格重载
+                                tableIns.reload();
+
+                                // 关闭alert
+                                layer.close(index);
+                            });
+                        },
+                        error: function (jqXHR) {
+                            // 删除失败
+                            if (jqXHR.status === 422) {
+                                layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    });
+
+                });
+
+            } else if (layEvent === 'edit') { //编辑
+
+                window.location.href = replaceEditUrlId("{:url('xt_file/edit', ['id' => 1])}", id)
+
+            } else if (layEvent === 'download') { //下载
+
+                var event = new MouseEvent('click');   // 模拟鼠标click点击事件
+                var a = document.createElement('a');   // 创建一个a节点插入的document
+
+                a.download = data.file_name;           // 设置a节点的download属性值
+                a.href = data.path;                    // 赋值给a节点的href
+                a.dispatchEvent(event);
+
+                //window.open(data.path, '_blank');    // 新开窗口下载
+            }
+        });
+
+        // 批量下载
+        $('#download').click(function () {
+            var checkStatus = table.checkStatus('admin');
+
+            var data = checkStatus.data;
+            var cd = checkStatus.data.length;
+
+            if (cd !== 0) {
+
+                for (var i = 0; i < cd; i++) {
+
+                    var event = new MouseEvent('click');          // 模拟鼠标click点击事件
+                    var a = document.createElement('a');          // 创建一个a节点插入的document
+
+                    a.download = data[i].file_name;   // 设置a节点的download属性值
+                    a.href = data[i].path;            // 赋值给a节点的href
+                    a.dispatchEvent(event)
+                }
+
+            }else{
+                if(language === '中文') {
+                    layer.alert('请先勾选数据再操作');
+                }else{
+                    layer.msg('Please check the box before operating');
+                }
+            }
+        })
+    });
+</script>
+{/block}

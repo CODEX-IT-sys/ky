@@ -1,0 +1,136 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a>{:session('language') == '中文'? '项目日程' : 'Project Schedule'}</a>
+							<a href="{:url('my_schedule/index')}">{:session('language') == '中文'? '我的日程' : 'My Schedule'}</a>
+						</div>
+						<div class="global_btn">
+
+							<button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+							<a href="javascript:history.back(-1);">
+								<button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+							</a>
+						</div>
+					</div>
+					<div class="mainCt mainSec formReset">
+						<div class="mainWrap">
+							<form class="layui-form" id="form" method="post" action="{:url('my_schedule/save')}">
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs4">
+										<div class="layui-form-item layui_ic">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '日期选择' : 'Date'}">
+												{:session('language') == '中文'? '日期选择' : 'Date'}
+											</label>
+											<div class="layui-input-block">
+												<input class="showDate layui-input" name="date_time" placeholder="请选择" type="text">
+												<i class="layui-icon layui-icon-date"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '时间选择' : 'Time'}">
+												{:session('language') == '中文'? '时间选择' : 'Time'}
+											</label>
+											<div class="layui-input-block">
+												<select name="type">
+													<option value="AM">{:session('language') == '中文'? '上午' : 'AM'}</option>
+													<option value="PM">{:session('language') == '中文'? '下午' : 'PM'}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '工作安排' : 'Work'}">
+												{:session('language') == '中文'? '工作安排' : 'Work'}
+											</label>
+											<div class="layui-input-block">
+												<input name="work_info" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>  		 
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate, layer = layui.layer;
+
+		//同时绑定多个,单个日期选择，显示在input里面
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				, trigger: 'click'
+				, theme: '#1B3382'
+				, position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,format: 'yyyy-MM-dd'
+			});
+		});
+
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 日期必填项
+			validator.add('date_time', [{
+				rule: 'require',
+				msg: '日期不能为空'
+			}]);
+
+			validator.add('work_info', [{
+				rule: 'require',
+				msg: '工作安排不能为空'
+			}, {
+				rule: 'max:10',
+				msg: '内容不能超过10个字符'
+			}]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+			// 表单提交
+			$('#form').submit();
+		});
+	});
+
+</script>
+
+{/block}

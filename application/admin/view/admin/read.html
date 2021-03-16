@@ -1,0 +1,45 @@
+{extend name="./layout/form.html" /}
+
+{block name="body"}
+<div class="secWrap">
+    <div class="layui-container">
+        <form class="layui-form">
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-xs6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">管理员名称</label>
+                        <div class="layui-input-block">
+                            <input name="name" id="name" value="{$info.name}" autocomplete="off" placeholder="" class="layui-input" type="text">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱</label>
+                        <div class="layui-input-block">
+                            <input name="email" id="email" value="{$info.email}" autocomplete="off" placeholder="" class="layui-input" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-block">
+                            <input name="phone" id="phone" value="{$info.phone}" autocomplete="off" placeholder="" class="layui-input" type="text">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<!--渲染layui的表单样式，所以必须加载form模块-->
+<script>
+    layui.use('form');
+</script>
+{/block}

@@ -1,0 +1,126 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="secWrap">
+    <div class="layui-container">
+        <form class="layui-form centerBox" id="form">
+
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:session('language') == '中文'? '翻译人员' : 'Translator'}</label>
+                    <div class="layui-input-block inputSpace">
+                        <input type="number" name="score" value="{$info.t_score}" id="t_score" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:session('language') == '中文'? '校对人员' : 'Reviser'}</label>
+                    <div class="layui-input-block inputSpace">
+                        <input type="number" name="score" value="{$info.r_score}" id="r_score" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:session('language') == '中文'? '排版人员' : 'Formatter'}</label>
+                    <div class="layui-input-block inputSpace">
+                        <input type="number" name="score" value="{$info.f_score}" id="f_score" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs12">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:session('language') == '中文'? '实习生' : 'Trainee'}</label>
+                    <div class="layui-input-block inputSpace">
+                        <input type="number" name="score" value="{$info.s_score}" id="s_score" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="layui-layer-btn layui-layer-btn- bottm_control">
+        <a class="layui-layer-btn0" id="submit">{:session('language') == '中文'? '确认' : 'OK'}</a>
+        <a class="layui-layer-btn1" id="cancel">{:session('language') == '中文'? '取消' : 'Cancel'}</a>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+<!--脚本-->
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        // 表单验证
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            validator.add('score', [{
+                rule: 'require',
+                msg: '数值不能为空'
+            }]);
+
+            return validator.start();
+        };
+
+        // 表单提交
+        $('#submit').on('click', function () {
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+
+            var data = {};
+
+            data.t_score = $('#t_score').val();
+            data.r_score = $('#r_score').val();
+            data.f_score = $('#f_score').val();
+            data.s_score = $('#s_score').val();
+
+            // 获取数据 提交数据
+            $.ajax({
+                url: "{:url('project_funnel/save_score')}",
+                type: 'post',
+                dataType: 'json',
+                data: data
+            }).done(function (res) {
+                layer.alert(res.msg, {title: '提示'}, function (index) {
+
+                    // 关闭alert
+                    layer.close(index);
+
+                    // 关闭表单弹窗
+                    var formIndex = top.layer.getFrameIndex(window.name);
+                    top.layer.close(formIndex);
+
+                });
+            }).fail(function (jqXHR) {
+                if (jqXHR.status === 422) {
+                    layer.alert(jqXHR.responseText, {title: '提示'});
+                }
+            });
+        });
+
+        // 取消
+        function qx(){
+            var index = top.layer.getFrameIndex(window.name);
+            top.layer.close(index);
+        }
+
+        $('#cancel').on('click', function() {
+            qx();
+        });
+    });
+</script>
+{/block}

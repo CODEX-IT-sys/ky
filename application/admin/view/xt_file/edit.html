@@ -1,0 +1,225 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('xt_file/index')}">{:session('language') == '中文'? '文件管理' : 'File Management'}</a>
+							<a class="on">{:session('language') == '中文'? '编辑文件' : 'Edit File'}</a>
+						</div>
+						<div class="global_btn">
+							<button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+							<!--<a href="javascript:history.back(-1);">-->
+								<button class="layui-btn layui-btn-primary" type="button" id="back">{:session('language') == '中文'? '返回' : 'Back'}</button>
+							<!--</a>-->
+						</div>
+					</div>
+					<div class="mainCt mainSec formReset">
+						<div class="mainWrap">
+							<form class="layui-form" id="form" method="post">
+								<div class="layui-row layui-col-space10">
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item layui_ic">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '文件名称' : 'File Name'}">
+												{:session('language') == '中文'? '文件名称' : 'File Name'}
+											</label>
+											<div class="layui-input-block">
+												<input name="file_name" value="{$info.file_name}" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label">{:session('language') == '中文'? '文件类型' : 'File Type'}</label>
+											<div class="layui-input-block">
+												<select name="type" lay-search>
+													<option value="1" {$info.type==1?'selected':''}>{:session('language') == '中文'? '初始资料文件' : 'Source File'}</option>
+													<option value="2" {$info.type==2?'selected':''}>{:session('language') == '中文'? '预排文件' : 'Preformat File'}</option>
+													<option value="3" {$info.type==3?'selected':''}>{:session('language') == '中文'? '预排完成文件' : 'Preformatted File'}</option>
+													<option value="4" {$info.type==4?'selected':''}>{:session('language') == '中文'? '翻译完成文件' : 'Translated File'}</option>
+													<option value="5" {$info.type==5?'selected':''}>{:session('language') == '中文'? '校对完成文件' : 'Revised File'}</option>
+													<option value="6" {$info.type==6?'selected':''}>{:session('language') == '中文'? '后排完成文件' : 'Postformatted File'}</option>
+													<option value="7" {$info.type==7?'selected':''}>{:session('language') == '中文'? '定稿文件' : 'Final File'}</option>
+													<option value="8" {$info.type==8?'selected':''}>{:session('language') == '中文'? '客户反馈' : 'Customer Feedback'}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label">{:session('language') == '中文'? '文件上传' : 'File Uploading'}</label>
+											<div class="layui-input-block">
+												<button type="button" class="layui-btn com_btn" id="file_upload">
+													<i class="layui-icon layui-icon-upload"></i>{:session('language') == '中文'? '点击上传' : 'Click Uploading'}
+												</button>
+
+												<!--文件-->
+												<input type="hidden" id="zztp" name="path" value="{$info.path}" />
+											</div>
+
+											<div class="layui-input-block layer-photos-demo" style="margin-top: 20px;" id="up_div">
+												<span id="filename"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!--文件夹-->
+								<input type="hidden" id="file_dir" name="file_dir" value="{$info.file_dir}">
+
+								<input type="hidden" id="pj_name" value="{$info.Project_Name}">
+
+								<input type="hidden" id="id" name="id" value="{$info.id}">
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form', 'layer','upload'], function () {
+		var upload = layui.upload;
+		var form = layui.form, layer = layui.layer;
+
+		var tip;
+
+		// 文件上传
+		upload.render({
+			elem: '#file_upload',               //绑定元素
+			url: "{:url('xt_file/file_up')}",   //上传接口
+			accept: 'file',             		//允许类型(不限)
+			//exts: 'zip|rar|7z|pdf|doc|docx|xls|xlsx|csv|txt|mp3|wav|aac|jpg|jpeg|png|gif',
+			// 选中
+			choose: function(obj) {
+
+				obj.preview(function(index, file, result) {
+
+					// 显示文件名
+					$('#filename').text(file.name);
+					// 直接将上传文件名 赋值给 文件名称
+					$('#file_name').val(file.name);
+
+					$('#up_div').show();
+				});
+
+				tip = layer.msg('Uploading', {icon: 16, shade: 0.3, time:0});
+			},
+			done: function (res) {
+
+				if(res.code === 0) {
+
+					layer.close(tip);
+
+					$('#zztp').val(res.data);//写入路径
+
+					//上传完毕回调
+					layer.alert('上传成功');
+				}
+			}
+		});
+
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			validator.add('file_name', [{
+				rule: 'require',
+				msg: '文件名称不能为空'
+			}]);
+
+			validator.add('type', [{
+				rule: 'require',
+				msg: '文件类型不能为空'
+			}]);
+
+			validator.add('path', [{
+				rule: 'require',
+				msg: '文件不能为空'
+			}]);
+
+			return validator.start();
+		};
+
+		// 返回
+		$('#back').click(function () {
+
+			layer.confirm('数据未保存，确认返回？', {title: '提示'}, function (index) {
+				// 关闭alert
+				layer.close(index);
+
+				window.location.href = "javascript:history.go(-1)";
+			})
+		});
+
+		// 数据提交
+		$('#save').click(function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+			var data = {};
+
+			data.file_name = $('[name=file_name]').val();
+			data.type = $('[name=type]').val();
+			data.Project_Name = $('#pj_name').val();
+			data.path = $('#zztp').val();
+			data.id = $('#id').val();
+
+			//console.log(data);
+
+			// 数据提交
+			//异步提交
+			$.ajax({
+				url: "{:url('xt_file/update')}",
+				type: 'post',
+				dataType: 'json',
+				data: data,
+				success: function (res) {
+					layer.alert(res.msg, {title: '提示'}, function (index) {
+
+						// 关闭alert
+						layer.close(index);
+
+						window.location.href = replaceEditUrlId("{:url('xt_file/file_list', ['Project_Name' => 1])}", data.Project_Name);
+					});
+				},
+				error: function (jqXHR) {
+					if (jqXHR.status === 422) {
+						layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+							layer.close(index);
+						});
+					}
+				}
+			});
+
+		})
+
+	})
+
+</script>
+
+{/block}

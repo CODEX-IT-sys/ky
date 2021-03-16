@@ -1,0 +1,206 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a>{:session('language') == '中文'? '项目日程' : 'Project Schedule'}</a>
+                    <a class="on">{:session('language') == '中文'? '项目日程' : 'Project Schedule'}</a>
+                </div>
+                <div class="global_btn">
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt">
+                <div class="mainWrap">
+                    <div class="schedule">
+                        <ul class="sche_title">
+                            <li>
+                                <div class="layui-btn-group">
+                                    <!--上一个-->
+                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon">&#xe603;</i>
+                                    </button>
+                                    <!--下一个-->
+                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon">&#xe602;</i>
+                                    </button>
+                                </div>
+
+                            </li>
+
+                            <!--当前月份-->
+                            <li class="seche_lead">
+                                <h2><?php echo date('Y-m') ?></h2>
+                            </li>
+
+                            <!--刻度-->
+                            <li>
+                                <div class="layui-btn-group">
+                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm active">月</button>
+                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">周</button>
+                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">日</button>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <!--日历-->
+                        <div id="container" style="height: 600px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=iSyHvmega5x4qy23DSPlCxE09dLz5qTM"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+
+<script type="text/javascript">
+    // 获取容器元素
+    var dom = document.getElementById("container");
+    // 初始化
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+
+    // 指定 默认时间为 当前年月
+    var ym = "<?php echo date('Y-m') ?>";
+
+    // 数据
+    var arr = {$data|raw};
+
+    var dateList = arr;
+
+    var heatmapData = [];
+    var lunarData = [];
+    for (var i = 0; i < dateList.length; i++) {
+        heatmapData.push([
+            dateList[i][0],
+            Math.random() * 300
+        ]);
+        lunarData.push([
+            dateList[i][0],
+            1,
+            dateList[i][1],
+            dateList[i][2],
+            dateList[i][3],
+        ]);
+    }
+
+    // 配置项
+    option = {
+
+        // 鼠标悬浮 提示信息
+        /*tooltip: {
+            formatter: function (params) {
+                return '工作任务: ' + params.value[1].toFixed(2)
+            }
+        },*/
+        visualMap: {
+            show: false,
+            min: 0,
+            max: 300,
+            calculable: true,
+            seriesIndex: [2],
+            orient: 'horizontal',
+            left: 'center',
+            bottom: 20,
+            inRange: {
+                color: ['rgba(255,255,255,0)','#495C9B'],
+                opacity: 0.1
+            },
+            controller: {
+                inRange: {
+                    opacity: 0.5
+                }
+            },
+        },
+        // 日历设置
+        calendar: [{
+            left: '0',
+            top: '100',
+            right: '0',
+            bottom: '0',
+            cellSize: 'auto',//格子自适应
+            yearLabel: {show: false},
+            orient: 'vertical',//日历坐标的布局朝向
+            dayLabel: {
+                firstDay: 1,// 从周一开始
+                nameMap: 'cn'// 语言 en/cn
+            },
+            monthLabel: {
+                show: true
+            },
+            range: ym,//指定年月
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#e6e6e6',
+                    width: 1,
+                    type: 'solid'
+                }
+            },
+        }],
+        // 图表类型
+        series: [{
+            type: 'scatter',//散点
+            coordinateSystem: 'calendar',
+            symbolSize: 1,//标记的大小
+            // 图形上的文本标签
+            label: {
+                show: true,
+                // 标签内容格式器
+                formatter: function (params) {
+                    var d = echarts.number.parseDate(params.value[0]);
+
+                    return d.getDate() + '\n\n' + params.value[2] + '\n\n';
+                },
+                color: '#000',
+            },
+            data: lunarData
+        }, {
+            type: 'scatter',
+            coordinateSystem: 'calendar',
+            symbolSize: 1,//标记的大小
+            label: {
+                show: true,
+                formatter: function (params) {
+                    return '\n\n\n' + (params.value[3] || '');
+                },
+                fontSize: 12,
+                fontWeight: 200,
+                color: '#FD3B1D'
+            },
+            data: lunarData
+        }, {
+            name: '工作日历',
+            type: 'heatmap',
+            coordinateSystem: 'calendar',
+            data: heatmapData
+        }]
+    };
+
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+
+{/block}

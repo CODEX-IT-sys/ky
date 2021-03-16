@@ -1,0 +1,121 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="secWrap">
+    <div class="layui-container">
+        <form class="layui-form centerBox" id="form">
+
+                <div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '评分项' : 'Field'}</label>
+                        <div class="layui-input-block">
+                            <select name="score_field" lay-filter="score_field">
+                                <option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+
+                                {volist name="colsData" id="v"}
+                                <option value="{$v.Field}">{:session('language') == '中文'? $v.Comment : $v.Field}</option>
+                                {/volist}
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs10">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:session('language') == '中文'? '权重比例' : 'Ratio Setting'}</label>
+                        <div class="layui-input-block inputSpace unit_show">
+                            <input type="number" name="score" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <input id="table" type="hidden" name="table_name" value="{$table}" />
+        </form>
+    </div>
+
+    <div class="layui-layer-btn layui-layer-btn- bottm_control">
+        <a class="layui-layer-btn0" id="submit">{:session('language') == '中文'? '确认' : 'OK'}</a>
+        <a class="layui-layer-btn1" id="cancel">{:session('language') == '中文'? '取消' : 'Cancel'}</a>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+<!--脚本-->
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        // 表单验证
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            validator.add('score', [{
+                rule: 'require',
+                msg: '权重比例不能为空'
+            }]);
+
+            return validator.start();
+        };
+
+        // 获取要提交的数据
+        var getSubmitData = function () {
+            // 字段节点公共的字段
+            var data = $('#form').find('[name=score_field], [name=table_name], [name=score]').serialize();
+
+            return data;
+        };
+
+        // 表单提交
+        $('#submit').on('click', function () {
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+
+            //console.log(getSubmitData());
+
+            // 获取数据 提交数据
+            $.ajax({
+                url: "{:url('score/save_score')}",
+                type: 'post',
+                dataType: 'json',
+                data: getSubmitData()
+            }).done(function (res) {
+                layer.alert(res.msg, {title: '提示'}, function (index) {
+
+                    // 关闭alert
+                    layer.close(index);
+
+                    // 关闭表单弹窗
+                    var formIndex = top.layer.getFrameIndex(window.name);
+                    top.layer.close(formIndex);
+
+
+                    window.location.href = "{:url('score/index')}" + '?table=' + $('#table').val();
+                });
+            }).fail(function (jqXHR) {
+                if (jqXHR.status === 422) {
+                    layer.alert(jqXHR.responseText, {title: '提示'});
+                }
+            });
+        });
+
+        // 取消
+        function qx(){
+            var index = top.layer.getFrameIndex(window.name);
+            top.layer.close(index);
+        }
+
+        $('#cancel').on('click', function() {
+            qx();
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,208 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a>{:session('language') == '中文'? '系统管理' : 'System Management'}</a>
+							<a href="{:url('xt_company/index')}">{:session('language') == '中文'? '主体公司' : 'Subject Company'}</a>
+							<a class="on">{:session('language') == '中文'? '新增' : 'Add'}</a>
+						</div>
+						<div class="global_btn">
+							<button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+							<a href="javascript:history.back(-1);">
+								<button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+							</a>
+						</div>
+					</div>
+					<div class="mainCt mainSec formReset signLimit">
+						<div class="mainWrap">
+							<form class="layui-form" id="form" method="post" action="{:url('xt_company/save')}">
+
+								<div class="layui-row layui-col-space12">
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '中文公司名称' : 'CN Company Name'}">
+												{:session('language') == '中文'? '中文公司名称' : 'CN Company Name'}
+											</label>
+											<div class="layui-input-block">
+												<input name="cn_name" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '英文公司名称' : 'EN Company Name'}">
+												{:session('language') == '中文'? '英文公司名称' : 'EN Company Name'}
+											</label>
+											<div class="layui-input-block">
+												<input name="en_name" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '中文公司地址' : 'CN Address'}">
+												{:session('language') == '中文'? '中文公司地址' : 'CN Address'}
+											</label>
+											<div class="layui-input-block">
+												<input name="CN_Address" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '英文公司地址' : 'EN Address'}">
+												{:session('language') == '中文'? '英文公司地址' : 'EN Address'}
+											</label>
+											<div class="layui-input-block">
+												<input name="EN_Address" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '主体公司税号' : 'VAT ID'}">
+												{:session('language') == '中文'? '主体公司税号' : 'VAT ID'}
+											</label>
+											<div class="layui-input-block">
+												<input name="VAT_ID" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space12">
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '中文银行信息' : 'CN Bank Info'}">
+												{:session('language') == '中文'? '中文银行信息' : 'CN Bank Info'}
+											</label>
+											<div class="layui-input-block">
+												<textarea placeholder="" id="CN_Bank_Info" name="CN_Bank_Info" class="layui-textarea"></textarea>
+											</div>
+										</div>
+									</div>
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '英文银行信息' : 'EN Bank Info'}">
+												{:session('language') == '中文'? '英文银行信息' : 'EN Bank Info'}
+											</label>
+											<div class="layui-input-block">
+												<textarea placeholder="" id="EN_Bank_Info" name="EN_Bank_Info" class="layui-textarea"></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form', 'layer'], function () {
+
+		var form = layui.form, layer = layui.layer;
+
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			validator.add('cn_name', [{
+				rule: 'require',
+				msg: '中文名称不能为空'
+			}]);
+
+			validator.add('en_name', [{
+				rule: 'require',
+				msg: '英文名称不能为空'
+			}]);
+
+			validator.add('CN_Address', [{
+				rule: 'require',
+				msg: '中文公司地址不能为空'
+			}]);
+
+			validator.add('EN_Address', [{
+				rule: 'require',
+				msg: '英文公司地址不能为空'
+			}]);
+
+            validator.add('VAT_ID', [{
+                rule: 'require',
+                msg: '主体公司税号不能为空'
+            }]);
+
+			/*validator.add('CN_Bank', [{
+				rule: 'require',
+				msg: '中文开户银行不能为空'
+			}]);
+
+			validator.add('EN_Bank', [{
+				rule: 'require',
+				msg: '英文开户银行不能为空'
+			}]);
+
+			validator.add('CN_Bank_Account', [{
+				rule: 'require',
+				msg: '中文银行账号不能为空'
+			}]);
+
+			validator.add('EN_Bank_Account', [{
+				rule: 'require',
+				msg: '英文银行账号不能为空'
+			}]);*/
+
+            validator.add('CN_Bank_Info', [{
+                rule: 'require',
+                msg: '中文银行信息不能为空'
+            }]);
+
+            validator.add('EN_Bank_Info', [{
+                rule: 'require',
+                msg: '英文银行信息不能为空'
+            }]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').click(function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+            // 数据提交
+            $('#form').submit();
+		})
+
+	})
+
+</script>
+
+{/block}

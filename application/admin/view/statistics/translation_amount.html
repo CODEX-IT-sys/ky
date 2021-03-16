@@ -1,0 +1,424 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '翻译金额对比统计' : 'Statistical comparison of the amount of translation'}</a>
+						</div>
+						<div class="global_btn form_lead">
+							<a class="layui-btn com_btn" id="out">{:session('language') == '中文'? '导出' : 'exportForExcle'}</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="forwardTable selftForward totalSign tmcSign" id="table_div">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/table2excel.js"}
+
+	<script type="text/html" id="forwardBar">
+		<div class="forward">
+
+			<form class="layui-form" id="form">
+
+				<div class="forward_lead">
+					<div class="layui-form-item label_auto">
+						<label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
+						<div class="layui-input-inline">
+							<select id="field" name="" lay-verify="">
+								<option value="Company_Full_Name">{:session('language') == '中文'? '公司全称' : 'Company_Full_Name'}</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+						<div class="layui-input-inline">
+							<input type="text" id="keyword" name="" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="searchBtn">
+						<button class="layui-btn search_btn" type="button">
+							<i class="iconfont icon-sousuo"></i>
+							<span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+						</button>
+					</div>
+				</div>
+
+			</form>
+
+		</div>
+	</script>
+
+	<!--脚本-->
+	<script>
+		var tableIns;  // 数据表格对象，用于重载
+
+		// 数据为空时 为表头加滚动条
+		$(function () {
+            var table_data = JSON.parse('{$a|raw}');
+
+            if(table_data.count === 0){
+                $('#table_div').addClass('empty');
+			}
+        });
+
+		layui.use(['table','form'], function(){
+			var table = layui.table;
+			var form = layui.form;
+
+			// 年份信息
+			var s_year = "{$s_year}";
+			var year = "{$year}";
+
+			var f; // 首项  
+			var m,n,t;
+			
+			m = String(s_year);  n = String(year);
+			t = '差值';
+			
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文') {
+				f = {fixed: 'left', field: 'Company_Name', title: '公司全称', minWidth: 200, rowspan: 2, sort: true};
+			}else{
+				f = {fixed: 'left', field:'Company_Name', title:'Company_Full_Name', minWidth: 200, rowspan: 2, sort:true};
+			}
+
+			// 表格
+			tableIns = table.render({
+				elem: '#test'
+				,url:"{:url('Statistics/translation_amount')}"
+				,toolbar: '#forwardBar' 
+				,defaultToolbar: []
+				//,totalRow: true
+				,title: '翻译金额对比统计'
+				,cols: [
+					[
+						 f
+						,{field:'s_year', title:s_year, colspan: 12, align:'center'}
+						,{field:'year', title:year, colspan: 12, align:'center'}
+						,{field:'DV', title:'差值D-value', colspan: 12, align:'center'}
+						,{field:'YTD', title:'YTD', colspan: 3, align:'center'}
+					],
+					[
+
+						// 去年
+						{field:'1月', title:'1月',templet: function (d) {
+							return d.money.a;
+						}}
+						,{field:'2月', title:'2月',templet: function (d) {
+							return d.money.b;
+						}}
+						,{field:'3月', title:'3月',templet: function (d) {
+							return d.money.c;
+						}}
+						,{field:'4月', title:'4月',templet: function (d) {
+							return d.money.d;
+						}}
+						,{field:'5月', title:'5月',templet: function (d) {
+							return d.money.e;
+						}}
+						,{field:'6月', title:'6月',templet: function (d) {
+							return d.money.f;
+						}}
+						,{field:'7月', title:'7月',templet: function (d) {
+							return d.money.g;
+						}}
+						,{field:'8月', title:'8月',templet: function (d) {
+							return d.money.h;
+						}}
+						,{field:'9月', title:'9月',templet: function (d) {
+							return d.money.i;
+						}}
+						,{field:'10月', title:'10月',templet: function (d) {
+							return d.money.j;
+						}}
+						,{field:'11月', title:'11月',templet: function (d) {
+							return d.money.k;
+						}}
+						,{field:'12月', title:'12月',templet: function (d) {
+							return d.money.l;
+						}}
+
+						// 今年
+						,{field:'1月', title:'1月',templet: function (d) {
+							return d.money.A;
+						}}
+						,{field:'2月', title:'2月',templet: function (d) {
+							return d.money.B;
+						}}
+						,{field:'3月', title:'3月',templet: function (d) {
+							return d.money.C;
+						}}
+						,{field:'4月', title:'4月',templet: function (d) {
+							return d.money.D;
+						}}
+						,{field:'5月', title:'5月',templet: function (d) {
+							return d.money.E;
+						}}
+						,{field:'6月', title:'6月',templet: function (d) {
+							return d.money.F;
+						}}
+						,{field:'7月', title:'7月',templet: function (d) {
+							return d.money.G;
+						}}
+						,{field:'8月', title:'8月',templet: function (d) {
+							return d.money.H;
+						}}
+						,{field:'9月', title:'9月',templet: function (d) {
+							return d.money.I;
+						}}
+						,{field:'10月', title:'10月',templet: function (d) {
+							return d.money.J;
+						}}
+						,{field:'11月', title:'11月',templet: function (d) {
+							return d.money.K;
+						}}
+						,{field:'12月', title:'12月',templet: function (d) {
+							return d.money.L;
+						}}
+
+						// 差值
+						,{field:'1月', title:'1月',templet: function (d) {
+								return d.DV.a;
+							}}
+						,{field:'2月', title:'2月',templet: function (d) {
+							return d.DV.b;
+						}}
+						,{field:'3月', title:'3月',templet: function (d) {
+							return d.DV.c;
+						}}
+						,{field:'4月', title:'4月',templet: function (d) {
+							return d.DV.d;
+						}}
+						,{field:'5月', title:'5月',templet: function (d) {
+							return d.DV.e;
+						}}
+						,{field:'6月', title:'6月',templet: function (d) {
+							return d.DV.f;
+						}}
+						,{field:'7月', title:'7月',templet: function (d) {
+							return d.DV.g;
+						}}
+						,{field:'8月', title:'8月',templet: function (d) {
+							return d.DV.h;
+						}}
+						,{field:'9月', title:'9月',templet: function (d) {
+							return d.DV.i;
+						}}
+						,{field:'10月', title:'10月',templet: function (d) {
+							return d.DV.j;
+						}}
+						,{field:'11月', title:'11月',templet: function (d) {
+							return d.DV.k;
+						}}
+						,{field:'12月', title:'12月',templet: function (d) {
+							return d.DV.l;
+						}}
+
+                        ,{field:'t_s_year', title:s_year}
+                        ,{field:'t_year', title:year}
+                        ,{field:'t_DV', title:'差值D-value<br/>'+year+'-'+s_year}
+                    ]
+				]
+				,cellMinWidth: 120
+				,page: true, limit:50, height: 700
+
+                // 转换静态表格 导出excel(复杂表格)
+                ,done: function (res, curr, count) {
+
+                    let header_tr = $($("#test").next().find(".layui-table-header")[0]).find("tr");
+                    let body_tr = $($("#test").next().find(".layui-table-body")[0]).find("tr");
+
+                    let header_html = "";
+                    let body_html = "";
+
+                    // 获取表头html，包括单元格的合并
+                    $.each(header_tr,function (i,tr) {
+
+                        let header_th = $(tr).find("th");
+
+                        header_html += "<tr>";
+                        $.each(header_th, function (j, th) {
+
+                            let rowspan_num = $(th).attr("rowspan");	// 行合并数
+                            let colspan_num = $(th).attr("colspan");	// 列合并数
+
+                            if (rowspan_num && !colspan_num) {	// 只有行合并时
+                                header_html += '<th rowspan= "' + rowspan_num + '">';
+                            } else if (colspan_num && !rowspan_num) {	// 只有列合并时
+                                header_html += '<th colspan= "' + colspan_num + '">';
+                            } else if (rowspan_num && colspan_num) {	// 行列合并均有时
+                                header_html += '<th rowspan= "' + rowspan_num + '" colspan="' + colspan_num + '">';
+                            } else {	// 没有发生单元格合并
+                                header_html += '<th>';
+                            }
+                            header_html += $(th).children().children().text() + '</th>';	// 获取表头名称并拼接th标签
+                        });
+                        header_html += '</tr>';
+                    });
+
+                    // 获取表格body数据
+                    $.each(body_tr,function (i,tr) {
+                        let body_td = $(tr).find("td");
+
+                        body_html += '<tr>';
+                        $.each(body_td,function (j,td) {
+                            body_html += '<td>' + $(td).children().text() + '</td>';
+                        });
+                        body_html += '</tr>';
+                    });
+
+                    $("#test tr").remove();	// 清除之前的doom结构
+                    $("#test").append(header_html).append(body_html);
+                    $("#test").hide();
+                }
+			});
+
+			// 搜索
+			$('.search_btn').click(function () {
+				var searchfield = $('#field').val();
+				var searchkeyword = $.trim($('#keyword').val());
+				if (!searchkeyword) {
+
+					if(language === '中文') {
+						layer.msg('搜索内容不能为空');
+					}else{
+						layer.msg('Please input keyword');
+					}
+
+					return false;
+				}
+				// 表格重载
+				table.reload('test', {
+					url: "{:url('Statistics/translation_amount')}",
+					where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
+					page: true, limit:50
+				});
+			});
+
+
+            /**
+             * 获取页面的元素
+             * @param id：表格的id
+             * @param fileName:导出的excel的名字
+             */
+            function exportForExcle(id,fileName){
+                var table = $(document.getElementById(id)).clone();
+                table.attr('id','datatab');
+                table.appendTo('body');
+                method5('datatab');
+                datatab.remove();
+
+                function method5(tableid) {
+                    var idTmr;
+                    var tableToExcel = (function() {
+                        var uri = 'data:application/vnd.ms-excel;base64,',
+                            template = '<html><head><meta charset="UTF-8"></head><body><table border="1px">{table}</table></body></html>',
+                            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+                            format = function(s, c) {return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+                        return function(table, name) {
+                            if (!table.nodeType) table = document.getElementById(table)
+                            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+                            var aTag = document.createElement('a');
+                            aTag.download = fileName;
+                            aTag.href = uri + base64(format(template, ctx));
+                            document.body.appendChild(aTag);
+                            aTag.onclick = function () {
+                                document.body.removeChild(aTag);
+                            };
+                            aTag.click();
+                        }
+                    })();
+                    if(getExplorer()=='ie') {
+                        var curTbl = document.getElementById(tableid);
+                        var oXL = new ActiveXObject("Excel.Application");
+                        var oWB = oXL.Workbooks.Add();
+                        var xlsheet = oWB.Worksheets(1);
+                        var sel = document.body.createTextRange();
+                        sel.moveToElementText(curTbl);
+                        sel.select();
+                        sel.execCommand("Copy");
+                        xlsheet.Paste();
+                        oXL.Visible = true;
+                        try {
+                            var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                        } catch (e) {
+                            print("Nested catch caught " + e);
+                        } finally {
+                            oWB.SaveAs(fname);
+                            oWB.Close(savechanges = false);
+                            oXL.Quit();
+                            oXL = null;
+                            idTmr = window.setInterval("Cleanup();", 1);
+                        }
+                    } else {
+                        tableToExcel(tableid)
+                    }
+                    function Cleanup() {
+                        window.clearInterval(idTmr);
+                        CollectGarbage();
+                    }
+                    function  getExplorer() {
+                        var explorer = window.navigator.userAgent ;
+                        //ie
+                        if (explorer.indexOf("MSIE") >= 0) {
+                            return 'ie';
+                        }
+                        //firefox
+                        else if (explorer.indexOf("Firefox") >= 0) {
+                            return 'Firefox';
+                        }
+                        //Chrome
+                        else if(explorer.indexOf("Chrome") >= 0){
+                            return 'Chrome';
+                        }
+                        //Opera
+                        else if(explorer.indexOf("Opera") >= 0){
+                            return 'Opera';
+                        }
+                        //Safari
+                        else if(explorer.indexOf("Safari") >= 0){
+                            return 'Safari';
+                        }
+                    }
+                }
+            }
+
+            /**
+             * 复杂表头导出
+             */
+            $("#out").click(function(){
+                let table2excel = new Table2Excel();
+                $('#test').show();
+                // 传入你的tableId即可导出
+                table2excel.export($('#test'), "翻译金额对比统计");
+                $("#test").hide();
+            });
+
+		});
+
+
+	</script>
+
+{/block}
+

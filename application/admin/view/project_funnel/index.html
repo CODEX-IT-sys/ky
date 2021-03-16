@@ -1,0 +1,445 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '项目通道' : 'Project Funnel'}</a>
+
+							<a><?php echo date('Y') ?>{$time}</a>
+
+						</div>
+
+						<div class="global_btn">
+							<a class="layui-btn com_btn" id="diy_num">
+								{:session('language') == '中文'? '月度产能' : 'Monthly Capacity'}
+							</a>
+
+							<a class="layui-btn com_btn" id="out">{:session('language') == '中文'? '导出' : 'exportForExcle'}</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="forwardTable selftForward">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/table2excel.js"}
+
+		<script type="text/html" id="forwardBar">
+			<div class="forward">
+				<form class="layui-form" id="form">
+					<div class="forward_lead">
+						<div class="layui-form-item label_auto">
+							<label class="layui-form-label">{:session('language') == '中文'? '类型选择' : 'Select Type'}</label>
+							<div class="layui-input-inline">
+								<select id="type" name="type" lay-verify="" lay-filter="type">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="M" {$type=='M'?'selected':''}>{:session('language') == '中文'? '月' : 'Month'}</option>
+									<option value="W" {$type=='W'?'selected':''}>{:session('language') == '中文'? '周' : 'Week'}</option>
+								</select>
+							</div>
+						</div>
+
+						<!--月份选择-->
+						<div class="layui-form-item label_auto" id="M" style="display: none;">
+							<label class="layui-form-label">{:session('language') == '中文'? '月份选择' : 'Select Month'}</label>
+							<div class="layui-input-inline">
+								<select id="month" name="month" lay-verify="" lay-filter="Month">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="01">1</option>
+									<option value="02">2</option>
+									<option value="03">3</option>
+									<option value="04">4</option>
+									<option value="05">5</option>
+									<option value="06">6</option>
+									<option value="07">7</option>
+									<option value="08">8</option>
+									<option value="09">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+								</select>
+							</div>
+						</div>
+
+						<!--周选择-->
+						<div class="layui-form-item label_auto" id="W" style="display: none;">
+							<label class="layui-form-label">{:session('language') == '中文'? '周选择' : 'Select Week'}</label>
+							<div class="layui-input-inline">
+								<select id="Week" name="Week" lay-verify="" lay-filter="Week">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="W1">第1周</option>
+									<option value="W2">第2周</option>
+									<option value="W3">第3周</option>
+									<option value="W4">第4周</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</script>
+
+	<script>
+		var tableIns;  // 数据表格对象，用于重载
+		
+		layui.use(['table', 'form', 'laydate'], function () {
+			
+			var form = layui.form, laydate = layui.laydate;
+			var table = layui.table; var cols;
+
+            var type = "{$type}"; var time = "{$time}";
+
+            var url = "{:url('project_funnel/index')}" + '?type=' + type + '&time=' + time;
+
+			var a,b,c,d,e;
+
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文'){
+
+				cols = [
+					{field:'e_c', title:'英文-中文', colspan: 2, align:'center' }
+					,{field:'c_e', title:'中文-英文', colspan: 2, align:'center' }
+					,{field:'o_c', title:'其他-中文', colspan: 2, align:'center' }
+					,{field:'o_e', title:'中文-其他', colspan: 2, align:'center' }
+					,{field:'t_pages', title:'翻译总页数', rowspan: 2, align:'center'}
+					,{field:'a_Total_Pages_Process', title:'(A)已完成50%以上总页数', rowspan: 2, minWidth: 200}
+					,{field:'a_Estimated_days_finish', title:'预计完成天数', rowspan: 2}
+					,{field:'b_Total_Pages_Process', title:'(B)已完成10%-50%总页数', rowspan: 2, minWidth: 200}
+					,{field:'b_Estimated_days_finish', title:'预计完成天数', rowspan: 2}
+					,{field:'Total_Pages_submitted', title:'待提交总页数', rowspan: 2}
+					,{field:'c_Total_Pages_Translated', title:'(C)未开始总页数', rowspan: 2, minWidth: 120}
+					,{field:'c_Estimated_days_finish', title:'预计完成天数', rowspan: 2, style:'color: red;'}
+					,{field:'Total_days_works', title:'预计完成总天数<br/>（(A) + (B) + (C)）', rowspan: 2, style:'color: red;', minWidth: 150, align:'center'}
+					,{field:'Translator_Codex', title:'科译翻译人数', rowspan: 2}
+					,{field:'Reviser_Codex', title:'科译校对人数', rowspan: 2}
+					,{field:'Formatter_Codex', title:'科译排版人数', rowspan: 2}
+					,{field:'Sub_Total', title:'小计', rowspan: 2, minWidth: 100}
+					,{field:'Trainees', title:'科译实习生人数', rowspan: 2, minWidth: 150}
+					,{field:'Grand_Total', title:'总计', rowspan: 2, minWidth: 100}
+					,{field:'Weekly_Capacity_Pages', title:'周平均产能（页数）', colspan: 3, align:'center' }
+					,{field:'Average_Capacity_Pages', title:'平均产能（页数）', rowspan: 2, minWidth: 150}
+				];
+
+				a = '翻译页数';b = '翻译词数';c = '翻译人员';d = '校对人员';e = '排版人员';
+
+			}else{
+
+				cols = [
+					{field:'e_c', title:'EN-CN', colspan: 2, align:'center' }
+					,{field:'c_e', title:'CN-EN', colspan: 2, align:'center' }
+					,{field:'o_c', title:'Other-CN', colspan: 2, align:'center' }
+					,{field:'o_e', title:'CN-Other', colspan: 2, align:'center' }
+					,{field:'t_pages', title:'Total Pages Translated', rowspan: 2, minWidth: 180}
+					,{field:'a_Total_Pages_Process', title:'(A) Total Pages in Process since 7 days<br/>(Above 50% of the translation is Done)', rowspan: 2, minWidth: 280}
+					,{field:'a_Estimated_days_finish', title:'Estimated nb of<br/>Days to Finish', rowspan: 2, minWidth: 140}
+					,{field:'b_Total_Pages_Process', title:'(B) Total Pages in Process since 7 days<br/>(Between 10% and 50% of<br/>the translation is Done)', rowspan: 2, minWidth: 280, align:'center'}
+					,{field:'b_Estimated_days_finish', title:'Estimated nb of<br/>Days to Finish', rowspan: 2, minWidth: 140}
+					,{field:'Total_Pages_submitted', title:'Total Pages to be<br/>Submitted', rowspan: 2, minWidth: 140, align:'center'}
+					,{field:'c_Total_Pages_Translated', title:'(C) Total Pages to be<br/>Translated not Process<br/>Started', rowspan: 2, minWidth: 200, align:'center'}
+					,{field:'c_Estimated_days_finish', title:'Estimated nb of<br/>Days to Finish', rowspan: 2, style:'color: red;', minWidth: 140}
+					,{field:'Total_days_works', title:'Total Days of Works for<br/>(A) + (B) + (C)', rowspan: 2, style:'color: red;', minWidth: 200, align:'center'}
+					,{field:'Translator_Codex', title:'Nb of Translator<br/>from Codex', rowspan: 2, minWidth: 140}
+					,{field:'Reviser_Codex', title:'Nb of Reviser<br/>from Codex', rowspan: 2, minWidth: 120}
+					,{field:'Formatter_Codex', title:'Nb of Formatter<br/>from Codex', rowspan: 2, minWidth: 140}
+					,{field:'Sub_Total', title:'Sub Total', rowspan: 2, minWidth: 100}
+					,{field:'Trainees', title:'Nb of Trainees', rowspan: 2, minWidth: 130}
+					,{field:'Grand_Total', title:'Total', rowspan: 2, align:'center'}
+					,{field:'Weekly_Capacity_Pages', title:'Weekly Capacity Pages', colspan: 3, align:'center', minWidth: 200}
+					,{field:'Average_Capacity_Pages', title:'Average Capacity per Pages', rowspan: 2, minWidth: 220}
+				];
+
+				a = 'Nb of Page Translated';b = 'Nb of Word Translated';c = 'Translator';d = 'Reviser';e = 'Formatter';
+			}
+
+			// 表格 TYPE 切换时 (切换不同 类型选择框)
+			form.on('select(type)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				if(data.value === 'M'){
+					$('#M').show();
+					$('#W').hide();
+				}
+
+				if(data.value === 'W'){
+					$('#W').show();
+					$('#M').hide();
+				}
+
+			});
+
+			// 月份 切换
+			form.on('select(Month)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				url = "{:url('project_funnel/index', ['type'=>'M'])}"+ '&time=' + data.value;
+				//console.log(url);
+
+				window.location.href = url;
+				//tableIns.reload();
+			});
+
+			// 季度 切换
+			form.on('select(Week)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				url = "{:url('project_funnel/index', ['type'=>'W'])}"+ '&time=' + data.value;
+				//console.log(url);
+
+				window.location.href = url;
+				//tableIns.reload();
+			});
+
+
+			// 渲染生成表格
+			tableIns = table.render({
+				elem: '#test'
+				//,url:'__STATIC__/json/common.json'
+				//,url:"{:url('project_funnel/index')}"
+				,url:url
+				,where: {type: type, time: time}
+				,toolbar: '#forwardBar'
+				,defaultToolbar: []
+				,title: '项目通道'
+				,cols: [
+					cols,
+					[
+						 {field:'p', title:a, minWidth: 180
+							 , templet: function (d) {
+								 return d.e_c.p;
+							 }
+						}
+						,{field:'w', title:b, minWidth: 180
+							, templet: function (d) {
+								return d.e_c.w;
+							}
+						}
+						,{field:'p', title:a, minWidth: 180
+							, templet: function (d) {
+								return d.c_e.p;
+							}
+						}
+						,{field:'w', title:b, minWidth: 180
+							, templet: function (d) {
+								return d.c_e.w;
+							}
+						}
+						,{field:'p', title:a, minWidth: 180
+							, templet: function (d) {
+								return d.o_c.p;
+							}
+						}
+						,{field:'w', title:b, minWidth: 180
+							, templet: function (d) {
+								return d.o_c.w;
+							}
+						}
+						,{field:'p', title:a, minWidth: 180
+							, templet: function (d) {
+								return d.c_o.p;
+							}
+						}
+						,{field:'w', title:b, minWidth: 180
+							, templet: function (d) {
+								return d.c_o.w;
+							}
+						}
+						,{field:'WCP_T', title:c, minWidth: 120, align:'center'}
+						,{field:'WCP_R', title:d, minWidth: 120, align:'center'}
+						,{field:'WCP_F', title:e, minWidth: 120, align:'center'}
+					]
+				]
+				,cellMinWidth: 120
+
+                // 转换静态表格 导出excel(复杂表格)
+                ,done: function (res, curr, count) {
+
+                    let header_tr = $($("#test").next().find(".layui-table-header")[0]).find("tr");
+                    let body_tr = $($("#test").next().find(".layui-table-body")[0]).find("tr");
+
+                    let header_html = "";
+                    let body_html = "";
+
+                    // 获取表头html，包括单元格的合并
+                    $.each(header_tr,function (i,tr) {
+
+                        let header_th = $(tr).find("th");
+
+                        header_html += "<tr>";
+                        $.each(header_th, function (j, th) {
+
+                            let rowspan_num = $(th).attr("rowspan");	// 行合并数
+                            let colspan_num = $(th).attr("colspan");	// 列合并数
+
+                            if (rowspan_num && !colspan_num) {	// 只有行合并时
+                                header_html += '<th rowspan= "' + rowspan_num + '">';
+                            } else if (colspan_num && !rowspan_num) {	// 只有列合并时
+                                header_html += '<th colspan= "' + colspan_num + '">';
+                            } else if (rowspan_num && colspan_num) {	// 行列合并均有时
+                                header_html += '<th rowspan= "' + rowspan_num + '" colspan="' + colspan_num + '">';
+                            } else {	// 没有发生单元格合并
+                                header_html += '<th>';
+                            }
+                            header_html += $(th).children().children().text() + '</th>';	// 获取表头名称并拼接th标签
+                        });
+                        header_html += '</tr>';
+                    });
+
+                    // 获取表格body数据
+                    $.each(body_tr,function (i,tr) {
+                        let body_td = $(tr).find("td");
+
+                        body_html += '<tr>';
+                        $.each(body_td,function (j,td) {
+                            body_html += '<td>' + $(td).children().text() + '</td>';
+                        });
+                        body_html += '</tr>';
+                    });
+
+                    $("#test tr").remove();	// 清除之前的doom结构
+                    $("#test").append(header_html).append(body_html);
+                    $("#test").hide();
+                }
+			});
+
+			// 自定义数值
+			$('#diy_num').click(function () {
+
+				parent.layer.open({  // 在父窗口打开
+					type: 2,
+					title: '月度产能',
+					maxmin: true,
+					area: ['700px', '500px'],
+					content: "{:url('project_funnel/diy_num')}"
+					,end:function (index, layero) {
+
+						location.reload(true);
+					}
+				});
+			});
+
+            /**
+             * 获取页面的元素
+             * @param id：表格的id
+             * @param fileName:导出的excel的名字
+             */
+            function exportForExcle(id,fileName){
+                var table = $(document.getElementById(id)).clone();
+                table.attr('id','datatab');
+                table.appendTo('body');
+                method5('datatab');
+                datatab.remove();
+
+                function method5(tableid) {
+                    var idTmr;
+                    var tableToExcel = (function() {
+                        var uri = 'data:application/vnd.ms-excel;base64,',
+                            template = '<html><head><meta charset="UTF-8"></head><body><table border="1px">{table}</table></body></html>',
+                            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+                            format = function(s, c) {return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+                        return function(table, name) {
+                            if (!table.nodeType) table = document.getElementById(table)
+                            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+                            var aTag = document.createElement('a');
+                            aTag.download = fileName;
+                            aTag.href = uri + base64(format(template, ctx));
+                            document.body.appendChild(aTag);
+                            aTag.onclick = function () {
+                                document.body.removeChild(aTag);
+                            };
+                            aTag.click();
+                        }
+                    })();
+                    if(getExplorer()=='ie') {
+                        var curTbl = document.getElementById(tableid);
+                        var oXL = new ActiveXObject("Excel.Application");
+                        var oWB = oXL.Workbooks.Add();
+                        var xlsheet = oWB.Worksheets(1);
+                        var sel = document.body.createTextRange();
+                        sel.moveToElementText(curTbl);
+                        sel.select();
+                        sel.execCommand("Copy");
+                        xlsheet.Paste();
+                        oXL.Visible = true;
+                        try {
+                            var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                        } catch (e) {
+                            print("Nested catch caught " + e);
+                        } finally {
+                            oWB.SaveAs(fname);
+                            oWB.Close(savechanges = false);
+                            oXL.Quit();
+                            oXL = null;
+                            idTmr = window.setInterval("Cleanup();", 1);
+                        }
+                    } else {
+                        tableToExcel(tableid)
+                    }
+                    function Cleanup() {
+                        window.clearInterval(idTmr);
+                        CollectGarbage();
+                    }
+                    function  getExplorer() {
+                        var explorer = window.navigator.userAgent ;
+                        //ie
+                        if (explorer.indexOf("MSIE") >= 0) {
+                            return 'ie';
+                        }
+                        //firefox
+                        else if (explorer.indexOf("Firefox") >= 0) {
+                            return 'Firefox';
+                        }
+                        //Chrome
+                        else if(explorer.indexOf("Chrome") >= 0){
+                            return 'Chrome';
+                        }
+                        //Opera
+                        else if(explorer.indexOf("Opera") >= 0){
+                            return 'Opera';
+                        }
+                        //Safari
+                        else if(explorer.indexOf("Safari") >= 0){
+                            return 'Safari';
+                        }
+                    }
+                }
+            }
+
+            /**
+             * 复杂表头导出
+             */
+            $("#out").click(function(){
+                let table2excel = new Table2Excel();
+                $('#test').show();
+                // 传入你的tableId即可导出
+                table2excel.export($('#test'), "项目通道");
+                $("#test").hide();
+            });
+
+		});
+
+	</script>
+
+{/block}

@@ -1,0 +1,228 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '质量分析' : 'Quality Analysis'}</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="forwardTable selftForward">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+{/block}
+
+{block name="js"}
+	<script type="text/html" id="forwardBar">
+			<div class="forward">
+				<form class="layui-form" id="form">
+					<div class="forward_lead">
+						<div class="layui-form-item label_auto">
+							<label class="layui-form-label">{:session('language') == '中文'? '类型选择' : 'Select Type'}</label>
+							<div class="layui-input-inline">
+								<select id="type" name="type" lay-verify="" lay-filter="type">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="M">{:session('language') == '中文'? '月份' : 'Month'}</option>
+									<option value="Q">{:session('language') == '中文'? '季度' : 'Quarter'}</option>
+									<option value="Y">{:session('language') == '中文'? '年份' : 'Year'}</option>
+								</select>
+							</div>
+						</div>
+
+						<!--月份选择-->
+						<div class="layui-form-item label_auto" id="M" style="display: none;">
+							<label class="layui-form-label">{:session('language') == '中文'? '月份选择' : 'Select Month'}</label>
+							<div class="layui-input-inline">
+								<select id="month" name="month" lay-verify="" lay-filter="Month" lay-search>
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="01">1</option>
+									<option value="02">2</option>
+									<option value="03">3</option>
+									<option value="04">4</option>
+									<option value="05">5</option>
+									<option value="06">6</option>
+									<option value="07">7</option>
+									<option value="08">8</option>
+									<option value="09">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+								</select>
+							</div>
+						</div>
+
+						<!--季度选择-->
+						<div class="layui-form-item label_auto" id="Q" style="display: none;">
+							<label class="layui-form-label">{:session('language') == '中文'? '季度选择' : 'Select Quarter'}</label>
+							<div class="layui-input-inline">
+								<select id="Quarter" name="Quarter" lay-verify="" lay-filter="Quarter">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="Q1">Q1</option>
+									<option value="Q2">Q2</option>
+									<option value="Q3">Q3</option>
+									<option value="Q4">Q4</option>
+								</select>
+							</div>
+						</div>
+
+						<!--年份选择-->
+						<div class="layui-form-item label_auto" id="Y" style="display: none;">
+							<label class="layui-form-label">{:session('language') == '中文'? '年份选择' : 'Select Year'}</label>
+							<div class="layui-input-inline">
+								<select id="Year" name="Year" lay-verify="" lay-filter="Year">
+									<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+									<option value="{$year}">{$year}</option>
+									<option value="{$s_year}">{$s_year}</option>
+									<option value="{$f_year}">{$f_year}</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+				</form>
+
+			</div>
+	</script>
+
+	<script>
+		var tableIns;  // 数据表格对象，用于重载
+
+		var type = "{$type}"; var time = "{$time}";
+
+		var url = "{:url('quality_analysis/index')}" + '?type=' + type + '&time=' + time;
+
+		layui.use(['table', 'form', 'laydate'], function () {
+			var form = layui.form;
+			var table = layui.table; var cols;
+
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文'){
+
+				cols = [
+                    {field:'Total_Comments', title:'总评价数', minWidth: 120}
+					,{field:'Omission', title:'漏译', minWidth: 80}
+					,{field:'Extra_Translation', title:'多译', minWidth: 80}
+					,{field:'Understanding', title:'理解程度', minWidth: 100}
+					,{field:'Typo_or_Data_Error', title:'打字、数据错误', minWidth: 150}
+					,{field:'Inconsistent_within_the_File', title:'自身术语不统一', minWidth: 150}
+					,{field:'Inconsistent_with_Other_Translators', title:'未和其他译者统一术语', minWidth: 180}
+					,{field:'Mistranslation', title:'术语翻译不恰当', minWidth: 150}
+					,{field:'Incorrect_Punctuation', title:'标点符号不恰当', minWidth: 150}
+					,{field:'Inconsistent_with_Target_Language_Features', title:'不符合习惯用语', minWidth: 150}
+					,{field:'Grammar_Mistakes', title:'语法错误', minWidth: 100}
+					,{field:'Sentence_Quality', title:'表达流畅度', minWidth: 100}
+					,{field:'Refer_to_the_References', title:'是否认真参考了参考文件', minWidth: 200}
+					,{field:'Corrected_Problems_Reoccur', title:'既往纠正问题是否仍反复出现', minWidth: 220}
+				]
+
+			}else{
+				cols = [
+                    {field:'Total_Comments', title:'Total_Comments', minWidth: 150}
+					,{field:'Omission', title:'Omission', minWidth: 100}
+					,{field:'Extra_Translation', title:'Extra_Translation', minWidth: 150}
+					,{field:'Understanding', title:'Understanding', minWidth: 150}
+					,{field:'Typo_or_Data_Error', title:'Typo_or_Data_Error', minWidth: 180}
+					,{field:'Inconsistent_within_the_File', title:'Inconsistent_within_the_File', minWidth: 220}
+					,{field:'Inconsistent_with_Other_Translators', title:'Inconsistent_with_Other_Translators', minWidth: 280}
+					,{field:'Mistranslation', title:'Mistranslation'}
+					,{field:'Incorrect_Punctuation', title:'Incorrect_Punctuation', minWidth: 180}
+					,{field:'Inconsistent_with_Target_Language_Features', title:'Inconsistent_with_Target_Language_Features', minWidth: 320}
+					,{field:'Grammar_Mistakes', title:'Grammar_Mistakes', minWidth: 180}
+					,{field:'Sentence_Quality', title:'Sentence_Quality', minWidth: 150}
+					,{field:'Refer_to_the_References', title:'Refer_to_the_References', minWidth: 200}
+					,{field:'Corrected_Problems_Reoccur', title:'Corrected_Problems_Reoccur', minWidth: 220}
+				]
+			}
+
+			// 表格 TYPE 切换时 (切换不同 类型选择框)
+			form.on('select(type)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				if(data.value === 'M'){
+					$('#M').show();
+					$('#Q').hide();
+					$('#Y').hide();
+				}
+
+				if(data.value === 'Q'){
+					$('#Q').show();
+					$('#M').hide();
+					$('#Y').hide();
+				}
+
+				if(data.value === 'Y'){
+					$('#Y').show();
+					$('#M').hide();
+					$('#Q').hide();
+				}
+			});
+
+			// 月份 切换
+			form.on('select(Month)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				url = "{:url('quality_analysis/index', ['type'=>'M'])}"+ '&time=' + data.value;
+				//console.log(url);
+
+				window.location.href = url;
+				//tableIns.reload();
+			});
+
+			// 季度 切换
+			form.on('select(Quarter)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				url = "{:url('quality_analysis/index', ['type'=>'Q'])}"+ '&time=' + data.value;
+				//console.log(url);
+
+				window.location.href = url;
+				//tableIns.reload();
+			});
+
+			// 年度 切换
+			form.on('select(Year)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				url = "{:url('quality_analysis/index', ['type'=>'Y'])}"+ '&time=' + data.value;
+				//console.log(url);
+
+				window.location.href = url;
+				//tableIns.reload();
+			});
+
+			tableIns = table.render({
+				elem: '#test'
+				//,url:"{:url('quality_analysis/index')}"
+                ,url:url
+				,toolbar: '#forwardBar'
+				,defaultToolbar: ['exports','print']
+				,title: '质量分析'
+				,cols: [cols]
+                ,page: true, limit:50, height:700
+			});
+
+		});
+		
+	</script>
+
+{/block}

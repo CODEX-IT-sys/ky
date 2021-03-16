@@ -1,0 +1,103 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '销售人员销售额汇总' : 'Sales Statistics'}</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="forwardTable selftForward">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+{/block}
+
+{block name="js"}
+
+		<script type="text/html" id="forwardBar">
+			<div class="forward">
+				<form class="layui-form" id="form">
+					<div class="forward_lead">
+						<div class="layui-form-item label_auto">
+							<label class="layui-form-label">{:session('language') == '中文'? '年份' : 'Year'}</label>
+							<div class="layui-input-inline">
+								<select name="year" lay-verify="" lay-filter="year">
+									<option value="{$year}" {$y==$year?'selected':''}>{$year}</option>
+									<option value="{$s_year}" {$y==$s_year?'selected':''}>{$s_year}</option>
+									<option value="{$f_year}" {$y==$f_year?'selected':''}>{$f_year}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>	
+		</script>
+
+<!--脚本-->
+	<script>
+
+		var tableIns;  // 数据表格对象，用于重载
+
+		var y = "{$y}"; // 默认年份参数
+
+		var url = replaceEditUrlId("{:url('Statistics/sales_statistics', ['y'=>1])}", y);
+
+		layui.use(['table','form'], function(){
+			var table = layui.table;var form = layui.form; var m,n;
+
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文'){
+				m = '销售';
+				n = '总金额';
+			}else{
+				m = 'Sales';
+				n = 'Money';
+			}
+
+			tableIns = table.render({
+				elem: '#test'
+				//,url:'__STATIC__/json/common.json'
+				,url:url
+				,toolbar: '#forwardBar'
+				,defaultToolbar: ['filter', 'exports', 'print']
+				,title: '销售人员销售额汇总'
+				,cols: [
+					[
+						{field:'Sales', title:m, sort:true}
+						,{field:'money', title:n, sort:true}
+					]
+				]
+				,cellMinWidth: 80, height: 700
+			});
+
+			// 表格 年份 切换时
+			form.on('select(year)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				window.location.href = replaceEditUrlId("{:url('Statistics/sales_statistics', ['y'=>1])}", data.value);
+
+				tableIns.reload();
+			});
+
+		});
+	</script>
+
+{/block}
+

@@ -1,0 +1,47 @@
+{extend name="./layout/top_and_left.html" /}
+
+{block name="username"}{:session('administrator.name')}{/block}
+{block name="logout_url"}{:url('login/admin/logout')}{/block}
+
+{block name="menu"}
+
+    <li class="layui-nav-item">
+        <a href="javascript:;" lay-href="{:url('workbench/index')}">
+            <i class="iconfont icon-shichangxuanpinjichanpinguanli"></i>
+            <cite>{:session('language') == '中文'? '我的工作台' : 'Workbench'}</cite>
+        </a>
+    </li>
+
+{volist name="menu" id="v"}
+
+    <li class="layui-nav-item">
+        <a href="javascript:;">
+            <i class="iconfont {$v.icon}"></i>
+            <cite>{:session('language') == '中文'? $v.cn_name : $v.en_name}</cite>
+        </a>
+
+        {volist name="$v.z" id="vo"}
+		<dl class="layui-nav-child">
+		    <dd>
+			{if $vo.cn_name=="表格管理"}
+				<a href="http://localhost/phpMyAdmin4.8.5/" target="_blank">
+				  {:session('language') == '中文'? '表格管理' : 'Table Management'}
+				</a>
+			{else/}
+				<a href="javascript:;" lay-href="{:url($vo.url)}">{:session('language') == '中文'? $vo.cn_name : $vo.en_name}</a>
+			{/if}
+			</dd>
+		</dl>
+        {/volist}
+
+    </li>
+
+{/volist}
+
+{/block}
+
+{block name="iframe_url"}
+
+{:url('admin/index/welcome')}
+
+{/block}

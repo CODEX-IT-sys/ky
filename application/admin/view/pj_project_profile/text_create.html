@@ -1,0 +1,265 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+				<div class="position_lead">
+					<i class="iconfont icon-navigation"></i>
+					<a href="#">{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+					<a href="{:url('pj_project_profile/index')}">{:session('language') == '中文'? '项目描述' : 'Project Profile'}</a>
+					<a class="on">{:session('language') == '中文'? '基本信息' : 'General Info'}</a>
+				</div>
+                <div class="global_btn">
+
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('pj_project_profile/text_save')}">
+
+                        <div class="layui-row layui-col-space10">
+
+							<!--固有 文本-->
+							<div class="layui-col-xs6">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '项目名称' : 'Project Name'}">
+										{:session('language') == '中文'? '项目名称' : 'Project Name'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Project_Name" id="pn" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs6">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '项目负责人' : 'Project Responsible'}">
+										{:session('language') == '中文'? '项目负责人' : 'Project Responsible'}
+									</label>
+									<div class="layui-input-block">
+										<div id="re" class="xm-select-demo"></div>
+										<input name="Project_Responsible" id="xmfzr" type="hidden" autocomplete="off" placeholder="" class="layui-input">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="layui-row layui-col-space10">
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '客户要求' : 'Customer Requirements'}">
+                                        {:session('language') == '中文'? '客户要求' : 'Customer Requirements'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <textarea placeholder="" id="Customer_Requirements" name="Customer_Requirements" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+							
+							<div class="layui-col-xs6">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '客户参考文件' : 'External Reference File'}">
+							            {:session('language') == '中文'? '客户参考文件' : 'External Reference File'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" id="External_Reference_File" name="External_Reference_File" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs6">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '内部参考文件' : 'Internal Reference File'}">
+							            {:session('language') == '中文'? '内部参考文件' : 'Internal Reference File'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" id="Internal_Reference_File" name="Internal_Reference_File" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs6">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '更新记忆库' : 'Update TM'}">
+							            {:session('language') == '中文'? '更新记忆库' : 'Update TM'}
+							        </label>
+							        <div class="layui-input-block">
+										<textarea placeholder="" id="Update_TM" name="Update_TM" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs6">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '参考记忆库' : 'Reference TM'}">
+										{:session('language') == '中文'? '参考记忆库' : 'Reference TM'}
+									</label>
+									<div class="layui-input-block">
+										<textarea placeholder="" id="Reference_TM" name="Reference_TM" class="layui-textarea"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs6">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '参考术语库' : 'Reference TB'}">
+										{:session('language') == '中文'? '参考术语库' : 'Reference TB'}
+									</label>
+									<div class="layui-input-block">
+										<textarea placeholder="" id="Reference_TB" name="Reference_TB" class="layui-textarea"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs12">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '备注' : 'Remarks'}">
+							            {:session('language') == '中文'? '备注' : 'Remarks'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" id="Remarks" name="Remarks" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+							
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/xm-select.js"}
+
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+        var re = '{$re|raw}';
+        var reData = JSON.parse(re);
+        var rez = xmSelect.render({
+            el: '#re',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: reData
+        });
+
+		// 下拉选择器值发生变化
+		form.on('select(Filing_Code)', function (data) {
+			var code = data.value;
+            //console.log(code);
+
+            // 选中第一个选项时，不请求数据
+            if (data.value === '') {
+                return;
+            }
+
+            //异步拉取信息
+			$.ajax({
+				type: 'get',
+				url: "{:url('pj_project_profile/get_info')}",
+				data: {'code': code},
+				dataType: 'json',
+				success: function (res) {
+					//console.log(res.data);
+					var info = res.data;
+
+					// 文本框写入默认值
+					$.each(info, function (name, value) {
+                        // input
+                        $('#form [name=' + name + ']').val(value);
+                        // select
+                        $('#form select[name=' + name + ']').prop("selected", 'selected');
+                        // 重新渲染表单
+                        form.render();
+					});
+				}
+			})
+		});
+
+        // 项目名称 重名验证提示
+        $('#pn').change(function () {
+            var pn = $.trim($('#pn').val());
+
+            //异步拉取信息
+            $.ajax({
+                type: 'get',
+                url: "{:url('check_name')}",
+                data: {name: pn},
+                dataType: 'json',
+                success: function (res) {
+                    if(res.code === 0){
+                        layer.alert(res.msg, {title: '提示'});
+                    }
+                }
+            })
+        });
+
+
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 必填项
+			validator.add('Project_Name', [{
+				rule: 'require',
+				msg: '项目名称不能为空'
+			}]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+            var reArr = rez.getValue();
+            var reLength = reArr.length;
+            var renamestr = '';
+            for(var i=0; i< reLength; i++ )
+            {
+                renamestr += reArr[i].name + ',';
+            }
+            // 去除多余符号
+            renamestr = renamestr.substring(0, renamestr.length - 1);
+            $('#xmfzr').val(renamestr);
+
+			// 表单提交
+			$('#form').submit();
+		});
+	})
+</script>
+{/block}

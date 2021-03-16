@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+		<title>CODEX</title>
+		<link rel="shortcut icon" href="__STATIC__/template/images/logo-icon.ico">
+		<link href="__STATIC__/template/bills.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div class="tbShow tbShow_cn a4-broadwise">
+			<div class="tbWrap">
+				<div class="tbContent">
+					<div class="tbWatermark">
+						<img src="__STATIC__/template/images/ky-watermark.png" >
+					</div>
+					<div class="tbHeader">
+						<ul>
+							<li class="header_logo">
+								<img src="__STATIC__/template/images/ky-logo.png" >
+							</li>
+							<li class="header_title">
+								<dl>
+									<dt>Beijing Codex Translation Co., Ltd.</dt>
+									<dd>北京科译翻译有限公司</dd>
+									<dd class="info_com">info@codex-trans.com</dd>
+								</dl>
+							</li>
+						</ul>
+					</div>
+					<div class="tbArticle">
+						<h2 class="art_title">INVOICE #{$info.Invoice_Number}</h2>
+						<div class="artItem">
+							<ul>
+								<li>
+									<b>To: </b>
+									<span>{$info.To}</span>
+								</li>
+								<li>
+									<b>Date:</b>
+									<span><?php echo date('Y/m/d') ?></span>
+								</li>
+								<li>
+									<b>Attention: </b>
+									<span>{$info.Attention}</span>
+								</li>
+								<li>
+									<b>Issued by: </b>
+									<br>
+									<span>Beijing Codex Translation Co., Ltd.</span>
+								</li>
+								<li>
+									<b>Address: </b>
+									<span>{$info.Address}</span>
+								</li>
+								<li>
+									<b>Currency: </b>
+									<span>CNY</span>
+								</li>
+							</ul>
+						</div>
+						<div class="artTable">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<th>Code</th>
+									<th>Pages</th>
+									<th>Format</th>
+									<th>Assigned</th>
+									<th>Deadline</th>
+									<th width="18%">Job Name</th>
+									<th>Service/Languages</th>
+									<th>Units</th>
+									<th>Quantity</th>
+									<th>Unit Price</th>
+									<th>VAT<br>（CNY）</th>
+									<th>Job Total</th>
+								</tr>
+
+								<tr>
+									<td>{$info.Invoice_Number}</td>
+									<td>{$info.Pages}</td>
+									<td>{$info.Format}</td>
+									<td>{$info.Assigned}</td>
+									<td>{$info.Deadline}</td>
+									<td>{$info.Job_name}</td>
+									<td>{$info.Service_or_Languages}</td>
+									<td>{$info.Units}</td>
+									<td>{$info.Quantity}</td>
+									<td>{$info.Unit_Price}</td>
+									<td>{$info.VAT}</td>
+									<td>{$info.Job_Total}</td>
+								</tr>
+
+							</table>			
+						</div>
+						<div class="artAttach">
+							<h5>Jobs Total: {$info.Job_Total}</h5>
+							<span>Total Due: CNY {$info.Total_Due}</span>
+						</div>
+						<div class="artInfo bank_cn">
+							<h5>现附上我公司具体银行信息如下：</h5>
+							<ul>
+								<li>
+									<dl>
+										<dt>公司名称: </dt>
+										<dd>北京科译翻译有限公司</dd>
+									</dl>
+								</li>
+								<li>
+									<dl>
+										<dt>开户行: </dt>
+										<dd>中国建设银行北京菜市口南街支行</dd>
+									</dl>
+								</li>
+								<li>
+									<dl>
+										<dt>账号: </dt>
+										<dd>1100 1176 4000 5300 2121</dd>
+									</dl>
+								</li>
+							</ul>
+						</div>
+						<div class="artBelongs">
+							<em>北京科译翻译有限公司</em>
+							<span><?php echo date('Y-m-d') ?></span>
+						</div>
+						<div class="artThanks">
+							<span>THANK YOU!</span>
+						</div>
+					</div>
+					<div class="tbFooter">
+						<ul>
+							<li>
+								<dl>
+									<dt>地址: </dt>
+									<dd>北京市西城区广安门外大街168号朗琴国际A座1009室</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>Add: </dt>
+									<dd>Room A1009 Langqin Int’l Building, No.168 Guang’an Men Wai Street, Xicheng District Beijing 100054, P.R.China</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>web: </dt>
+									<dd>www.codex-trans.com Email:info@codex-trans.com Tel：8610-53606018 Fax：8610-83525006</dd>
+								</dl>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>

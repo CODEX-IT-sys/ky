@@ -1,0 +1,605 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<style>
+	img {display: none;}
+</style>
+
+	<div class="hn_body">
+		<div class="layui-fluid">
+			<div class="layui-row">
+				<div class="top">
+					<div class="position_lead">
+						<i class="iconfont icon-navigation"></i>
+						<a href="#">{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+						<a class="on">{:session('language') == '中文'? '翻译评估' : 'Translation Evaluation'}</a>
+					</div>
+					<div class="global_btn form_lead">
+						<form class="layui-form" id="form">
+							<!--sign-->
+							<div class="layui-form-item label_auto">
+								<label class="layui-form-label">{:session('language') == '中文'? '校对人员签名' : 'Reviser Signature'}</label>
+								<div class="layui-input-inline">
+									<select name="" id="sign" lay-filter="sign" lay-search>
+										<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+										{volist name="$sign" id="v"}
+										<option value="{$v.name}">{$v.name}</option>
+										{/volist}
+									</select>
+								</div>
+							</div>
+						</form>
+
+						<a href="{:url('pj_translation_evaluation/create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
+
+						<a class="layui-btn com_btn" id="out">{:session('language') == '中文'? '导出' : 'exportForExcle'}</a>
+						<!--<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>-->
+					</div>
+				</div>
+				<div class="mainCt">
+					<div class="mainWrap">
+						<div class="forwardTable selftForward farTable">
+							<table class="layui-hide" id="test" lay-filter="test"></table>
+						</div>
+
+						<!--文本说明-->
+						<div class="explain">
+							<h5 class="explainTitle">
+								<i class="iconfont icon-tishi"></i>
+								<span>说明</span>
+							</h5>
+							<div class="explainCt">
+								{$intro|raw}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/table2excel.js"}
+<!--搜索-->
+<script type="text/html" id="forwardBar">
+
+	<div class="forward">
+		<div class="forward_lead">
+			<div class="layui-form-item label_auto">
+				<label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
+				<div class="layui-input-inline">
+					<select id="field" lay-verify="" lay-search>
+						<option value="">{:session('language') == '中文'? '请选择查找字段' : 'Please Select'}</option>
+						{volist name="$select_field" id="v"}
+						{if $v.Field != 'delete_time'}{if $v.Field != 'id'}
+						<option value="{$v.Field}" {$field==$v.Field?'selected':''}>{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}</option>
+						{/if}{/if}
+						{/volist}
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+				<div class="layui-input-inline">
+					<input type="text" id="keyword" value="{$keyword}" placeholder="{:session('language') == '中文'? '请输入查询内容' : 'Please input keyword'}" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			{if $field==''}
+			<span class="addCondition">
+				<i class="iconfont icon-icon-test"></i>
+			</span>
+			{/if}
+			<div class="searchBtn">
+				<button class="layui-btn search_btn" type="button">
+					<i class="iconfont icon-sousuo"></i>
+					<span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!--行工具-->
+<script type="text/html" id="barDemo">
+	<div class="table_btn">
+		<a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
+		<a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
+		<!--<a class="layui-btn layui-btn-xs com_btn" lay-event="look">{:session('language') == '中文'? '查看' : 'Look'}</a>-->
+	</div>
+</script>
+
+<!--脚本-->
+<script>
+var tableIns;  // 数据表格对象，用于重载
+layui.use(['table','form'], function(){
+	var table = layui.table; var form = layui.form;
+    var field = '{$field}'; var keyword = '{$keyword}';
+    // 切换语言
+	var language = "{:session('language') == '中文'? '中文' : 'english'}";
+	// 数据表格字段
+	var data = '{$colsData|raw}';
+	var colsData = JSON.parse(data);
+	var cols;
+
+	// 静态表头
+    if(language === '中文') {
+        cols = [
+            [
+                {type: 'checkbox', fixed: 'left', rowspan: 2}
+                , {field: 'Translator', title: '翻译人员姓名', rowspan: 2, minWidth: 150, sort: true, align: 'center'}
+                , {field: 'Job_Name', title: '文件名称', rowspan: 2, minWidth: 200, sort: true, align: 'center'}
+                , {field: 'Filing_Code', title: '文件编号', rowspan: 2, minWidth: 200, sort: true, align: 'center'}
+                , {field: 'Company_Name', title: '公司名称', rowspan: 2, minWidth: 200, sort: true, align: 'center'}
+                , {field: 'Language', title: '语种', rowspan: 2, align: 'center', minWidth: 100}
+                , {field: 'Translation_Difficulty', title: '翻译难易程度', sort: true, rowspan: 2, minWidth: 130}
+                , {field: 'Translation', title: '译文', colspan: 4, align: 'center'}
+                , {field: 'Terminology', title: '术语', colspan: 3, align: 'center'}
+                , {field: 'Language_Quality', title: '语言品质', colspan: 4, align: 'center'}
+                , {field: 'Others', title: '其他', colspan: 2, align: 'center'}
+                , {field: 'Overall_Evaluation', title: '整体评价', rowspan: 2, minWidth: 100}
+                , {field: 'sign', title: '签名', rowspan: 2, minWidth: 100
+                	//,templet:function (d) {return '<img  src="'+d.sign+'"  alt="图片" class="layui-nav-img" />'}
+        		}
+				, {field: 'Comment', title: '备注', rowspan: 2,align: 'center', minWidth: 100}
+				 ,{field:'create_time', title:'创建时间',rowspan: 2, align: 'center', sort:true, minWidth: 110}
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 130, rowspan: 2, align: 'center'},
+            ],
+            [
+                {field: 'Omission', title: '漏译'}
+                , {field: 'Extra_Translation', title: '多译'}
+                , {field: 'Understanding', title: '理解程度', minWidth: 100}
+                , {field: 'Typo_or_Data_Error', title: '打字、数据错误', minWidth: 150}
+
+                , {field: 'Inconsistent_within_the_File', title: '自身术语不统一', minWidth: 150}
+                , {field: 'Inconsistent_with_Other_Translators', title: '未和其他译者统一术语', minWidth: 180}
+                , {field: 'Mistranslation', title: '术语翻译不恰当', minWidth: 150}
+
+                , {field: 'Incorrect_Punctuation', title: '标点符号不恰当', minWidth: 150}
+                , {field: 'Inconsistent_with_Target_Language_Features', title: '不符合习惯用语', minWidth: 150}
+                , {field: 'Grammar_Mistakes', title: '语法错误', minWidth: 100}
+                , {field: 'Sentence_Quality', title: '表达流畅度', minWidth: 100}
+
+                , {field: 'Refer_to_the_References', title: '是否认真参考了参考文件', minWidth: 200}
+                , {field: 'Corrected_Problems_Reoccur', title: '既往纠正问题是否仍反复出现', minWidth: 220}
+            ]
+        ];
+    }else{
+        cols = [
+            [
+                {type: 'checkbox', fixed: 'left', rowspan: 2}
+                ,{field:'Translator', title:'Translator', rowspan: 2, minWidth: 150, sort: true, align:'center'}
+                ,{field:'Job_Name', title:'Job_Name', rowspan: 2, minWidth: 200, sort: true, align:'center'}
+                ,{field:'Filing_Code', title:'Filing_Code', rowspan: 2, minWidth: 200, sort: true, align:'center'}
+                ,{field:'Company_Name', title:'Company_Name', rowspan: 2, minWidth: 200, sort: true, align:'center'}
+                ,{field:'Language', title:'Language', rowspan: 2, align:'center', minWidth: 150}
+                ,{field:'Translation_Difficulty', title:'Translation_Difficulty', sort: true, rowspan: 2, minWidth: 220}
+                ,{field:'Translation', title:'Translation', colspan: 4, align:'center'}
+                ,{field:'Terminology', title:'Terminology', colspan: 3, align:'center'}
+                ,{field:'Language_Quality', title:'Language_Quality', colspan: 4, align:'center'}
+                ,{field:'Others', title:'Others', colspan: 2, align:'center'}
+                ,{field:'Overall_Evaluation', title:'Overall_Evaluation', rowspan: 2, minWidth: 180}
+                ,{field:'sign', title:'sign', rowspan: 2, minWidth: 100
+					//,templet:function (d) {return '<img  src="'+d.sign+'"  alt="图片" class="layui-nav-img" />'}
+				}
+				, {field: 'Comment', title: 'Comment', rowspan: 2, align: 'center', minWidth: 100}
+				,{field:'create_time', title:'Create time', rowspan: 2, align: 'center',sort:true, minWidth: 110}
+                ,{fixed: 'right', title:'Action', toolbar: '#barDemo', width:130, rowspan: 2, align:'center'}
+            ],
+            [
+                {field:'Omission', title:'Omission', minWidth: 100}
+                ,{field:'Extra_Translation', title:'Extra_Translation', minWidth: 150}
+                ,{field:'Understanding', title:'Understanding', minWidth: 150}
+                ,{field:'Typo_or_Data_Error', title:'Typo_or_Data_Error', minWidth: 160}
+
+                ,{field:'Inconsistent_within_the_File', title:'Inconsistent_within_the_File', minWidth: 220}
+                ,{field:'Inconsistent_with_Other_Translators', title:'Inconsistent_with_Other_Translators', minWidth: 280}
+                ,{field:'Mistranslation', title:'Mistranslation', minWidth: 150}
+
+                ,{field:'Incorrect_Punctuation', title:'Incorrect_Punctuation', minWidth: 180}
+                ,{field:'Inconsistent_with_Target_Language_Features', title:'Inconsistent_with_Target_Language_Features', minWidth: 320}
+                ,{field:'Grammar_Mistakes', title:'Grammar_Mistakes', minWidth: 160}
+                ,{field:'Sentence_Quality', title:'Sentence_Quality', minWidth: 160}
+
+                ,{field:'Refer_to_the_References', title:'Refer_to_the_References', minWidth: 260}
+                ,{field:'Corrected_Problems_Reoccur', title:'Corrected_Problems_Reoccur', minWidth: 280}
+            ]
+        ];
+    }
+
+	// 生成表格
+    tableIns = table.render({
+            elem: '#test'
+            ,url:"{:url('index')}"
+        	,where: {field: field, keyword: keyword}
+            ,toolbar: '#forwardBar'
+            ,defaultToolbar: []
+            ,title: '翻译评估表'
+			,cols: cols
+        	,page: true, limit:50, height:650
+		// 签名图片
+        /*,done: function (res) {
+            layer.closeAll('loading');
+            hoverOpenImg();
+        }*/
+        // 转换静态表格 导出excel(复杂表格)
+        ,done: function (res, curr, count) {
+
+            $("#test tr th:first").remove();  //去除第一列的勾选框
+
+            let header_tr = $($("#test").next().find(".layui-table-header")[0]).find("tr");
+            let body_tr = $($("#test").next().find(".layui-table-body")[0]).find("tr");
+
+            let header_html = "";
+            let body_html = "";
+
+            // 获取表头html，包括单元格的合并
+            $.each(header_tr,function (i,tr) {
+
+				let header_th = $(tr).find("th");
+
+				header_html += "<tr>";
+				$.each(header_th, function (j, th) {
+					if(j != 17) {
+						let rowspan_num = $(th).attr("rowspan");	// 行合并数
+						let colspan_num = $(th).attr("colspan");	// 列合并数
+
+						if (rowspan_num && !colspan_num) {	// 只有行合并时
+							header_html += '<th rowspan= "' + rowspan_num + '">';
+						} else if (colspan_num && !rowspan_num) {	// 只有列合并时
+							header_html += '<th colspan= "' + colspan_num + '">';
+						} else if (rowspan_num && colspan_num) {	// 行列合并均有时
+							header_html += '<th rowspan= "' + rowspan_num + '" colspan="' + colspan_num + '">';
+						} else {	// 没有发生单元格合并
+							header_html += '<th>';
+						}
+						header_html += $(th).children().children().text() + '</th>';	// 获取表头名称并拼接th标签
+					}
+				});
+				header_html += '</tr>';
+            });
+
+            // 获取表格body数据
+            $.each(body_tr,function (i,tr) {
+                let body_td = $(tr).find("td");
+
+                body_html += '<tr>';
+                $.each(body_td,function (j,td) {
+					if(j != 26){
+						body_html += '<td>' + $(td).children().text() + '</td>';
+					}
+                });
+                body_html += '</tr>';
+            });
+
+            $("#test tr").remove();	// 清除之前的doom结构
+            $("#test").append(header_html).append(body_html);
+            $("#test").hide();
+        }
+    });
+
+/**
+ * 复杂表头导出
+ */
+$("#out").click(function(){
+    let table2excel = new Table2Excel();
+    $('#test').show();
+    // 传入你的tableId即可导出
+    table2excel.export($('#test'), "翻译评估表");
+    $("#test").hide();
+});
+
+
+    // 放大镜 图片
+    function hoverOpenImg(){
+        var img_show = null; // tips提示
+        $('td img').hover(function(){
+            var img = "<img class='img_msg' src='"+$(this).attr('src')+"' style='max-width:300px;max-height: 200px;' />";
+            img_show = layer.tips(img, this,{
+                time:2000,
+                //tips:[4, '#fff'],
+                //area: ['40%']
+            });
+        });
+    }
+
+    // 回车亦可以搜索
+    $(document).keyup(function (event) {
+        if (event.keyCode == 13) {
+            $(".search_btn").trigger("click");
+        }
+    });
+
+	// 表头搜索
+	$('.search_btn').click(function () {
+		var searchfield = $('#field').val();
+		var searchkeyword = $.trim($('#keyword').val());
+
+		if (!searchkeyword) {
+			if(language === '中文') {
+				layer.msg('搜索内容不能为空');
+			}else{
+				layer.msg('Please input keyword');
+			}
+			return false;
+		}
+        // 页面 带参跳转 可以记住搜索参数
+        window.location.href = "{:url('index')}" + '?field=' + searchfield + '&keyword=' + searchkeyword;
+
+        // 表格重载
+		/*table.reload('test', {
+		 url: "{:url('index')}",
+		 where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
+		 page: true, limit:50
+		 });*/
+	});
+
+	// 多条件 搜索弹框
+	$(function(){
+		var index;
+		$(".addCondition").live("click",function(){
+			index = parent.layer.open({ //在父窗口打开
+				type: 2,
+				title: '条件查询',
+				maxmin: true,
+				shadeClose: true, //点击遮罩关闭层
+				area : ['700px' , '560px'],
+				content: "{:url('pj_translation_evaluation/condition')}",
+				end: function () {
+					var search_type = localStorage.getItem('search_type');
+					var s = localStorage.getItem('field');
+					var i = localStorage.getItem('keyword');
+					// 表格重载
+					table.reload('test', {
+						url: "{:url('pj_translation_evaluation/index')}",
+						where: {search_type : search_type, field: s, keyword: i},  // 设定异步数据接口的额外参数
+						page: true, limit:50
+					});
+				}
+			});
+		});
+	});
+
+	// 签名选择
+	form.on('select(sign)', function (data) {
+
+		console.log(data.value);
+
+		var checkStatus = table.checkStatus('test');
+		var idstr = ''; var cd = checkStatus.data.length;
+
+		if(cd !== 0){
+			for(var i=0; i<cd; i++){
+				idstr +=  checkStatus.data[i].id + ',';
+			}
+			// 去除多余符号
+			idstr = idstr.substring(0, idstr.length - 1);
+
+			layer.confirm('确认？', function(index){
+				// 向服务器发送请求
+				$.ajax({
+					type: 'get',
+					url: "{:url('pj_translation_evaluation/sign')}",
+					data: {id : idstr, sign:data.value},
+					// 成功
+					success: function (res) {
+						layer.alert(res.msg, {title: '提示'}, function (index) {
+							// 表格重载
+							tableIns.reload();
+							// 关闭alert
+							layer.close(index);
+						});
+					},
+					error: function (jqXHR) {
+						// 失败
+						if (jqXHR.status === 422) {
+							layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+								layer.close(index);
+							});
+						}
+					}
+				});
+			});
+		}else{
+			if(language === '中文') {
+				layer.alert('请先勾选要操作的数据再选择签名');
+				//设置默认选中第一项
+				$("#sign option:first").prop("selected", 'selected');
+				form.render();
+			}else{
+				layer.msg('Please check the box before operating');
+				//设置默认选中第一项
+				$("#sign option:first").prop("selected", 'selected');
+				form.render();
+			}
+		}
+	});
+
+  	//批量删除(多选操作)
+	$('#del').click(function () {
+		var checkStatus = table.checkStatus('test');
+		var idstr = ''; var cd = checkStatus.data.length;
+
+		if(cd !== 0){
+			for(var i=0; i<cd; i++){
+				idstr +=  checkStatus.data[i].id + ',';
+			}
+			// 去除多余符号
+			idstr = idstr.substring(0, idstr.length - 1);
+
+			layer.confirm('确认删除？', function(index){
+				// 向服务器发送删除请求
+				$.ajax({
+					type: 'get',
+					url: "{:url('pj_translation_evaluation/batch_delete')}",
+					data: {id : idstr},
+					// 删除成功
+					success: function (res) {
+						layer.alert(res.msg, {title: '提示'}, function (index) {
+							// 表格重载
+							tableIns.reload();
+							// 关闭alert
+							layer.close(index);
+						});
+					},
+					error: function (jqXHR) {
+						// 删除失败
+						if (jqXHR.status === 422) {
+							layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+								layer.close(index);
+							});
+						}
+					}
+				});
+			});
+		}else{
+			if(language === '中文') {
+				layer.alert('请先勾选要删除的数据再操作');
+			}else{
+				layer.msg('Please check the box before operating');
+			}
+		}
+	});
+  
+	//监听行工具事件
+	table.on('tool(test)', function(obj){
+		//获得当前行数据
+      	var id = obj.data.id;
+
+		// 删除
+		if(obj.event === 'del'){
+			  layer.confirm('确认删除？', function(index){
+				  // 向服务器发送删除请求
+				  $.ajax({
+					  type: 'delete',
+					  contentType: 'application/json',
+					  url: replaceEditUrlId("{:url('pj_translation_evaluation/delete', ['id' => 1])}", id),
+					  dataType: 'json',
+					  // 删除成功
+					  success: function (res) {
+						  layer.alert(res.msg, {title: '提示'}, function (index) {
+							  // 表格重载
+							  tableIns.reload();
+							  // 关闭alert
+							  layer.close(index);
+						  });
+					  },
+					  error: function (jqXHR) {
+						  // 删除失败
+						  if (jqXHR.status === 422) {
+							  layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+								  layer.close(index);
+							  });
+						  }
+					  }
+				  });
+			  });
+
+	    } else if(obj.event === 'edit'){
+
+		  	window.location.href =  replaceEditUrlId("{:url('pj_translation_evaluation/edit', ['id' => 1])}", id);
+
+	  	} else if(obj.event === 'look'){
+
+		  	window.location.href = replaceEditUrlId("{:url('pj_translation_evaluation/read', ['id' => 1])}", id);
+
+	  	}
+  	});
+
+
+    /**
+     * 获取页面的元素
+     * @param id：表格的id
+     * @param fileName:导出的excel的名字
+     */
+    function exportForExcle(id,fileName){
+        var table = $(document.getElementById(id)).clone();
+        table.attr('id','datatab');
+        table.appendTo('body');
+        method5('datatab');
+        datatab.remove();
+
+        function method5(tableid) {
+            var idTmr;
+            var tableToExcel = (function() {
+                var uri = 'data:application/vnd.ms-excel;base64,',
+                    template = '<html><head><meta charset="UTF-8"></head><body><table border="1px">{table}</table></body></html>',
+                    base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+                    format = function(s, c) {return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+                return function(table, name) {
+                    if (!table.nodeType) table = document.getElementById(table)
+                    var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+                    var aTag = document.createElement('a');
+                    aTag.download = fileName;
+                    aTag.href = uri + base64(format(template, ctx));
+                    document.body.appendChild(aTag);
+                    aTag.onclick = function () {
+                        document.body.removeChild(aTag);
+                    };
+                    aTag.click();
+                }
+            })();
+            if(getExplorer()=='ie') {
+                var curTbl = document.getElementById(tableid);
+                var oXL = new ActiveXObject("Excel.Application");
+                var oWB = oXL.Workbooks.Add();
+                var xlsheet = oWB.Worksheets(1);
+                var sel = document.body.createTextRange();
+                sel.moveToElementText(curTbl);
+                sel.select();
+                sel.execCommand("Copy");
+                xlsheet.Paste();
+                oXL.Visible = true;
+                try {
+                    var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                } catch (e) {
+                    print("Nested catch caught " + e);
+                } finally {
+                    oWB.SaveAs(fname);
+                    oWB.Close(savechanges = false);
+                    oXL.Quit();
+                    oXL = null;
+                    idTmr = window.setInterval("Cleanup();", 1);
+                }
+            } else {
+                tableToExcel(tableid)
+            }
+            function Cleanup() {
+                window.clearInterval(idTmr);
+                CollectGarbage();
+            }
+            function  getExplorer() {
+                var explorer = window.navigator.userAgent ;
+                //ie
+                if (explorer.indexOf("MSIE") >= 0) {
+                    return 'ie';
+                }
+                //firefox
+                else if (explorer.indexOf("Firefox") >= 0) {
+                    return 'Firefox';
+                }
+                //Chrome
+                else if(explorer.indexOf("Chrome") >= 0){
+                    return 'Chrome';
+                }
+                //Opera
+                else if(explorer.indexOf("Opera") >= 0){
+                    return 'Opera';
+                }
+                //Safari
+                else if(explorer.indexOf("Safari") >= 0){
+                    return 'Safari';
+                }
+            }
+        }
+    }
+
+});
+
+
+</script>
+
+{/block}

@@ -1,0 +1,74 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+
+							<a class="on">{:session('language') == '中文'? '综合评分' : 'Score'}</a>
+						</div>
+
+					</div>
+					<div class="zoneCt bg-white">
+						<div class="zoneWrap data_fetch">
+							<div class="comList">
+								<div class="listTitle">
+									<ul>
+										<li>
+											<dl>
+
+												<dd>{:session('language') == '中文'? '评分项' : 'Field'}</dd>
+												<dd>{:session('language') == '中文'? '权重' : 'Rate'}</dd>
+
+											</dl>
+										</li>
+									</ul>
+								</div>
+								<div class="listCt" id="xml_list">
+									<ul>
+
+										<li>
+											<dl>
+												<dd>
+													<span>Perfect Match</span>
+												</dd>
+												<dd>
+													<input type="text" name="perfect_match" id="perfect_match" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="0">
+												</dd>
+												<dd>X</dd>
+
+											</dl>
+										</li>
+
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="zoneCt margin-top-20 listInput">
+						<!--按钮-->
+						<div class="list_btn">
+							<a class="layui-btn com_btn" id="ok">{:session('language') == '中文'? '确认' : 'OK'}</a>
+							<button class="layui-btn delete_btn" id="qx">{:session('language') == '中文'? '取消' : 'Cancel'}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+</script>
+
+{/block}

@@ -1,0 +1,219 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '校对人员质量评估' : 'Quality Appraisal of Reviser'}</a>
+						</div>
+						<div class="global_btn">
+
+							{if(request()->action() !== 'read')}
+							<button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+							{/if}
+
+							<a href="javascript:history.back(-1);">
+								<button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+							</a>
+						</div>
+					</div>
+					<div class="mainCt mainSec formReset signLimit">
+						<div class="mainWrap">
+
+							<form class="layui-form" action="" id="form">
+
+								<div class="layui-row layui-col-space10">
+
+									<!--文件编号 下拉选择 关联信息 自动写入-->
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '文件编号' : 'Filing_Code'}">
+												{:session('language') == '中文'? '文件编号' : 'Filing_Code'}
+											</label>
+											<div class="layui-input-block">
+												<select name="Filing_Code" id="Filing_Code" lay-filter="Filing_Code" lay-search>
+
+													{volist name="$file_code" id="v"}
+													<option value="{$v.Filing_Code}" {$info.Filing_Code==$v.Filing_Code?'selected':''}>{$v.Filing_Code}</option>
+													{/volist}
+
+												</select>
+											</div>
+										</div>
+									</div>
+
+									{volist name="$field" id="v"}
+
+									<!--日期 日历类型-->
+									{if(request()->action() !== 'create')}
+
+									{if $v.Type == "int(11)"}
+									<div class="layui-col-xs4">
+										<div class="layui-form-item layui_ic">
+											<label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : str_replace('_' , '', $v.Field)}">
+												{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}
+											</label>
+											<div class="layui-input-block">
+												<input class="showDate layui-input" name="{$v.Field}" disabled value="{$info.Time}" type="text">
+												<i class="layui-icon layui-icon-date"></i>
+											</div>
+										</div>
+									</div>
+									{/if}
+
+									{/if}
+
+
+									{if($v.Field !== 'Filing_Code')}
+									<!--input 字符类型-->
+									{if $v.Type == "varchar(255)" }
+									<div class="layui-col-xs4">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : str_replace('_' , '', $v.Field)}">
+												{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}
+											</label>
+											<div class="layui-input-block">
+												<input name="{$v.Field}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+									{/if}
+									{/if}
+
+									{/volist}
+
+									<!--备注文本框类型-->
+									<div class="layui-col-xs12">
+										<div class="layui-form-item">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '备注' : 'Remarks'}">
+												{:session('language') == '中文'? '备注' : 'Remarks'}
+											</label>
+											<div class="layui-input-block">
+												<textarea placeholder="" id="Remarks" class="layui-textarea">{$info.Remarks|default=''}</textarea>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<input type="hidden" name="id" value="{$info.id}" />
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<!--预定义数据渲染函数-->
+<script>
+	var renderForm = function (layuiForm) {
+		var info = JSON.parse('{$info|raw}');
+
+		// 文本框写入默认值
+		$.each(info, function (name, value) {
+			$('#form [name=' + name + ']').val(value);
+		});
+
+		layuiForm.render();
+
+	}
+</script>
+
+<script>
+layui.use(['form'], function () {
+	var form = layui.form, layer = layui.layer;
+
+	// 数据渲染
+	renderForm(form);
+
+	// 获取要提交的数据
+	var getSubmitData = function () {
+		var data = {};
+
+		// 获取文本框的数据
+		var serializeArray = $('#form input').serializeArray();
+		$.each(serializeArray, function (index, field) {
+			data[field.name] = field.value;
+		});
+
+		// 获取下拉框的数据
+		data.Filing_Code = $('#Filing_Code').val();
+
+		// 获取备注文本框的内容
+		data.Remarks = $('#Remarks').val();
+
+		return data;
+	};
+
+	// 表单验证
+	var validatorFunc = function () {
+		var validator = new Validator();
+
+		// 人员必填
+		validator.add('Name', [{
+			rule: 'require',
+			msg: '人员姓名不能为空'
+		}]);
+
+		validator.add('Filing_Code', [{
+			rule: 'require',
+			msg: '文件编号不能为空'
+		}]);
+
+		return validator.start();
+	};
+
+	// 提交
+	$('#save').on('click', function () {
+
+		// 表单验证
+		var errorMsg = validatorFunc();
+		if (errorMsg) {
+			layer.alert(errorMsg, {title: '提示'});
+			return false;
+		}
+
+        var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+		//console.log(getSubmitData());
+
+		//异步提交
+		$.ajax({
+			url: "{:url('qa_reviser/update', ['id' => $info.id])}",
+			type: 'post',
+			dataType: 'json',
+			data: getSubmitData(),
+			success: function (res) {
+				layer.alert(res.msg, {title: '提示'}, function (index) {
+
+					// 关闭alert
+					layer.close(index);
+
+					//返回列表页
+					window.location.href = "{:url('qa_reviser/index')}";
+				});
+			},
+			error: function (jqXHR) {
+				if (jqXHR.status === 422) {
+					layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+						layer.close(index);
+					});
+				}
+			}
+		});
+	});
+})
+</script>
+
+{/block}

@@ -1,0 +1,69 @@
+{extend name="./layout/form.html" /}
+
+{block name="body"}
+
+<body class="main_color">
+
+<div class="secWrap">
+    <div class="layui-container">
+
+        <div class="forward">
+
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+
+                            <label class="layui-form-label">{:session('language') == '中文'? '消息内容' : 'Content'}</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="" id="text" name="text" style="height:200px;" class="layui-textarea">
+                                    {$info.content}
+                                </textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <input id="id" type="hidden" name="id" value="{$info.id}" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--按钮-->
+<div class="layui-layer-btn layui-layer-btn- bottm_control">
+    <a class="layui-layer-btn0" id="ok">{:session('language') == '中文'? '确认' : 'OK'}</a>
+</div>
+
+</body>
+
+{/block}
+
+{block name="js"}
+
+<!--富文本编辑器-->
+{js href="__STATIC__/ueditor/ueditor.config.js"}
+{js href="__STATIC__/ueditor/ueditor.all.min.js"}
+{js href="__STATIC__/ueditor/lang/zh-cn/zh-cn.js"}
+
+<script>
+    // 编辑器
+    //var ue = UE.getEditor('text');
+
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        // 取消
+        function qx(){
+            var index = top.layer.getFrameIndex(window.name);
+            top.layer.close(index);
+        }
+
+        $('#ok').on('click', function() {
+            qx();
+        });
+    });
+</script>
+{/block}

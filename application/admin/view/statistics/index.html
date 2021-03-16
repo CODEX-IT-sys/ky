@@ -1,0 +1,126 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a href="{:url('Statistics/index')}" class="on">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+                </div>
+            </div>
+            <div class="mainLead">
+                <div class="stati">
+
+                    <ul>
+                    {volist name="$report_menu" id="v"}
+
+                        <li title="{:session('language') == '中文'? $v.cn_name : $v.en_name}">
+                            <a href="{:url($v.url)}">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>{:session('language') == '中文'? $v.cn_name : $v.en_name}</h6>
+                            </a>
+                        </li>
+
+                    {/volist}
+                    </ul>
+
+                    <!--<ul>
+                        <li title="翻译量对比统计">
+                            <a href="translation_volume_contrast.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>翻译量对比统计</h6>
+                            </a>
+                        </li>
+                        <li title="翻译金额对比统计">
+                            <a href="translation_money_contrast.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>翻译金额对比统计</h6>
+                            </a>
+                        </li>
+                        <li title="年度翻译量汇总">
+                            <a href="annual_translation_summary.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>年度翻译量汇总</h6>
+                            </a>
+                        </li>
+                        <li title="销售人员销售额汇总">
+                            <a href="salesman_sales_summary.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>销售人员销售额汇总</h6>
+                            </a>
+                        </li>
+                        <li title="工作绩效统计">
+                            <a href="work_performance_statistics.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>工作绩效统计</h6>
+                            </a>
+                        </li>
+                        <li title="翻译人员质量评估">
+                            <a href="translator_quality_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>翻译人员质量评估</h6>
+                            </a>
+                        </li>
+                        <li title="合同记录表">
+                            <a href="contract_record_form.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>合同记录表</h6>
+                            </a>
+                        </li>
+                        <li title="校对人员质量评估">
+                            <a href="proofreader_quality_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>校对人员质量评估</h6>
+                            </a>
+                        </li>
+                        <li title="排版人员质量评估">
+                            <a href="typesetter_quality_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>排版人员质量评估</h6>
+                            </a>
+                        </li>
+                        <li title="质量分析">
+                            <a href="quality_analysis.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>质量分析</h6>
+                            </a>
+                        </li>
+                        <li title="翻译校对人员综合考核">
+                            <a href="translation_proofreader_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>翻译校对人员综合考核</h6>
+                            </a>
+                        </li>
+                        <li title="排版人员综合考核">
+                            <a href="typesetter_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>排版人员综合考核</h6>
+                            </a>
+                        </li>
+                        <li title="项目助理综合考核">
+                            <a href="project_assistant_assessment.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>项目助理综合考核</h6>
+                            </a>
+                        </li>
+                        <li title="项目通道">
+                            <a href="project_access.html">
+                                <i class="iconfont icon-shuju"></i>
+                                <h6>项目通道</h6>
+                            </a>
+                        </li>
+                    </ul>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+
+{/block}

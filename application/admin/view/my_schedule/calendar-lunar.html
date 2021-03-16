@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+
+// 数据
+var dateList = [
+
+    ['2020-04-01', '10：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-2', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-3', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-4', '清明',''],
+    ['2020-4-5', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-6', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-7', '十一',''],
+    ['2020-4-8', '十二',''],
+    ['2020-4-9', '十三',''],
+    ['2020-4-10', '十四',''],
+    ['2020-4-11', '十五',''],
+    ['2020-4-12', '十六',''],
+    ['2020-4-13', '十七',''],
+    ['2020-4-14', '十八',''],
+    ['2020-4-15', '十九',''],
+    ['2020-4-16', '二十',''],
+    ['2020-4-17', '廿一',''],
+    ['2020-4-18', '廿二',''],
+    ['2020-4-19', '廿三',''],
+    ['2020-4-20', '廿四', '穀雨'],
+    ['2020-4-21', '廿五',''],
+    ['2020-4-22', '廿六',''],
+    ['2020-4-23', '廿七',''],
+    ['2020-4-24', '廿八',''],
+    ['2020-4-25', '廿九',''],
+    ['2020-4-26', '四月',''],
+    ['2020-4-27', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-28', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-29', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-4-30', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-5-1', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-5-2', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-5-3', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+    ['2020-5-4', '9：00-12：00上午开发', '14：00-17：00继续开发'],
+
+];
+
+var heatmapData = [];
+var lunarData = [];
+for (var i = 0; i < dateList.length; i++) {
+    heatmapData.push([
+        dateList[i][0],
+        Math.random() * 300
+    ]);
+    lunarData.push([
+        dateList[i][0],
+        1,
+        dateList[i][1],
+        dateList[i][2]
+    ]);
+}
+
+option = {
+
+    // 鼠标悬浮 提示信息
+    tooltip: {
+        formatter: function (params) {
+            return '工作任务: ' + params.value[1].toFixed(2)
+        }
+    },
+
+    visualMap: {
+        show: false,
+        min: 0,
+        max: 300,
+        calculable: true,
+        seriesIndex: [2],
+        orient: 'horizontal',
+        left: 'center',
+        bottom: 20,
+        inRange: {
+            color: ['#e0ffff', '#006edd'],
+            opacity: 0.3
+        },
+        controller: {
+            inRange: {
+                opacity: 0.5
+            }
+        }
+    },
+    // 日历设置
+    calendar: [{
+        left: '100',
+        top: '200',
+        right: '100',
+        bottom: '100',
+        cellSize: 'auto',//格子自适应
+        yearLabel: {show: true},
+        orient: 'vertical',//日历坐标的布局朝向
+        dayLabel: {
+            firstDay: 1,// 从周一开始
+            nameMap: 'cn'// 语言 en/cn
+        },
+        monthLabel: {
+            show: true
+        },
+        range: '2020-04'//指定年月
+    }],
+    // 图表类型
+    series: [{
+        type: 'scatter',//散点
+        coordinateSystem: 'calendar',
+        symbolSize: 1,//标记的大小
+        // 图形上的文本标签
+        label: {
+            show: true,
+            // 标签内容格式器
+            formatter: function (params) {
+                var d = echarts.number.parseDate(params.value[0]);
+
+                return d.getDate() + '\n\n' + params.value[2] + '\n\n';
+            },
+            color: '#000'
+        },
+        data: lunarData
+    }, {
+        type: 'scatter',
+        coordinateSystem: 'calendar',
+        symbolSize: 1,//标记的大小
+        label: {
+            show: true,
+            formatter: function (params) {
+                return '\n\n\n' + (params.value[3] || '');
+            },
+            fontSize: 12,
+            fontWeight: 200,
+            color: '#a00'
+        },
+        data: lunarData
+    }, {
+        name: '工作日历',
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: heatmapData
+    }]
+};
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+</script>
+</body>
+</html>

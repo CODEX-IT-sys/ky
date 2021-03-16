@@ -1,0 +1,241 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a>{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
+                    <a href="{:url('mk_inquiry/index')}">{:session('language') == '中文'? '来稿需求' : 'Inquiry'}</a>
+                    <a class="on">{:session('language') == '中文'? '报价单' : 'Quote'}</a>
+                </div>
+                <div class="global_btn">
+
+                    {if(request()->action() !== 'read')}
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+                    {/if}
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('mk_quote/update')}">
+
+                        <div class="layui-row layui-col-space10">
+
+                            <!--报价单 编码-->
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '文件名/内容' : 'Job Name'}">
+                                        {:session('language') == '中文'? '文件名/内容' : 'Job Name'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Job_Name" value="{$info.Job_Name}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '文件类型' : 'File Type'}">
+                                        {:session('language') == '中文'? '文件类型' : 'File Type'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="File_Type" value="{$info.File_Type}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '语种' : 'Language'}">
+                                        {:session('language') == '中文'? '语种' : 'Language'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Language" value="{$info.Language}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '页数' : 'Pages'}">
+                                        {:session('language') == '中文'? '页数' : 'Pages'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Pages" value="{$info.Pages}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '单价' : 'Unit Price'}">
+                                        {:session('language') == '中文'? '单价' : 'Unit Price'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Unit_Price" id="Unit_Price" value="{$info.Unit_Price}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '单位' : 'Units'}">
+                                        {:session('language') == '中文'? '单位' : 'Units'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Units" value="{$info.Units}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '报价数量' : 'Quote Quantity'}">
+                                        {:session('language') == '中文'? '报价数量' : 'Quote Quantity'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Quote_Quantity" id="Quote_Quantity" value="{$info.Quote_Quantity}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--默认手填-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '应付金额' : 'Total Due'}">
+                                        {:session('language') == '中文'? '应付金额' : 'Total Due'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Total_Due" value="{$info.Total_Due}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--增值税-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">{:session('language') == '中文'? '是否含增值税' : 'VAT type'}</label>
+                                    <div class="layui-input-block">
+                                        <select name="VAT_type" id="VAT_type" lay-filter="VAT_type">
+                                            <option value="No" {$info.Total_type=='No'?'selected':''}>{:session('language') == '中文'? '否' : 'No'}</option>
+                                            <option value="Yes" {$info.Total_type=='Yes'?'selected':''}>{:session('language') == '中文'? '是' : 'Yes'}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--计算方式 自动/手动-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">{:session('language') == '中文'? '计算方式' : 'Total type'}</label>
+                                    <div class="layui-input-block">
+                                        <select name="Total_type" lay-filter="Total_type">
+                                            <option value="手动" {$info.Total_type=='手动'?'selected':''}>{:session('language') == '中文'? '手动' : 'Self Total'}</option>
+                                            <option value="自动" {$info.Total_type=='自动'?'selected':''}>{:session('language') == '中文'? '自动' : 'Auto Total'}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--默认手填-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '预计金额' : 'Predict money'}">
+                                        {:session('language') == '中文'? '预计金额' : 'Predict money'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Predict_money" id="Predict_money" value="{$info.Predict_money}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--默认手填-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '增值税' : 'VAT'}">
+                                        {:session('language') == '中文'? '增值税' : 'VAT'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="VAT" id="VAT" value="{$info.VAT}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <input type="hidden" name="id" value="{$info.id}" />
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+    layui.use(['form','laydate'], function () {
+        var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+        //同时绑定多个,单个日期选择，显示在input里面
+        $('.showDate').click(function () {
+            laydate.render({
+                elem: this
+                ,trigger: 'click'
+                ,theme: '#1B3382'
+                ,position: 'fixed'
+                //,isInitValue: true
+                //,value: new Date()
+                //,format: 'yyyyMMdd'
+            });
+        });
+
+        // 表单验证
+        /*var validatorFunc = function () {
+            var validator = new Validator();
+
+            // 页数
+            validator.add('Pages', [{
+                rule: 'require',
+                msg: '页数不能为空'
+            }]);
+
+            return validator.start();
+        };*/
+
+        // 数据提交
+        $('#save').on('click', function () {
+
+            // 表单验证
+            /*var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }*/
+
+            // 表单提交
+            $('#form').submit();
+        });
+    })
+</script>
+
+{/block}

@@ -1,0 +1,652 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a>{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+							<a href="{:url('pj_project_profile/index')}">{:session('language') == '中文'? '项目描述' : 'Project Profile'}</a>
+							<a class="on">{:session('language') == '中文'? '数据读取' : 'Data Reading'}</a>
+						</div>
+						<div class="global_btn">
+
+							<button type="button" class="layui-btn com_btn" id="file_upload">
+								<i class="layui-icon layui-icon-upload"></i>{:session('language') == '中文'? '文件读取' : 'Select File'}
+							</button>
+
+						</div>
+					</div>
+					<div class="zoneCt bg-white">
+						<div class="zoneWrap data_fetch">
+							<div class="comList">
+								<div class="listTitle">
+									<ul>
+										<li>
+											<dl>
+												<dd>Match types</dd>
+												<dd>Words</dd>
+												<dd></dd>
+												<dd>Percentage payment of full word rate</dd>
+												<dd></dd>
+												<dd>Equivalent wordcount to be paid at full word rate</dd>
+											</dl>
+										</li>
+									</ul>
+								</div>
+								<div class="listCt" id="xml_list">
+									<ul>
+										<li>
+											<dl>
+												<dd>
+													<span>Perfect Match</span>
+												</dd>
+												<dd>
+													<input type="number" name="perfect_match" id="perfect_match" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="0">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="perfect_match2" id="perfect_match2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="perfect_match3" id="perfect_match3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>Context Match</span>
+												</dd>
+												<dd>
+													<input type="number" name="context_match" id="context_match" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="context_match2" id="context_match2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="context_match3" id="context_match3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>Repetitions</span>
+												</dd>
+												<dd>
+													<input type="number"  name="repetitions" id="repetitions" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number"  name="repetitions2" id="repetitions2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number"  name="repetitions3" id="repetitions3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>Cross-file Repetitions</span>
+												</dd>
+												<dd>
+													<input type="number" name="cross_file_repetitions" id="cross_file_repetitions" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="cross_file_repetitions2" id="cross_file_repetitions2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="cross_file_repetitions3" id="cross_file_repetitions3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>100% Matches</span>
+												</dd>
+												<dd>
+													<input type="number" name="yb_matches" id="yb_matches" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="yb_matches2" id="yb_matches2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="yb_matches3" id="yb_matches3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>95%-99%</span>
+												</dd>
+												<dd>
+													<input type="number" name="jw_matches" id="jw_matches" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="jw_matches2" id="jw_matches2" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="jw_matches3" id="jw_matches3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+										<li>
+											<dl>
+												<dd>
+													<span>85%-94%</span>
+												</dd>
+												<dd>
+													<input type="number" name="bw_matches" id="bw_matches" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="bw_matches2" id="bw_matches2" value="100" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="bw_matches3" id="bw_matches3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+										<li>
+											<dl>
+												<dd>
+													<span>75%-84%</span>
+												</dd>
+												<dd>
+													<input type="number" name="qw_matches" id="qw_matches" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="qw_matches2" id="qw_matches2" value="100" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="qw_matches3" id="qw_matches3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+										<li>
+											<dl>
+												<dd>
+													<span>50%-74%</span>
+												</dd>
+												<dd>
+													<input type="number" name="ww_matches" id="ww_matches" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="ww_matches2" id="ww_matches2" value="100" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="ww_matches3" id="ww_matches3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+										<li>
+											<dl>
+												<dd>
+													<span>No Match</span>
+												</dd>
+												<dd>
+													<input type="number" name="no_match" id="no_match" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+												<dd>X</dd>
+												<dd class="inputSpace unit_show">
+													<input type="number" name="no_match2" id="no_match2" value="100" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+													<span class="layui-table-sort layui-inline switch_num">
+														<i class="layui-edge layui-table-sort-asc"></i>
+														<i class="layui-edge layui-table-sort-desc"></i>
+													</span>
+												</dd>
+												<dd>=</dd>
+												<dd>
+													<input type="number" name="no_match3" id="no_match3" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+												</dd>
+											</dl>
+										</li>
+
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="zoneCt margin-top-20 listInput">
+						<div class="layui-row layui-col-space20">
+							<div class="layui-col-xs6">
+								<h6 class="titleLead">Total wordcount</h6>
+								<input type="number" name="total_word_count" id="total_word_count" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+							</div>
+							<div class="layui-col-xs6">
+								<h6 class="titleLead">Total CATCount</h6>
+								<input type="number" name="total_cat_count" id="total_cat_count" value="0" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+							</div>
+
+                            <input type="hidden" id="data_id" value="{$id}" />
+						</div>
+						<!--按钮-->
+						<div class="list_btn">
+							<a class="layui-btn com_btn" id="ok">{:session('language') == '中文'? '确认' : 'OK'}</a>
+							<button class="layui-btn delete_btn" id="qx">{:session('language') == '中文'? '取消' : 'Cancel'}</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form', 'layer','upload'], function () {
+		var upload = layui.upload;
+		var form = layui.form;
+		var layer = top.layer;
+
+		var tip;
+
+		// 文件上传 读取数据
+		upload.render({
+			elem: '#file_upload',       //绑定元素
+			url: "{:url('pj_project_profile/file_up')}",   //上传接口
+			accept: 'file',
+			// 选中
+			choose: function (obj) {
+
+				tip = layer.msg('文件读取中，请稍候', {icon: 16, shade: 0.3, time: 0});
+			},
+			done: function (res) {
+
+				if (res.code > 0) {
+
+					layer.close(tip);
+
+					var data = res.data;
+					//console.log(data);
+
+					// 项目名称
+					var Project_Name = data["taskInfo"]["project"]["@attributes"]["name"];
+					console.log(Project_Name);
+
+					// 只取 file 里面数据
+                    var f = data["file"]["analyse"];
+                    //console.log(f);
+
+					// 获取数据 将读取到的数据 写入 到对应的位置
+                    // Perfect Match
+					var perfect_match = f["perfect"]["@attributes"]["words"];
+					//console.log(perfect_match);
+					$('#perfect_match').val(perfect_match);
+
+					// Context Match
+                    var context_match = f["inContextExact"]["@attributes"]["words"];
+					//console.log(context_match);
+					$('#context_match').val(context_match);
+
+                    // Repetitions
+                    var repetitions = f["repeated"]["@attributes"]["words"];
+					//console.log(repetitions);
+					$('#repetitions').val(repetitions);
+
+                    // Cross-file Repetitions
+					var cross_file_repetitions = f["crossFileRepeated"]["@attributes"]["words"];
+					//console.log(cross_file_repetitions);
+					$('#cross_file_repetitions').val(cross_file_repetitions);
+
+					// 100% Matches
+					var exact = f["exact"]["@attributes"]["words"];
+					//console.log(exact);
+					$('#yb_matches').val(exact);
+
+					// 95-99%
+					var b9 = f["fuzzy"][3]["@attributes"]["words"];
+					//console.log(b9);
+					$('#jw_matches').val(b9);
+
+					// 85-94%
+					var b8 = f["fuzzy"][2]["@attributes"]["words"];
+					//console.log(b8);
+					$('#bw_matches').val(b8);
+
+					// 75-84%
+					var b7 = f["fuzzy"][1]["@attributes"]["words"];
+					//console.log(b7);
+					$('#qw_matches').val(b7);
+
+					// 50-74%
+					var b5 = f["fuzzy"][0]["@attributes"]["words"];
+					//console.log(b5);
+					$('#ww_matches').val(b5);
+
+					// No Match
+					var no_match = f["new"]["@attributes"]["words"];
+					//console.log(no_match);
+					$('#no_match').val(no_match);
+
+					// 计算
+                    var total_word_count = f["total"]["@attributes"]["words"];
+					//console.log(total_word_count);
+					$('#total_word_count').val(total_word_count);
+
+					// 计算每一行
+					row_total();
+					total_cat_count();
+
+					//上传完毕回调
+					layer.alert('读取成功');
+
+				}else{
+					layer.close(tip);
+					layer.alert(res.msg, {title: '提示'}, function (index) {
+						// 关闭alert
+						layer.close(index);
+					});
+				}
+			}
+		});
+
+		// 数组 数组求和
+        function sum(arr) {
+            return eval(arr.join("+"));
+        }
+
+        // 横向 每行 计算值
+		function row_total() {
+
+			var id_attr, z1, z2, z3;
+
+			// 遍历所有的 li
+			$('#xml_list ul li').each(function () {
+
+				id_attr = $(this).find('input:first-child').attr('id');
+
+				z1 = $('#'+id_attr).val();
+
+				z2 = $('#'+id_attr+'2').val();
+
+				z3 = Number(z1) * (Number(z2)/100);
+
+				$('#'+id_attr+'3').val(z3);
+
+			});
+		}
+
+		// 纵向 计算 total word count
+		function total_word_count(){
+
+			var s;
+
+			// 遍历所有的 li 取每一个的第一个input 的值累加
+			$('#xml_list ul li').each(function () {
+
+				s+= $(this).find('input:first-child').val() + ',';
+			});
+			//console.log(s);
+            // 截取数据
+			s = s.substring(9, s.length-1);
+			//console.log(s);
+
+            // 方法一： js 分割 求和(效率高)
+            var d_a = s.split(',');
+            //console.log(d_a);
+            var t_w = sum(d_a);
+            //console.log(t_w);
+            // 写入计算结果
+            $('#total_word_count').val(t_w);
+
+			// 方法二： 异步提交 后台计算(防止后期计算规则改变)
+			/*$.ajax({
+				type: 'post',
+				url: "{:url('pj_project_profile/total_word')}",
+				data: {s: s},
+				dataType: 'json',
+				// 成功
+				success: function (res) {
+					var total_word = res;
+                    //console.log(total_word);
+
+					// 写入计算结果
+                    $('#total_word_count').val(total_word);
+				}
+			});*/
+		}
+
+		// 纵向 计算 total cat count
+		function total_cat_count(){
+
+			var s;
+
+			// 遍历所有的 li 取每一个的最后一个input 的值累加
+			$('#xml_list ul li').each(function () {
+
+				s+= $(this).find('input:last').val() + ',';
+			});
+			//console.log(s);
+            // 截取数据
+			s = s.substring(9, s.length-1);
+			//console.log(s);
+
+            // 方法一： js 分割 求和(效率高)
+            var d_a = s.split(',');
+            //console.log(d_a);
+            var t_w = sum(d_a);
+            //console.log(t_w);
+            // 写入计算结果
+            $('#total_cat_count').val(t_w);
+
+			// 方法二： 异步提交 后台计算(防止后期计算规则改变)
+			/*$.ajax({
+				type: 'post',
+				url: "{:url('pj_project_profile/total_word')}",
+				data: {s: s},
+				dataType: 'json',
+				// 成功
+				success: function (res) {
+					var total_word = res;
+                    //console.log(total_word);
+
+					// 写入计算结果
+                    $('#total_cat_count').val(total_word);
+				}
+			});*/
+		}
+
+		// input数值改变 自动关联计算
+		$('.listCt input').change(function () {
+
+			var i, m, n;
+
+			// 获取当前框的值
+			var cv = $(this).val();
+
+			// 获取当前框的 id属性
+			var idstr = $(this).attr('id');
+
+			// 截取得到 id属性的末尾 字符
+			var id_end = idstr.charAt(idstr.length -1);
+
+			// 根据末尾字符判断 输入框 对应计算数据
+			if(id_end === '2'){ // 当前改变值的是 第二个框
+
+				// 第一个框的 id
+				m = idstr.substring(0, idstr.length -1);
+
+				// 第三个框的 id
+				n = m + '3';
+
+				// 计算
+				i = Number($('#'+ m).val()) * (Number(cv)/100);
+
+				// 将计算结果写入对应位置
+				$('#'+ n).val(i);
+
+                total_cat_count();
+
+			}else if(id_end === '3'){ // 当前改变值的是 第三个框
+
+				// 第一个框的 id
+				m = idstr.substring(0, idstr.length -1);
+				//console.log(m);
+
+				// 第三个框的 id
+				n = m + '2';
+				//console.log(n);
+
+                // 将计算结果写入对应位置
+                total_cat_count();
+
+			}else{ // 当前改变值的是 第一个框
+
+				// 第二个框的 id
+				m = idstr + '2';
+
+				// 第三个框的 id
+				n = idstr + '3';
+
+				// 计算
+				i = Number(cv) * (Number($('#'+ m).val())/100);
+
+				// 将计算结果写入对应位置
+				$('#'+ n).val(i);
+
+				total_word_count();
+
+                total_cat_count();
+			}
+		});
+
+		// 按钮操作
+        $('#ok').click(function () {
+
+        	var data = {};
+
+            // 输入框取值
+            data.id = $('#data_id').val();
+
+			// SUM(words) = Total wordcount -> Source_Text_Word_Count
+			data.Source_Text_Word_Count = Number($('#total_word_count').val());
+
+			// SUM(3word rate) = Total CATCount -> Actual_Source_Text_Count
+            data.Actual_Source_Text_Count = Number($('#total_cat_count').val());
+
+			var v1 = $('#perfect_match').val();
+			var v2 = $('#context_match').val();
+			var v3 = $('#repetitions').val();
+			var v4 = $('#cross_file_repetitions').val();
+			var v5 = $('#yb_matches').val();
+
+            // 前5个字段(2word rate)之和 = 100% -> One_Hundred_Percent_Repeated
+			var ybcfl = (Number(v1)+Number(v2)+Number(v3)+Number(v4)+Number(v5))/Number($('#total_word_count').val()) * 100;
+			// 四舍五入 保留两位小数
+			data.One_Hundred_Percent_Repeated = toDecimal(ybcfl);
+
+			// 95-99% -> Ninety_Five_to_Ninety_Nine_Percent_Repeated
+			var jwcfl = Number($('#jw_matches').val())/Number($('#total_word_count').val()) * 100;
+			// 四舍五入 保留两位小数
+			data.Ninety_Five_to_Ninety_Nine_Percent_Repeated = toDecimal(jwcfl);
+
+			// 100% + 95-99% = Total_Repetition_Rate
+			data.Total_Repetition_Rate = Number(data.One_Hundred_Percent_Repeated) + Number(data.Ninety_Five_to_Ninety_Nine_Percent_Repeated);
+
+			console.log(data);
+
+            // 提交数据
+            $.ajax({
+                type: 'post',
+                url: "{:url('pj_project_profile/update')}",
+                data:data,
+                dataType: 'json',
+                // 成功
+                success: function (res) {
+
+                    // 跳转界面
+                    window.location.href = "{:url('pj_project_profile/index')}"
+                }
+            });
+        });
+		
+		//功能：将浮点数四舍五入，取小数点后2位   
+		function toDecimal(x) {
+			var f = parseFloat(x);
+			if (isNaN(f)) {
+				return;
+			}
+			f = Math.round(x*100)/100;
+			return f;   
+		}
+		
+        // 按钮操作
+        $('#qx').click(function () {
+
+            // 跳转到列表页
+            window.location.href = "{:url('pj_project_profile/index')}"
+        })
+
+	})
+</script>
+
+{/block}

@@ -1,0 +1,122 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="secWrap">
+    <div class="layui-container">
+        <form class="layui-form centerBox formReset" id="form">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:session('language') == '中文'? '职位中文名称' : 'Job Chinese Name'}</label>
+                <div class="layui-input-block">
+                    <input name="cn_name" autocomplete="off" placeholder="" class="layui-input" type="text">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:session('language') == '中文'? '职位英文名称' : 'Job English Name'}</label>
+                <div class="layui-input-block">
+                    <input name="en_name" autocomplete="off" placeholder="" class="layui-input" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="layui-layer-btn layui-layer-btn- bottm_control">
+        <a class="layui-layer-btn0" id="submit">{:session('language') == '中文'? '确认' : 'OK'}</a>
+        <a class="layui-layer-btn1" id="cancel">{:session('language') == '中文'? '取消' : 'Cancel'}</a>
+    </div>
+
+</div>
+{/block}
+
+{block name="js"}
+
+<script>
+
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            validator.add('cn_name', [{
+                rule: 'require',
+                msg: '中文名称不能为空'
+            }]);
+
+            validator.add('en_name', [{
+                rule: 'require',
+                msg: '英文名称不能为空'
+            }]);
+
+            return validator.start();
+        };
+
+
+        // 获取要提交的数据
+        var getSubmitData = function () {
+            var data = {};
+
+            // 获取文本框和单选按钮的数据
+            var serializeArray = $('#form input').serializeArray();
+            $.each(serializeArray, function (index, field) {
+                data[field.name] = field.value;
+            });
+
+            return data;
+        };
+
+        // 表单提交
+        $('#submit').on('click', function () {
+
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+			
+			console.log(getSubmitData());
+
+            //异步提交
+            $.ajax({
+                url: "{:url('authority_management/save_j')}",
+                type: 'post',
+                dataType: 'json',
+                data: getSubmitData(),
+                success: function (res) {
+                    layer.alert(res.msg, {title: '提示'}, function (index) {
+
+                        // 关闭alert
+                        layer.close(index);
+
+                        // 关闭弹窗
+                        qx();
+                    });
+                },
+                error: function (jqXHR) {
+                    if (jqXHR.status === 422) {
+                        layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                            layer.close(index);
+                        });
+                    }
+                }
+            });
+        });
+
+        // 取消
+        function qx(){
+            var index = top.layer.getFrameIndex(window.name);
+            top.layer.close(index);
+        }
+
+        $('#cancel').on('click', function() {
+            qx();
+        });
+
+    })
+</script>
+
+{/block}

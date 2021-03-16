@@ -1,0 +1,341 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+				<div class="position_lead">
+					<i class="iconfont icon-navigation"></i>
+					<a href="#">{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+					<a class="on">{:session('language') == '中文'? '每日进度（排版）' : 'Daily Progress (DTP)'}</a>
+				</div>
+                <div class="global_btn">
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('pj_daily_progress_dtp/update')}">
+
+                        <div class="layui-row layui-col-space10">																																		
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '排版人员姓名' : 'Name of Formatter'}">
+							            {:session('language') == '中文'? '排版人员姓名' : 'Name of Formatter'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Name_of_Formatter" lay-verify="required" value="{$info.Name_of_Formatter|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '工作日期' : 'Work Date'}">
+										{:session('language') == '中文'? '工作日期' : 'Work Date'}
+									</label>
+									<div class="layui-input-block">
+										<input class="Date layui-input" name="Work_Date" id="Work_Date" value="{$info.Work_Date|default=''}" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+														
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件名称' : 'Job Name'}">
+							            {:session('language') == '中文'? '文件名称' : 'Job Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Job_Name" lay-verify="required" value="{$info.Job_Name|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件编号' : 'Filing_Code'}">
+							            {:session('language') == '中文'? '文件编号' : 'Filing_Code'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Filing_Code" lay-verify="required" readonly value="{$info.Filing_Code|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>                                                        							
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '公司名称' : 'Company Name'}">
+							            {:session('language') == '中文'? '公司名称' : 'Company Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Company_Name" readonly value="{$info.Company_Name}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '是否延迟提交' : 'Delivery Delay'}">
+							            {:session('language') == '中文'? '是否延迟提交' : 'Delivery Delay'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="Delivery_Delay" lay-filter="Delivery_Delay" lay-search>
+											<option value="Yes" {$info.Delivery_Delay=='Yes'?'selected':''}>Yes</option>
+											<option value="No" {$info.Delivery_Delay=='No'?'selected':''}>No</option>
+										</select>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '完成页码' : 'Number of Pages Completed'}">
+							            {:session('language') == '中文'? '完成页码' : 'Number of Pages Completed'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Number_of_Pages_Completed" lay-verify="required" value="{$info.Number_of_Pages_Completed}" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '语种' : 'Language'}">
+							            {:session('language') == '中文'? '语种' : 'Language'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Language" readonly value="{$info.Language}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '排版难易程度' : 'Format Difficulty'}">
+							            {:session('language') == '中文'? '排版难易程度' : 'Format Difficulty'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Format_Difficulty" readonly value="{$info.Format_Difficulty}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '自检（是/否）' : 'Self Inspection Status'}">
+							            {:session('language') == '中文'? '自检（是/否）' : 'Self Inspection Status'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="Self_Inspection_Status" lay-filter="Self_Inspection_Status" lay-search>
+											<option value="Yes" {$info.Self_Inspection_Status=='Yes'?'selected':''}>Yes</option>
+											<option value="No" {$info.Self_Inspection_Status=='No'?'selected':''}>No</option>
+										</select>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '已完成百分比' : 'Percentage Completed'}">
+							            {:session('language') == '中文'? '已完成百分比' : 'Percentage Completed'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Percentage_Completed" lay-verify="required" value="{$info.Percentage_Completed}" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+									<span class="signTip">%</span>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件类型' : 'File Type'}">
+							            {:session('language') == '中文'? '文件类型' : 'File Type'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="File_Type" readonly value="{$info.File_Type}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '工作内容' : 'Work Content'}">
+							            {:session('language') == '中文'? '工作内容' : 'Work Content'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="Work_Content" lay-filter="Work_Content" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$Work_Content" id="v"}
+											<option value="{$v.en_name}" {$info.Work_Content==$v.en_name?'selected':''}>{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '开始时间' : 'Start Time'}">
+										{:session('language') == '中文'? '开始时间' : 'Start Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Start_Time" value="{$info.Start_Time|default=''}" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '结束时间' : 'End time'}">
+										{:session('language') == '中文'? '结束时间' : 'End time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="End_Time" value="{$info.End_Time|default=''}" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '实际用时' : 'Actual Work Time'}">
+							            {:session('language') == '中文'? '实际用时' : 'Actual Work Time'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Actual_Work_Time" lay-verify="required" readonly value="{$info.Actual_Work_Time|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+									<span class="signTip">小时(h)</span>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '效率' : 'Productivity'}">
+										{:session('language') == '中文'? '效率' : 'Productivity'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Productivity" readonly value="{$info.Productivity|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+									<span class="signTip">{:session('language') == '中文'? '(页/小时)' : '(Page/h)'}</span>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs12">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '备注' : 'Remarks'}">
+							            {:session('language') == '中文'? '备注' : 'Remarks'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" id="Remarks" name="Remarks" class="layui-textarea">{$info.Remarks|default=''}</textarea>
+							        </div>
+							    </div>
+							</div>
+
+							<input type="hidden" name="id" value="{$info.id}" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+		//同时绑定多个,单个日期选择，显示在input里面
+        $('.Date').click(function () {
+            laydate.render({
+                elem: this
+                ,trigger: 'click'
+                ,theme: '#1B3382'
+                ,position: 'fixed'
+                //,isInitValue: true
+                //,value: new Date()
+                //,type:'datetime'
+                ,format: 'yyyyMMdd'
+            });
+        });
+		
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,type:'datetime'
+				,format: 'yyyy-MM-dd HH:mm'
+			});
+		});
+		
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 人员必填
+			validator.add('Name_of_Formatter', [{
+				rule: 'require',
+				msg: '排版人员姓名不能为空'
+			}]);
+
+			// 日期必填项
+            validator.add('Work_Date', [{
+                rule: 'require',
+                msg: '工作日期不能为空'
+            }]);
+
+			validator.add('Start_Time', [{
+				rule: 'require',
+				msg: '开始时间不能为空'
+			}]);
+
+			validator.add('End_Time', [{
+				rule: 'require',
+				msg: '结束时间不能为空'
+			}]);
+
+			// 数值验证
+			validator.add('Number_of_Pages_Completed', [{
+				rule: 'isNum',
+				msg: '页数只允许是数值数据'
+			}]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+			// 表单提交
+			$('#form').submit();
+		});
+	})
+</script>
+{/block}

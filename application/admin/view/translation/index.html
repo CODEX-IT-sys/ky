@@ -1,0 +1,755 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+	<div class="hn_body">
+		<div class="layui-fluid">
+			<div class="layui-row">
+				<div class="top">
+					<div class="position_lead">
+						<i class="iconfont icon-navigation"></i>
+						<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+						<a class="on">{:session('language') == '中文'? '年度翻译量汇总表' : 'Annual Production Volume'}</a>
+					</div>
+					<div class="global_btn form_lead">
+						<a class="layui-btn com_btn" id="out">{:session('language') == '中文'? '导出' : 'exportForExcle'}</a>
+					</div>
+				</div>
+				<div class="mainCt">
+					<div class="mainWrap">
+						<div class="forwardTable selftForward totalSign atsSign" id="table_div">
+							<table class="layui-hide" id="test" lay-filter="test"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/table2excel.js"}
+
+	<!--搜索-->
+	<script type="text/html" id="forwardBar">
+		<div class="forward">
+			<form class="layui-form" id="form">
+				<div class="forward_lead">
+
+					<div class="layui-form-item label_auto">
+						<label class="layui-form-label">{:session('language') == '中文'? '年份' : 'Year'}</label>
+						<div class="layui-input-inline">
+							<select name="year" lay-verify="" lay-filter="year">
+								<option value="{$year}" {$y==$year?'selected':''}>{$year}</option>
+								<option value="{$s_year}" {$y==$s_year?'selected':''}>{$s_year}</option>
+							</select>
+						</div>
+					</div>
+
+					<!--月份选择-->
+					<div class="layui-form-item label_auto" id="M">
+						<label class="layui-form-label">{:session('language') == '中文'? '月份选择' : 'Select Month'}</label>
+						<div class="layui-input-inline">
+							<select id="month" name="month" lay-verify="" lay-filter="month" lay-search>
+								<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+								<option value="01" {$mon=='01'?'selected':''}>01</option>
+								<option value="02" {$mon=='02'?'selected':''}>02</option>
+								<option value="03" {$mon=='03'?'selected':''}>03</option>
+								<option value="04" {$mon=='04'?'selected':''}>04</option>
+								<option value="05" {$mon=='05'?'selected':''}>05</option>
+								<option value="06" {$mon=='06'?'selected':''}>06</option>
+								<option value="07" {$mon=='07'?'selected':''}>07</option>
+								<option value="08" {$mon=='08'?'selected':''}>08</option>
+								<option value="09" {$mon=='09'?'selected':''}>09</option>
+								<option value="10" {$mon=='10'?'selected':''}>10</option>
+								<option value="11" {$mon=='11'?'selected':''}>11</option>
+								<option value="12" {$mon=='12'?'selected':''}>12</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item label_auto">
+						<label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
+						<div class="layui-input-inline">
+							<select id="field" name="field" lay-verify="">
+								<option value="Company_Name">{:session('language') == '中文'? '公司名称' : 'Company_Name'}</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+						<div class="layui-input-inline">
+							<input type="text" id="keyword" name="keyword" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="searchBtn">
+						<button class="layui-btn search_btn" type="button">
+							<i class="iconfont icon-sousuo"></i>
+							<span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</script>
+
+	<script>
+
+        // 数据为空时 为表头加滚动条
+        $(function () {
+            var table_data = JSON.parse('{$a|raw}');
+
+            if(table_data.count === 0){
+                $('#table_div').addClass('empty');
+            }
+        });
+
+		var tableIns;  // 数据表格对象，用于重载
+
+        var q_year = "{$q_year}"; // 去年
+		var y = "{$y}"; // 默认年份参数
+        var mon = "{$mon}"; // 默认月份参数
+
+		var url = "{:url('translation/index')}"+ '?y=' + y + '&mon=' + mon;
+
+		layui.use(['table', 'form'], function(){
+			var table = layui.table; var form = layui.form; var f; // 首项
+
+			var s, m, n, j, k, h, i, qnj, jnj, jszc, qnt, jnt, tjzc;
+
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文'){
+				f = {fixed: 'left', field:'Company_Name', title:'公司名称', minWidth: 200, rowspan: 3};
+				s = '接收页数';m = '接收源语数量';
+				n = '中-外';j = '外-中';k = '总计';
+				h = '提交页数';i = '提交源语数量';
+
+                qnj = '接收页数<br/>' +q_year+ '(01-' +mon+ ')';
+				jnj = '接收页数<br/>' +y+ '(01-' +mon+ ')';
+                jszc = '接收页数<br/>' + '差值D-value<br/>' + '(' +y+ '-' +q_year+ ')';
+
+                qnt = '提交页数<br/>' +q_year+ '(01-' +mon+ ')';
+				jnt = '提交页数<br/>' +y+ '(01-' +mon+ ')';
+                tjzc = '提交页数<br/>' + '差值D-value<br/>' + '(' +y+ '-' +q_year+ ')';
+
+			}else{
+				f = {fixed: 'left', field:'Company_Name', title:'Company_Name', minWidth: 200, rowspan:3};
+				s = 'Page Received';m = 'Source Text Word Count Received';
+				n = 'C-F';j = 'F-C';k = 'Total';
+				h = 'Page Submitted';i = 'Source Text Word Count Submitted';
+
+                qnj = 'Page Received<br/>' +q_year+ '(01-' +mon+ ')';
+                jnj = 'Page Received<br/>' +y+ '(01-' +mon+ ')';
+                jszc = 'Page Received<br/>' + 'D-value<br/>' + '(' +y+ '-' +q_year+ ')';
+
+                qnt = 'Page Submitted<br/>' +q_year+ '(01-' +mon+ ')';
+                jnt = 'Page Submitted<br/>' +y+ '(01-' +mon+ ')';
+                tjzc = 'Page Submitted<br/>' + 'D-value<br/>' + '(' +y+ '-' +q_year+ ')';
+			}
+
+			// 表格 年份 切换时
+			form.on('select(year)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				window.location.href = "{:url('translation/index')}"+ '?y=' + data.value + '&mon=' + mon;
+
+				tableIns.reload();
+			});
+
+			// 表格 月份 切换时
+			form.on('select(month)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				window.location.href = "{:url('translation/index')}"+ '?y=' + y + '&mon=' + data.value;
+
+				tableIns.reload();
+			});
+
+
+			tableIns = table.render({
+				elem: '#test'
+				//,url:'__STATIC__/json/common.json'
+				//,url: "{:url('translation/index')}"
+				,url: url
+				,toolbar: '#forwardBar'
+                ,defaultToolbar: []
+				//,totalRow: true
+				,title: '年度翻译量汇总表'
+				,cols: [
+					[
+						f
+						,{field:'Page', title:'1', colspan: 8, align:'center'}
+						,{field:'', title:'2', colspan: 8, align:'center'}
+						,{field:'', title:'3', colspan: 8, align:'center'}
+
+						,{field:'', title:'4', colspan: 8, align:'center'}
+						,{field:'', title:'5', colspan: 8, align:'center'}
+						,{field:'', title:'6', colspan: 8, align:'center'}
+
+						,{field:'', title:'7', colspan: 8, align:'center'}
+						,{field:'', title:'8', colspan: 8, align:'center'}
+						,{field:'', title:'9', colspan: 8, align:'center'}
+
+						,{field:'', title:'10', colspan: 8, align:'center'}
+						,{field:'', title:'11', colspan: 8, align:'center'}
+						,{field:'', title:'12', colspan: 8, align:'center'}
+
+						,{field:'Total', title:'Total', colspan: 8, align:'center'}
+						,{field:'YTD', title:'YTD', colspan: 6, align:'center'}
+					],
+					[
+						// 接收
+						{
+							field: '', title: s, rowspan: 2, minWidth: 150, align: 'center'
+							,templet: function (d) {
+								return d.js_Page.a;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						// 提交
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center'
+							,templet: function (d) {
+								return d.tj_Page.a;
+							}
+						}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.b;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+							templet: function (d) {
+								return d.tj_Page.b;
+							}
+						}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.c;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+							templet: function (d) {
+								return d.tj_Page.c;
+							}
+						}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.d;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.d;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.e;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.e;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.f;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.f;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.g;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.g;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.h;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.h;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.i;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.i;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.j;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.j;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.k;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+						templet: function (d) {
+							return d.tj_Page.k;
+						}}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						,{
+							field: '',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+							templet: function (d) {
+								return d.js_Page.l;
+							}
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+						,{field:'', title:h , rowspan: 2 ,  minWidth: 150,  align:'center',
+							templet: function (d) {
+								return d.tj_Page.l;}
+						}
+						,{field:'', title:i, colspan: 3, align:'center'}
+
+						// Total
+						,{
+							field: 't_js_Page',
+							title: s,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+						}
+						,{field:'', title:m, colspan: 3, align:'center'}
+
+                        ,{
+							field: 't_tj_Page',
+							title: h,
+							rowspan: 2,
+							minWidth: 150,
+							align: 'center',
+						}
+						,{field:'', title:i, colspan: 3, align:'center'},
+
+
+						// YTD
+                        {
+                            field: 'q_mon_js', title: qnj, rowspan: 2, minWidth: 150, align: 'center'
+                        },
+                        {
+                            field: 'mon_js', title: jnj, rowspan: 2, minWidth: 150, align: 'center'
+                        },
+						{
+                            field: 'c_mon_js', title: jszc, rowspan: 2, minWidth: 150, align: 'center'
+                        },
+                        {
+                            field: 'q_mon_tj', title: qnt, rowspan: 2, minWidth: 150, align: 'center'
+                        },
+                        {
+                            field: 'mon_tj', title: jnt, rowspan: 2, minWidth: 150, align: 'center'
+                        },
+						{
+                            field: 'c_mon_tj', title: tjzc, rowspan: 2, minWidth: 150, align: 'center'
+                        }
+
+					],
+					[
+						// 接收
+						 {field:'', title:n , templet: function (d) {return d.js_cword.a;}}
+						,{field:'', title:j , templet: function (d) {return d.js_oword.a;}}
+						,{field:'', title:k , templet: function (d) {return d.js_j_total.a;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.a;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.a;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.a;}}
+
+						// 接收
+						,{field:'', title:n , templet: function (d) {return d.js_cword.b;}}
+						,{field:'', title:j , templet: function (d) {return d.js_oword.b;}}
+						,{field:'', title:k , templet: function (d) {return d.js_j_total.b;}}
+						// 提交
+						,{field:'', title:n , templet: function (d) {return d.tj_cword.b;}}
+						,{field:'', title:j , templet: function (d) {return d.tj_oword.b;}}
+						,{field:'', title:k , templet: function (d) {return d.tj_j_total.b;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.c;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.c;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.c;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.c;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.c;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.c;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.d;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.d;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.d;}}
+                        // 提交
+						,{field:'', title:n , templet: function (d) {return d.tj_cword.d;}}
+						,{field:'', title:j , templet: function (d) {return d.tj_oword.d;}}
+						,{field:'', title:k , templet: function (d) {return d.tj_j_total.d;}}
+
+						// 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.e;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.e;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.e;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.e;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.e;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.e;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.f;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.f;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.f;}}
+                        // 提交
+						,{field:'', title:n , templet: function (d) {return d.tj_cword.f;}}
+						,{field:'', title:j , templet: function (d) {return d.tj_oword.f;}}
+						,{field:'', title:k , templet: function (d) {return d.tj_j_total.f;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.g;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.g;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.g;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.g;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.g;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.g;}}
+
+                        // 接收
+						,{field:'', title:n , templet: function (d) {return d.js_cword.h;}}
+						,{field:'', title:j , templet: function (d) {return d.js_oword.h;}}
+						,{field:'', title:k , templet: function (d) {return d.js_j_total.h;}}
+                        // 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.h;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.h;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.h;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.i;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.i;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.i;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.i;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.i;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.i;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.j;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.j;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.j;}}
+                        // 提交
+						,{field:'', title:n , templet: function (d) {return d.tj_cword.j;}}
+						,{field:'', title:j , templet: function (d) {return d.tj_oword.j;}}
+						,{field:'', title:k , templet: function (d) {return d.tj_j_total.j;}}
+
+                        // 接收
+                        ,{field:'', title:n , templet: function (d) {return d.js_cword.k;}}
+                        ,{field:'', title:j , templet: function (d) {return d.js_oword.k;}}
+                        ,{field:'', title:k , templet: function (d) {return d.js_j_total.k;}}
+						// 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.k;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.k;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.k;}}
+
+                        // 接收
+						,{field:'', title:n , templet: function (d) {return d.js_cword.l;}}
+						,{field:'', title:j , templet: function (d) {return d.js_oword.l;}}
+						,{field:'', title:k , templet: function (d) {return d.js_j_total.l;}}
+                        // 提交
+                        ,{field:'', title:n , templet: function (d) {return d.tj_cword.l;}}
+                        ,{field:'', title:j , templet: function (d) {return d.tj_oword.l;}}
+                        ,{field:'', title:k , templet: function (d) {return d.tj_j_total.l;}}
+
+                        // 总接收
+                        ,{field:'t_js_cword', title:n }
+                        ,{field:'t_js_oword', title:j }
+                        ,{field:'js_total', title:k }
+                        // 总提交
+                        ,{field:'t_tj_cword', title:n }
+                        ,{field:'t_tj_oword', title:j }
+                        ,{field:'tj_total', title:k }
+					]
+				]
+				,cellMinWidth: 100
+                ,page: true, limit:50, height:700
+
+                // 转换静态表格 导出excel(复杂表格)
+                ,done: function (res, curr, count) {
+
+                    let header_tr = $($("#test").next().find(".layui-table-header")[0]).find("tr");
+                    let body_tr = $($("#test").next().find(".layui-table-body")[0]).find("tr");
+
+                    let header_html = "";
+                    let body_html = "";
+
+                    // 获取表头html，包括单元格的合并
+                    $.each(header_tr,function (i,tr) {
+
+                        let header_th = $(tr).find("th");
+
+                        header_html += "<tr>";
+                        $.each(header_th, function (j, th) {
+
+                            let rowspan_num = $(th).attr("rowspan");	// 行合并数
+                            let colspan_num = $(th).attr("colspan");	// 列合并数
+
+                            if (rowspan_num && !colspan_num) {	// 只有行合并时
+                                header_html += '<th rowspan= "' + rowspan_num + '">';
+                            } else if (colspan_num && !rowspan_num) {	// 只有列合并时
+                                header_html += '<th colspan= "' + colspan_num + '">';
+                            } else if (rowspan_num && colspan_num) {	// 行列合并均有时
+                                header_html += '<th rowspan= "' + rowspan_num + '" colspan="' + colspan_num + '">';
+                            } else {	// 没有发生单元格合并
+                                header_html += '<th>';
+                            }
+                            header_html += $(th).children().children().text() + '</th>';	// 获取表头名称并拼接th标签
+                        });
+                        header_html += '</tr>';
+                    });
+
+                    // 获取表格body数据
+                    $.each(body_tr,function (i,tr) {
+                        let body_td = $(tr).find("td");
+
+                        body_html += '<tr>';
+                        $.each(body_td,function (j,td) {
+                            body_html += '<td>' + $(td).children().text() + '</td>';
+                        });
+                        body_html += '</tr>';
+                    });
+
+                    $("#test tr").remove();	// 清除之前的doom结构
+                    $("#test").append(header_html).append(body_html);
+                    $("#test").hide();
+                }
+			});
+
+			// 搜索
+			$('.search_btn').click(function () {
+				var searchfield = $('#field').val();
+				var searchkeyword = $.trim($('#keyword').val());
+				if (!searchkeyword) {
+					if(language === '中文') {
+						layer.msg('搜索内容不能为空');
+					}else{
+						layer.msg('Please input keyword');
+					}
+					return false;
+				}
+				// 表格重载
+				table.reload('test', {
+					url: "{:url('translation/index')}",
+					//url: url,
+					where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
+					page: true, limit:50
+				});
+			});
+
+            /**
+             * 获取页面的元素
+             * @param id：表格的id
+             * @param fileName:导出的excel的名字
+             */
+            function exportForExcle(id,fileName){
+                var table = $(document.getElementById(id)).clone();
+                table.attr('id','datatab');
+                table.appendTo('body');
+                method5('datatab');
+                datatab.remove();
+
+                function method5(tableid) {
+                    var idTmr;
+                    var tableToExcel = (function() {
+                        var uri = 'data:application/vnd.ms-excel;base64,',
+                            template = '<html><head><meta charset="UTF-8"></head><body><table border="1px">{table}</table></body></html>',
+                            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+                            format = function(s, c) {return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+                        return function(table, name) {
+                            if (!table.nodeType) table = document.getElementById(table)
+                            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+                            var aTag = document.createElement('a');
+                            aTag.download = fileName;
+                            aTag.href = uri + base64(format(template, ctx));
+                            document.body.appendChild(aTag);
+                            aTag.onclick = function () {
+                                document.body.removeChild(aTag);
+                            };
+                            aTag.click();
+                        }
+                    })();
+                    if(getExplorer()=='ie') {
+                        var curTbl = document.getElementById(tableid);
+                        var oXL = new ActiveXObject("Excel.Application");
+                        var oWB = oXL.Workbooks.Add();
+                        var xlsheet = oWB.Worksheets(1);
+                        var sel = document.body.createTextRange();
+                        sel.moveToElementText(curTbl);
+                        sel.select();
+                        sel.execCommand("Copy");
+                        xlsheet.Paste();
+                        oXL.Visible = true;
+                        try {
+                            var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                        } catch (e) {
+                            print("Nested catch caught " + e);
+                        } finally {
+                            oWB.SaveAs(fname);
+                            oWB.Close(savechanges = false);
+                            oXL.Quit();
+                            oXL = null;
+                            idTmr = window.setInterval("Cleanup();", 1);
+                        }
+                    } else {
+                        tableToExcel(tableid)
+                    }
+                    function Cleanup() {
+                        window.clearInterval(idTmr);
+                        CollectGarbage();
+                    }
+                    function  getExplorer() {
+                        var explorer = window.navigator.userAgent ;
+                        //ie
+                        if (explorer.indexOf("MSIE") >= 0) {
+                            return 'ie';
+                        }
+                        //firefox
+                        else if (explorer.indexOf("Firefox") >= 0) {
+                            return 'Firefox';
+                        }
+                        //Chrome
+                        else if(explorer.indexOf("Chrome") >= 0){
+                            return 'Chrome';
+                        }
+                        //Opera
+                        else if(explorer.indexOf("Opera") >= 0){
+                            return 'Opera';
+                        }
+                        //Safari
+                        else if(explorer.indexOf("Safari") >= 0){
+                            return 'Safari';
+                        }
+                    }
+                }
+            }
+
+            /**
+             * 复杂表头导出
+             */
+            $("#out").click(function(){
+                let table2excel = new Table2Excel();
+                $('#test').show();
+                // 传入你的tableId即可导出
+                table2excel.export($('#test'), "年度翻译量汇总");
+                $("#test").hide();
+            });
+
+		});
+
+	</script>
+
+{/block}

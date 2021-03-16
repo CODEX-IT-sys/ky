@@ -1,0 +1,140 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+	<div class="hn_body">
+		<div class="layui-fluid">
+			<div class="layui-row">
+				<div class="top">
+					<div class="position_lead">
+						<i class="iconfont icon-navigation"></i>
+						<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+						<a class="on">{:session('language') == '中文'? '表格管理' : 'Table Management'}</a>
+					</div>
+
+					<div class="global_btn">
+						<a class="layui-btn" id="score_field">
+							{:session('language') == '中文'? '权重设置' : 'Ratio Setting'}
+						</a>
+
+						<a class="layui-btn com_btn" id="add_field">
+							{:session('language') == '中文'? '新增字段' : 'Add Field'}
+						</a>
+
+						<!--静态表格转换-->
+						<input type="hidden" id="demoTable" class="demoTable layui-btn" data-type="parseTable" />
+
+					</div>
+				</div>
+				<div class="mainCt">
+					<div class="mainWrap">
+						<div class="forwardTable">
+
+							<!--静态表格转换-->
+							<table lay-filter="parse-table-demo">
+								<thead>
+								<tr>
+									<th lay-data="{field:'Field', width:500}">{:session('language') == '中文'? '英文名称' : 'English Name'}</th>
+									<th lay-data="{field:'Comment', width:300}">{:session('language') == '中文'? '中文名称' : 'Chinese Name'}</th>
+									<th lay-data="{field:'score_field', width:200}">{:session('language') == '中文'? '权重比例' : 'Ratio'} (%)</th>
+								</tr>
+								</thead>
+								<tbody>
+
+								{volist name="fieldData" id="v"}
+								<tr>
+									<td>{$v.Field}</td>
+									<td>{$v.Comment}</td>
+									<td>{$v.score_field}</td>
+								</tr>
+								{/volist}
+
+								</tbody>
+							</table>
+
+							<!--方法渲染-->
+							<!--<table class="layui-hide" id="test" lay-filter="test"></table>-->
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+{/block}
+
+{block name="js"}
+
+	<script type="text/html" id="barDemo">
+		<div class="table_btn">
+			<a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
+			<a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
+		</div>
+	</script>
+
+<script>
+$(function () {
+
+	layui.use('table', function() {
+		var table = layui.table;
+
+		var table_name = "{$table}";
+
+		var $ = layui.$,
+		active = {
+			parseTable: function () {
+				table.init('parse-table-demo', { //转化静态表格
+					//height: 'full-500'
+					limit: "{$limit}"
+				});
+			}
+		};
+
+		// 表格转换
+		$('#demoTable').click(function () {
+			var type = $(this).data('type');
+			active[type] ? active[type].call(this) : '';
+		});
+
+		$('#demoTable').click();
+
+		// 新增字段
+		$('#add_field').click(function () {
+
+			parent.layer.open({  // 在父窗口打开
+				type: 2,
+				title: '新增',
+				maxmin: true,
+				area: ['700px', '560px'],
+				content: "{:url('score/create_field')}" + '?table=' + table_name
+				,end:function (index, layero) {
+
+					location.reload(true);
+				}
+			});
+		});
+
+		// 权重设置
+		$('#score_field').click(function () {
+
+			parent.layer.open({  // 在父窗口打开
+				type: 2,
+				title: '新增',
+				maxmin: true,
+				area: ['700px', '500px'],
+				content: "{:url('score/score_field')}" + '?table=' + table_name
+				,end:function (index, layero) {
+
+					location.reload(true);
+				}
+			});
+		});
+
+	});
+})
+
+</script>
+
+{/block}

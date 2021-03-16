@@ -1,0 +1,179 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+					<a>{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
+					<a href="{:url('mk_inquiry/index')}">{:session('language') == '中文'? '来稿需求' : 'Inquiry'}</a>
+					<a class="on">{:session('language') == '中文'? '报价单' : 'Quote'}</a>
+                </div>
+                <div class="global_btn">
+
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('mk_quote/save')}">
+
+                        <div class="layui-row layui-col-space10">
+
+							<!--公司名称-->
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="To">To</label>
+									<div class="layui-input-block">
+										<input name="To" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '客户联系人' : 'Attention'}">
+							            {:session('language') == '中文'? '客户联系人' : 'Attention'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Attention" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '客户公司地址' : 'Company Address'}">
+										{:session('language') == '中文'? '客户公司地址' : 'Company Address'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Company_Address" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '邮箱' : 'Email'}">
+							            {:session('language') == '中文'? '邮箱' : 'Email'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Email" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '日期' : 'Date'}">
+										{:session('language') == '中文'? '日期' : 'Date'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Date" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '不含税金额合计' : 'Total Amount without VAT'}">
+										{:session('language') == '中文'? '不含税金额合计' : 'Total Amount without VAT'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Total_Amount_without_VAT" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '税额合计' : 'Total VAT Amount'}">
+										{:session('language') == '中文'? '税额合计' : 'Total VAT Amount'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Total_VAT_Amount" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '报价金额合计' : 'Total Quote Amount'}">
+										{:session('language') == '中文'? '报价金额合计' : 'Total Quote Amount'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Total_Quote_Amount" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+		//同时绑定多个,单个日期选择，显示在input里面
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,format: 'yyyyMMdd'
+			});
+		});
+
+        // 表单验证
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            // 邮件
+            validator.add('Email', [{
+                rule: 'email',
+                msg: '邮箱格式错误'
+            }]);
+
+            return validator.start();
+        };
+
+        // 数据提交
+        $('#save').on('click', function () {
+
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+
+            // 表单提交
+            $('#form').submit();
+        });
+	})
+</script>
+
+{/block}

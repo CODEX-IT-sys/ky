@@ -1,0 +1,128 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">合同记录表</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="forwardTable selftForward">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+		<script type="text/html" id="forwardBar">
+			<div class="forward">
+
+				<form class="layui-form" id="form">
+
+					<div class="forward_lead">
+						<div class="layui-form-item label_auto">
+							<label class="layui-form-label">字段选择</label>
+							<div class="layui-input-inline">
+								<select name="" lay-verify="">
+									<option value="">默认字段1</option>
+									<option value="0">字段2</option>
+									<option value="1">字段3</option>
+									<option value="2">字段4</option>
+								</select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">查询内容</label>
+							<div class="layui-input-inline">
+								<input type="text" name="" placeholder="请输入查询内容" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+
+
+						<div class="searchBtn">
+							<button class="layui-btn search_btn" type="button">
+								<i class="iconfont icon-sousuo"></i>
+								<span>查询</span>
+							</button>
+						</div>
+					</div>
+
+				</form>
+
+			</div>	
+		</script>
+		<script>
+		layui.use('table', function(){
+			var table = layui.table;
+			
+			table.render({
+				elem: '#test'
+				,url:'__STATIC__/json/common.json'
+				,toolbar: '#forwardBar' 
+				,defaultToolbar: []
+				,title: '用户数据表'
+				,cols: [
+					[
+						 {field:'', title:'市场人员'}
+						,{field:'', title:'公司名称'}
+						,{field:'', title:'有效日期'}
+						,{field:'', title:'截止日期'}
+						,{field:'', title:'剩余有效期'}
+						,{field:'', title:'服务'}
+						,{field:'', title:'币种'}
+						,{field:'', title:'单价'}
+						,{field:'', title:'收费标准'}
+						,{field:'', title:'是否含税'}
+						,{field:'', title:'账期（结算方式）', minWidth: 180}
+						,{field:'', title:'公司地址'}
+						,{field:'', title:'客户联络人'}
+						,{field:'', title:'电话'}
+						,{field:'', title:'邮箱'}
+						,{field:'', title:'是否有保密协议', minWidth: 180}
+						,{field:'', title:'是否扫描'}
+						,{field:'', title:'备注'}
+					]
+
+				]
+				,cellMinWidth: 80
+				,page: true
+			});
+
+		});
+		
+		$(function(){
+			var index;
+			$(".addCondition").live("click",function(){
+				index = parent.layer.open({ //在父窗口打开
+					type: 2,
+					title: '条件查询',
+					maxmin: true,
+					shadeClose: true, //点击遮罩关闭层
+					area : ['900px' , '560px'],			
+					content: 'content/admin/promp/condition_query.html',
+					btn: ['查询', '取消'],
+				});
+			});
+		
+		});
+		
+		
+		
+		</script>		
+
+	</body>
+</html>

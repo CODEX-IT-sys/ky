@@ -1,0 +1,881 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+				<div class="position_lead">
+					<i class="iconfont icon-navigation"></i>
+					<a href="#">{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+					<a class="on">{:session('language') == '中文'? '项目描述' : 'Project Profile'}</a>
+				</div>
+                <div class="global_btn">
+
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('pj_project_profile/save')}">
+
+                        <div class="layui-row layui-col-space10">
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '文件编号' : 'Filing_Code'}">
+										{:session('language') == '中文'? '文件编号' : 'Filing_Code'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Filing_Code" lay-filter="Filing_Code" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$file_code" id="v"}
+											<option value="{$v.Filing_Code}">{$v.Filing_Code}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '公司名称' : 'Company Name'}">
+							            {:session('language') == '中文'? '公司名称' : 'Company Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Company_Name" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>									
+
+							<!--关联 项目 文件库-->
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '项目名称' : 'Project Name'}">
+							            {:session('language') == '中文'? '项目名称' : 'Project Name'}
+							        </label>
+							        <div class="layui-input-block">
+							        	<select name="Project_Name" lay-filter="" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$text_list" id="v"}
+											<option value="{$v.Project_Name}">{$v.Project_Name}</option>
+											{/volist}
+										</select>
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件名称' : 'Job Name'}">
+							            {:session('language') == '中文'? '文件名称' : 'Job Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Job_Name" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '页数' : 'Pages'}">
+							            {:session('language') == '中文'? '页数' : 'Pages'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Pages" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '源语数量' : 'Source Text Word Count'}">
+							            {:session('language') == '中文'? '源语数量' : 'Source Text Word Count'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Source_Text_Word_Count" id="yzs" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '语种' : 'Language'}">
+							            {:session('language') == '中文'? '语种' : 'Language'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="Language" lay-filter="Language" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$yy" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name} </option>
+											{/volist}
+										</select>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs12">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '涉及产品' : 'Product Involved'}">
+							            {:session('language') == '中文'? '涉及产品' : 'Product Involved'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" id="Product_Involved" name="Product_Involved" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs12">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件用途和语言规范' : 'File Usage and Linguistic Specification'}">
+							            {:session('language') == '中文'? '文件用途和语言规范' : 'File Usage and Linguistic Specification'}
+							        </label>
+							        <div class="layui-input-block">
+							            <textarea placeholder="" name="File_Usage_and_Linguistic_Specification" class="layui-textarea"></textarea>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件类型' : 'File Type'}">
+							            {:session('language') == '中文'? '文件类型' : 'File Type'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="File_Type" lay-filter="File_Type" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$File_Type" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name} </option>
+											{/volist}
+										</select>
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '文件分类' : 'File Category'}">
+										{:session('language') == '中文'? '文件分类' : 'File Category'}
+									</label>
+									<div class="layui-input-block">
+										<div id="fc" class="xm-select-demo"></div>
+										<input name="File_Category" id="File_Category" type="hidden" value="" autocomplete="off" placeholder="" class="layui-input">
+									</div>
+								</div>
+							</div>
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '排版难易程度' : 'Format Difficulty'}">
+                                        {:session('language') == '中文'? '排版难易程度' : 'Format Difficulty'}
+                                    </label>
+                                    <div class="layui-input-block">
+										<select name="Format_Difficulty" lay-filter="Format_Difficulty" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$pb" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name} </option>
+											{/volist}
+										</select>
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '翻译难易程度' : 'Translation Difficulty'}">
+							            {:session('language') == '中文'? '翻译难易程度' : 'Translation Difficulty'}
+							        </label>
+							        <div class="layui-input-block">
+										<select name="Translation_Difficulty" lay-filter="Translation_Difficulty" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$fy" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name} </option>
+											{/volist}
+										</select>
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '100%重复率' : '100% Repeated'}">
+							            {:session('language') == '中文'? '100%重复率' : '100% Repeated'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="One_Hundred_Percent_Repeated" id="ybcfz" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+									<span class="signTip">%</span>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '95-99%重复率' : '95-99% Repeated'}">
+							            {:session('language') == '中文'? '95-99%重复率' : '95-99% Repeated'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Ninety_Five_to_Ninety_Nine_Percent_Repeated" id="jwcfz" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+									<span class="signTip">%</span>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '总重复率' : 'Total Repetition Rate'}">
+							            {:session('language') == '中文'? '总重复率' : 'Total Repetition Rate'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Total_Repetition_Rate" id="zcfz" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+									<span class="signTip">%</span>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '扣除字数' : 'Excluding Words'}">
+										{:session('language') == '中文'? '扣除字数' : 'Excluding Words'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Excluding_Words" id="kczs" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '实际源语数量' : 'Actual Source Text Count'}">
+										{:session('language') == '中文'? '实际源语数量' : 'Actual Source Text Count'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Actual_Source_Text_Count" id="sjyzs" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '预排版人员' : 'Pre Formatter'}">
+							            {:session('language') == '中文'? '预排版人员' : 'Pre Formatter'}
+							        </label>
+									<div class="layui-input-block">
+
+										<div id="yp" class="xm-select-demo"></div>
+										<input name="Pre_Formatter" id="Pre_Formatter" type="hidden" value="" autocomplete="off" placeholder="" class="layui-input">
+
+									</div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '预排版交付时间' : 'Post_Format Delivery Time'}">
+										{:session('language') == '中文'? '预排版交付时间' : 'Post_Format Delivery Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Pre_Format_Delivery_Time" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '翻译人员' : 'Translator'}">
+							            {:session('language') == '中文'? '翻译人员' : 'Translator'}
+							        </label>
+									<div class="layui-input-block">
+
+										<div id="tr" class="xm-select-demo"></div>
+										<input name="Translator" id="Translator" type="hidden" value="" autocomplete="off" placeholder="" class="layui-input">
+
+									</div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '翻译交付时间' : 'Translation Delivery Time'}">
+										{:session('language') == '中文'? '翻译交付时间' : 'Translation Delivery Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Translation_Delivery_Time" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '校对人员' : 'Reviser'}">
+							            {:session('language') == '中文'? '校对人员' : 'Reviser'}
+							        </label>
+									<div class="layui-input-block">
+
+										<div id="re" class="xm-select-demo"></div>
+										<input name="Reviser" id="Reviser" type="hidden" value="" autocomplete="off" placeholder="" class="layui-input">
+
+									</div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '校对交付时间' : 'Revision Delivery Time'}">
+										{:session('language') == '中文'? '校对交付时间' : 'Revision Delivery Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Revision_Delivery_Time" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '后排版人员' : 'Post Formatter'}">
+							            {:session('language') == '中文'? '后排版人员' : 'Post Formatter'}
+							        </label>
+									<div class="layui-input-block">
+
+										<div id="hp" class="xm-select-demo"></div>
+										<input name="Post_Formatter" id="Post_Formatter" type="hidden" value="" autocomplete="off" placeholder="" class="layui-input">
+
+									</div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '后排版交付时间' : 'Post_Format Delivery Time'}">
+										{:session('language') == '中文'? '后排版交付时间' : 'Post_Format Delivery Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Post_Format_Delivery_Time" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? 'CODEX小组' : 'CODEX Team'}">
+										{:session('language') == '中文'? 'CODEX小组' : 'CODEX Team'}
+									</label>
+									<div class="layui-input-block">
+										<select name="CODEX_Team" lay-filter="CODEX_Team" lay-search>
+											<option value="Yes">Yes</option>
+											<option value="No">No</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '分包商' : 'Sub Contracted'}">
+										{:session('language') == '中文'? '分包商' : 'Sub Contracted'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Sub_Contracted" lay-filter="Sub_Contracted" lay-search>
+											<option value="No">No</option>
+											<option value="Yes">Yes</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '最终交付时间' : 'Final Delivery Time'}">
+										{:session('language') == '中文'? '最终交付时间' : 'Final Delivery Time'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Final_Delivery_Time" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '项目助理' : 'PA'}">
+										{:session('language') == '中文'? '项目助理' : 'PA'}
+									</label>
+									<div class="layui-input-block">
+										<select name="PA" lay-filter="PA" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$pa" id="v"}
+											<option value="{$v.name}">{$v.name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs12">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '备注' : 'Comment'}">
+										{:session('language') == '中文'? '备注' : 'Comment'}
+									</label>
+									<div class="layui-input-block">
+										<textarea placeholder="" id="Comment" name="Comment" class="layui-textarea"></textarea>
+									</div>
+								</div>
+							</div>
+							
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/xm-select.js"}
+
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+		//同时绑定多个,单个日期选择，显示在input里面
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,type:'datetime'
+				,format: 'yyyy-MM-dd HH:mm'
+                ,ready: function(date){
+                    this.dateTime.hours=23;
+                    this.dateTime.minutes=0;
+                    //this.dateTime.seconds=59;
+                }
+			});
+		});
+
+        // 文件分类 多选
+        var fc = '{$document_type|raw}';
+        var fcData = JSON.parse(fc);
+        var fcz = xmSelect.render({
+            el: '#fc',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: fcData
+        });
+
+        // 人员多选
+        var tr = '{$tr|raw}';
+        var trData = JSON.parse(tr);
+        var trz = xmSelect.render({
+            el: '#tr',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: trData
+        });
+
+        var re = '{$re|raw}';
+        var reData = JSON.parse(re);
+        var rez = xmSelect.render({
+            el: '#re',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: reData
+        });
+
+        var yp = '{$yp|raw}';
+        var ypData = JSON.parse(yp);
+        var ypz = xmSelect.render({
+            el: '#yp',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: ypData
+        });
+
+        var hp = '{$hp|raw}';
+        var hpData = JSON.parse(hp);
+        var hpz = xmSelect.render({
+            el: '#hp',
+            toolbar: {
+                show: true,
+                list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+            },
+            paging: true,
+            pageSize: 10,
+            filterable: true,
+            pageEmptyShow: false,
+            theme: {
+                color: '#0073FF'
+            },
+            data: hpData
+        });
+
+		// 下拉选择器值发生变化
+		form.on('select(Filing_Code)', function (data) {
+			var code = data.value;
+            //console.log(code);
+
+            // 选中第一个选项时，不请求数据
+            if (data.value === '') {
+                return;
+            }
+
+            //异步拉取信息
+			$.ajax({
+				type: 'get',
+				url: "{:url('pj_project_profile/get_info')}",
+				data: {'code': code},
+				dataType: 'json',
+				success: function (res) {
+					//console.log(res.data);
+					var info = res.data;
+
+                    // 文件分类
+                    xmSelect.render({
+                        el: '#fc',
+                        toolbar: {
+                            show: true,
+                            list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+                        },
+                        paging: true,
+                        pageSize: 10,
+                        filterable: true,
+                        pageEmptyShow: false,
+                        theme: {
+                            color: '#0073FF'
+                        },
+                        data: JSON.parse(res.fc)
+                    });
+
+                    // 人员多选下拉框渲染
+                    xmSelect.render({
+                        el: '#tr',
+                        toolbar: {
+                            show: true,
+                            list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+                        },
+                        paging: true,
+                        pageSize: 10,
+                        filterable: true,
+                        pageEmptyShow: false,
+                        theme: {
+                            color: '#0073FF'
+                        },
+                        data: JSON.parse(res.tr)
+                    });
+
+                    xmSelect.render({
+                        el: '#re',
+                        toolbar: {
+                            show: true,
+                            list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+                        },
+                        paging: true,
+                        pageSize: 10,
+                        filterable: true,
+                        pageEmptyShow: false,
+                        theme: {
+                            color: '#0073FF'
+                        },
+                        data: JSON.parse(res.re)
+                    });
+
+                    xmSelect.render({
+                        el: '#yp',
+                        toolbar: {
+                            show: true,
+                            list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+                        },
+                        paging: true,
+                        pageSize: 10,
+                        filterable: true,
+                        pageEmptyShow: false,
+                        theme: {
+                            color: '#0073FF'
+                        },
+                        data: JSON.parse(res.yp)
+                    });
+
+                    xmSelect.render({
+                        el: '#hp',
+                        toolbar: {
+                            show: true,
+                            list: [ 'ALL', 'CLEAR', 'REVERSE' ]
+                        },
+                        paging: true,
+                        pageSize: 10,
+                        filterable: true,
+                        pageEmptyShow: false,
+                        theme: {
+                            color: '#0073FF'
+                        },
+                        data: JSON.parse(res.hp)
+                    });
+
+					// 文本框写入默认值
+					$.each(info, function (name, value) {
+                        // input
+                        $('#form [name=' + name + ']').val(value);
+                        // select
+                        $('#form select[name=' + name + ']').prop("selected", 'selected');
+                        // 重新渲染表单
+                        form.render();
+					});
+				}
+			})
+		});
+
+		// 100%
+        $('#ybcfz').change(function () {
+
+            var ybcfz = $.trim($('#ybcfz').val());
+			var jwcfz = $.trim($('#jwcfz').val());
+
+			ybcfz?ybcfz:0; jwcfz?jwcfz:0;
+
+			var zcfz = Number(ybcfz) + Number(jwcfz);
+
+			$('#zcfz').val(zcfz);
+		});
+
+        // 95-99%
+        $('#jwcfz').change(function () {
+
+            var ybcfz = $.trim($('#ybcfz').val());
+			var jwcfz = $.trim($('#jwcfz').val());
+
+            ybcfz?ybcfz:0; jwcfz?jwcfz:0;
+
+			var zcfz = Number(ybcfz) + Number(jwcfz);
+
+			$('#zcfz').val(zcfz);
+		});
+
+        // 实际源语数量 自动计算
+        $('#yzs').change(function () {
+
+            var yzs = $.trim($('#yzs').val());
+            var zcfz = $.trim($('#zcfz').val());
+            var kczs = $.trim($('#kczs').val());
+
+            yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
+
+            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+
+            $('#sjyzs').val(sjyzs);
+        });
+
+        // 总重复
+        $('#zcfz').change(function () {
+
+            var yzs = $.trim($('#yzs').val());
+            var zcfz = $.trim($('#zcfz').val());
+            var kczs = $.trim($('#kczs').val());
+
+            yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
+
+            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+
+            $('#sjyzs').val(sjyzs);
+        });
+
+        // 扣除字数
+        $('#kczs').change(function () {
+
+            var yzs = $.trim($('#yzs').val());
+            var zcfz = $.trim($('#zcfz').val());
+            var kczs = $.trim($('#kczs').val());
+
+            yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
+
+            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+
+            $('#sjyzs').val(sjyzs);
+        });
+
+
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 必填项
+			validator.add('Company_Name', [{
+				rule: 'require',
+				msg: '公司名称不能为空'
+			}]);
+
+			validator.add('Project_Name', [{
+				rule: 'require',
+				msg: '项目名称不能为空'
+			}]);
+
+			validator.add('Filing_Code', [{
+				rule: 'require',
+				msg: '文件编号不能为空'
+			}]);
+
+			/*validator.add('Translator', [{
+				rule: 'require',
+				msg: '翻译人员不能为空'
+			}]);
+
+			validator.add('Reviser', [{
+				rule: 'require',
+				msg: '校对人员不能为空'
+			}]);
+
+			validator.add('Pre_Formatter', [{
+				rule: 'require',
+				msg: '预排版人员不能为空'
+			}]);
+
+			validator.add('Post_Formatter', [{
+				rule: 'require',
+				msg: '后排版人员不能为空'
+			}]);*/
+
+			// 数值验证
+			validator.add('Pages', [{
+				rule: 'isNum',
+				msg: '页数只允许是数值数据'
+			}]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+			var sjyzs = $('#sjyzs').val();
+			if(sjyzs){
+				var is_float = /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/;
+				if (!is_float.test(sjyzs)) {
+					layer.alert('实际源语数量保留两位小数', {title: '提示'});
+					return false;
+				}
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+            var fcArr = fcz.getValue();
+            var fcLength = fcArr.length;
+            var fcnamestr = '';
+            for(var i=0; i< fcLength; i++ ) {
+                fcnamestr += fcArr[i].name + ',';
+            }
+            fcnamestr = fcnamestr.substring(0, fcnamestr.length - 1);
+            $('#File_Category').val(fcnamestr);
+
+            // 获取人员 多选值
+            var trArr = trz.getValue();
+            var trLength = trArr.length;
+            var trnamestr = '';
+            for(var i=0; i< trLength; i++ )
+            {
+                trnamestr += trArr[i].name + ',';
+            }
+            // 去除多余符号
+            trnamestr = trnamestr.substring(0, trnamestr.length - 1);
+            $('#Translator').val(trnamestr);
+
+            var reArr = rez.getValue();
+            var reLength = reArr.length;
+            var renamestr = '';
+            for(var i=0; i< reLength; i++ )
+            {
+                renamestr += reArr[i].name + ',';
+            }
+            // 去除多余符号
+            renamestr = renamestr.substring(0, renamestr.length - 1);
+            $('#Reviser').val(renamestr);
+
+            var ypArr = ypz.getValue();
+            var ypLength = ypArr.length;
+            var ypnamestr = '';
+            for(var i=0; i< ypLength; i++ )
+            {
+                ypnamestr += ypArr[i].name + ',';
+            }
+            // 去除多余符号
+            ypnamestr = ypnamestr.substring(0, ypnamestr.length - 1);
+            $('#Pre_Formatter').val(ypnamestr);
+
+            var hpArr = hpz.getValue();
+            var hpLength = hpArr.length;
+            var hpnamestr = '';
+            for(var i=0; i< hpLength; i++ )
+            {
+                hpnamestr += hpArr[i].name + ',';
+            }
+            // 去除多余符号
+            hpnamestr = hpnamestr.substring(0, hpnamestr.length - 1);
+            $('#Post_Formatter').val(hpnamestr);
+
+			// 表单提交
+			$('#form').submit();
+
+            // 关闭提示
+            layer.close(tip);
+		});
+	})
+</script>
+{/block}

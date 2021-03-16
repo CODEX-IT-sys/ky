@@ -1,0 +1,153 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a class="on">{:session('language') == '中文'? '我的工作台' : 'Workbench'}</a>
+						</div>	
+					</div>
+					<div class="mainLead">
+						<div class="leadShow">
+							<ul>
+								<li id="2" {$type==0|$type==2?'class="active"':''}>
+									<a>
+										<span>{:session('language') == '中文'? '待提交文件' : 'File to be Submitted'}</span>
+										<b>{$t['s']}</b>
+									</a>
+								</li>
+
+								{if $job_id != 0}
+								<li id="1" {$type==1?'class="active"':''}>
+									<a>
+										<span>{:session('language') == '中文'? '待安排文件' : 'Pending File'}</span>
+										<b>{$t['p']}</b>
+									</a>
+								</li>
+								{/if}
+
+								{if $job_id != 0}
+								<li id="3" {$type==3?'class="active"':''}>
+									<a>
+										<span>{:session('language') == '中文'? '待更库文件' : 'Pending Library File'}</span>
+										<b>{$t['l']}</b>
+									</a>
+								</li>
+								{/if}
+
+								<li id="4" {$type==4?'class="active"':''}>
+									<a>
+										<span>{:session('language') == '中文'? '今日提交提醒' : 'Today File'}</span>
+										<b>{$t['t']}</b>
+									</a>
+								</li>
+
+								{if $job_id != 0}
+								<li id="5" {$type==5?'class="active"':''}>
+									<a>
+										<span>{:session('language') == '中文'? '进度异常提醒' : 'Progress Exception Reminder'}</span>
+										<b>{$t['e']}</b>
+									</a>
+								</li>
+								{/if}
+							</ul>
+						</div>
+					</div>
+
+					<div class="mainCt">
+						<div class="mainWrap">
+							<div class="comTitle">
+								<!--根据选中类型得知列表内容-->
+							</div>
+							<div class="remindFar">
+								<table class="layui-hide remind"></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+
+	<script>
+
+		var type = "{$type}"; // 类型切换
+
+		var url = replaceEditUrlId("{:url('workbench/index', ['type'=>1])}", type);
+
+		var tableIns;  // 数据表格对象，用于重载
+
+		layui.use('table', function(){
+			var table = layui.table;
+
+			// 点击事件
+			$('.leadShow li').click(function () {
+
+				// 当前选中的添加 选中类名
+				$(this).addClass('active');
+
+				// 其他的移除 选中类名
+				$(this).siblings().removeClass('active');
+
+				// 选中类型值
+				type = $(this).attr('id');
+				console.log(type);
+
+				window.location.href = replaceEditUrlId("{:url('workbench/index', ['type'=>1])}", type);
+
+				// 表格重载
+				tableIns.reload();
+			});
+
+
+			// 今日提交提醒：
+			// 2.5小时内需要提交的，设定为红色 异常；
+			// 需要在6小时内提交的，设定为黄色 今日；
+			// 需要当天内提交的，设定为绿色 其他
+
+			var str = '';
+
+            if(type == 4){
+                str = "<span class='task_status bg-color1'><i class='iconfont icon-project-soild'></i></span>"; // 黄
+            } else if(type == 5){
+                str = "<span class='task_status bg-color4'><i class='iconfont icon-project-soild'></i></span>"; // 红
+            }else{
+                str = "<span class='task_status bg-color2'><i class='iconfont icon-project-soild'></i></span>"; // 绿
+            }
+
+			tableIns = table.render({
+				elem: '.remind'
+				//,url: "{:url('workbench/index')}"
+				,url: url
+				,where: {type: type}
+				,cellMinWidth: 80
+				,cols: [[
+					{field:'id', width:80, title: '级别'
+						, templet: function (d) {return str;}
+					}
+					,{field:'Filing_Code', title: '文件编号'
+						, templet: function (d) {
+							return "文件编号：<br>" + d.Filing_Code;
+						}
+					},{field:'Job_Name', title: '文件名称'
+						, templet: function (d) {
+							return "文件名称：<br>" + d.Job_Name;
+						}
+					}
+				]]
+				,height: 'full-215'
+				,page: true
+				,limit: 10
+			});
+		});
+	</script>
+
+{/block}

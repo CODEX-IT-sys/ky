@@ -1,0 +1,432 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+					<a>{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
+					<a href="{:url('mk_invoicing/index')}">{:session('language') == '中文'? '结算管理' : 'Invoicing'}</a>
+					<a class="on">{:session('language') == '中文'? '请款单' : 'Fapiao'}</a>
+                </div>
+                <div class="global_btn">
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('mk_invoice/save')}">
+
+                        <div class="layui-row layui-col-space10">
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '请款单编码' : 'Invoice Number'}">
+										{:session('language') == '中文'? '请款单编码' : 'Invoice Number'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Invoice_Number" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '公司名称' : 'To'}">
+										{:session('language') == '中文'? '公司名称' : 'To'}
+									</label>
+									<div class="layui-input-block">
+										<input name="To" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '客户联系人' : 'Attention'}">
+							            {:session('language') == '中文'? '客户联系人' : 'Attention'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Attention" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '公司地址' : 'Company Address'}">
+										{:session('language') == '中文'? '公司地址' : 'Company Address'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Company_Address" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '邮箱' : 'Email'}">
+										{:session('language') == '中文'? '邮箱' : 'Email'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Email" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '日期' : 'Invoicing Date'}">
+										{:session('language') == '中文'? '日期' : 'Invoicing Date'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Invoicing_Date" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '币种' : 'Currency'}">
+										{:session('language') == '中文'? '币种' : 'Currency'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Currency" lay-filter="Currency" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$currency" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+
+
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '文件编号' : 'Filing Code'}">
+										{:session('language') == '中文'? '文件编号' : 'Filing Code'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Filing_Code" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '页数' : 'Pages'}">
+										{:session('language') == '中文'? '页数' : 'Pages'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Pages" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '文件类型' : 'File Type'}">
+										{:session('language') == '中文'? '文件类型' : 'File Type'}
+									</label>
+									<div class="layui-input-block">
+										<input name="File_Type" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '委托日期' : 'Assigned'}">
+										{:session('language') == '中文'? '委托日期' : 'Assigned'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Assigned" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '提交日期' : 'Completed'}">
+										{:session('language') == '中文'? '提交日期' : 'Completed'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="Completed" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件名称' : 'Job Name'}">
+							            {:session('language') == '中文'? '文件名称' : 'Job Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Job_Name" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '服务' : 'Service'}">
+										{:session('language') == '中文'? '服务' : 'Service'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Service" lay-filter="Service" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$service_type" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '语种' : 'Language'}">
+										{:session('language') == '中文'? '语种' : 'Language'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Language" lay-filter="Language" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$yy" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '单位' : 'Units'}">
+										{:session('language') == '中文'? '单位' : 'Units'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Units" lay-filter="Units" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$units" id="v"}
+											<option value="{$v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '交付数量' : 'Unit Quantity'}">
+										{:session('language') == '中文'? '交付数量' : 'Unit Quantity'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Unit_Quantity" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? '单价' : 'Unit Price'}">
+                                        {:session('language') == '中文'? '单价' : 'Unit Price'}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="Unit_Price" id="Unit_Price" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+                                    </div>
+                                </div>
+                            </div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '未税金额' : 'Net Amount'}">
+										{:session('language') == '中文'? '未税金额' : 'Net Amount'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Net_Amount" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '增值税额' : 'VAT Amount'}">
+										{:session('language') == '中文'? '增值税额' : 'VAT Amount'}
+									</label>
+									<div class="layui-input-block">
+										<input name="VAT_Amount" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '请款金额' : 'Invoicing Amount'}">
+										{:session('language') == '中文'? '请款金额' : 'Invoicing Amount'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Invoicing_Amount" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '主体公司' : 'Issued_by'}">
+										{:session('language') == '中文'? '主体公司' : 'Issued_by'}
+									</label>
+									<div class="layui-input-block">
+										<select name="Issued_by" lay-filter="Issued_by" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											{volist name="$gs" id="v"}
+											<option value="{:session('language') == '中文'? $v.cn_name : $v.en_name}">{:session('language') == '中文'? $v.cn_name : $v.en_name}</option>
+											{/volist}
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '主体公司税号' : 'Subject Company VAT ID'}">
+										{:session('language') == '中文'? '主体公司税号' : 'Subject Company VAT ID'}
+									</label>
+									<div class="layui-input-block">
+										<input name="VAT_ID" lay-verify="required" autocomplete="off" placeholder="" readonly class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '主体公司地址' : 'Subject Company Address'}">
+										{:session('language') == '中文'? '主体公司地址' : 'Subject Company Address'}
+									</label>
+									<div class="layui-input-block">
+										<input name="Address" lay-verify="required" autocomplete="off" placeholder="" readonly class="layui-input" type="text">
+									</div>
+								</div>
+							</div>
+
+							<div class="layui-col-xs12">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '主体公司银行信息' : 'Subject Company Bank Info'}">
+										{:session('language') == '中文'? '主体公司银行信息' : 'Subject Company Bank Info'}
+									</label>
+									<div class="layui-input-block">
+										<textarea placeholder="" id="Bank_Info" name="Bank_Info" readonly class="layui-textarea"></textarea>
+									</div>
+								</div>
+							</div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+        var language = "{:session('language')}";
+
+		//同时绑定多个,单个日期选择，显示在input里面
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,format: 'yyyyMMdd'
+			});
+		});
+
+        // 主体公司 下拉选择器值发生变化
+        form.on('select(Issued_by)', function (data) {
+            var name = data.value;
+            //console.log(name);
+
+            //异步拉取信息
+            $.ajax({
+                type: 'get',
+                url: "{:url('xt_company/get_info')}",
+                data: {'name': name},
+                dataType: 'json',
+                success: function (res) {
+                    //console.log(res.data);
+                    var info = res.data;
+
+                    $('#form [name=VAT_ID]').val(info.VAT_ID);
+
+                    // 判断语言
+                    if(language === '中文') {
+                        $('#form [name=Address]').val(info.CN_Address);
+                        $('#form [name=Bank_Info]').val(info.CN_Bank_Info);
+                    }else{
+                        $('#form [name=Address]').val(info.EN_Address);
+                        $('#form [name=Bank_Info]').val(info.EN_Bank_Info);
+                    }
+                }
+            })
+        });
+
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 金额验证
+			validator.add('Unit_Price', [{
+				rule: 'price',
+				msg: '金额数据错误'
+			}]);
+
+			// 邮件
+			validator.add('Email', [{
+				rule: 'email',
+				msg: '邮箱格式错误'
+			}]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+			// 表单提交
+			$('#form').submit();
+		});
+	})
+</script>
+
+{/block}

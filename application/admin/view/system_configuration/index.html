@@ -1,0 +1,93 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+	<div class="hn_body">
+		<div class="layui-fluid">
+			<div class="layui-row">
+				<div class="top">
+					<div class="position_lead">
+						<i class="iconfont icon-navigation"></i>
+						<a href="#">{:session('language') == '中文'? '系统管理' : 'System Management'}</a>
+						<a class="on">{:session('language') == '中文'? '系统设置' : 'System Configuration'}</a>
+					</div>
+				</div>
+				<div class="mainCt">
+					<div class="mainWrap">
+						<div class="forwardTable">
+							<table class="layui-hide" id="admin" lay-data="{id:'admin'}" lay-filter="admin"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+{/block}
+
+{block name="js"}
+
+<!--行工具-->
+<script type="text/html" id="barDemo">
+	<div class="table_btn">
+		<a class="layui-btn layui-btn-xs com_btn" lay-event="edit">{:session('language') == '中文'? '编辑' : 'Edit'}</a>
+	</div>
+</script>
+
+<script>
+
+    layui.use(['layer', 'table'], function () {
+        var layer = top.layer;
+        var table = layui.table;
+        var cols;
+
+        // 切换语言
+        var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+        if (language === '中文') {
+            cols = [[
+                {field: 'cn_name', title: '中文名称', sort: true},
+                {field: 'en_name', title: '英文名称', sort: true},
+                {width: 150, title: '操作', align: 'center', toolbar: '#barDemo'}
+            ]]
+        } else {
+            cols = [[
+                {field: 'cn_name', title: 'Chinese Name', sort: true},
+                {field: 'en_name', title: 'English name', sort: true},
+                {width: 150, title: 'Action', align: 'center', toolbar: '#barDemo'}
+            ]]
+        }
+
+        // 渲染表格数据
+        table.render({
+            elem: '#admin',
+            //toolbar: '#forwardBar',
+            toolbar: false,
+            url: "{:url('SystemConfiguration/index')}",
+            method: 'get',
+            cols: cols,
+        });
+
+        //监听工具条
+        table.on('tool(admin)', function (obj) {
+
+            var id = obj.data.id; //获得当前行数据
+            var layEvent = obj.event;//获得 lay-event 对应的值
+
+            if (layEvent === 'edit') {
+
+                parent.layer.open({  // 在父窗口打开
+                    type: 2,
+                    title: '编辑',
+                    maxmin: true,
+                    area: ['900px', '560px'],
+                    content: replaceEditUrlId("{:url('SystemConfiguration/edit', ['id' => 1])}", id)
+                });
+            }
+        });
+    })
+
+</script>
+
+{/block}

@@ -1,0 +1,403 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+				<div class="position_lead">
+					<i class="iconfont icon-navigation"></i>
+					<a href="#">{:session('language') == '中文'? '项目管理' : 'Project Management'}</a>
+					<a class="on">{:session('language') == '中文'? '翻译评估' : 'Translation Evaluation'}</a>
+				</div>
+                <div class="global_btn">
+
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset signLimit">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form" method="post" action="{:url('pj_translation_evaluation/update')}">
+
+                        <div class="layui-row layui-col-space10">																																		
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '翻译人员' : 'Translator'}">
+							            {:session('language') == '中文'? '翻译人员' : 'Translator'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Translator" lay-verify="required" value="{$info.Translator|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+														
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件名称' : 'Job Name'}">
+							            {:session('language') == '中文'? '文件名称' : 'Job Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Job_Name" lay-verify="required" value="{$info.Job_Name|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '文件编号' : 'Filing_Code'}">
+							            {:session('language') == '中文'? '文件编号' : 'Filing_Code'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Filing_Code" lay-verify="required" disabled value="{$info.Filing_Code|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>                                                        							
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '公司名称' : 'Company Name'}">
+							            {:session('language') == '中文'? '公司名称' : 'Company Name'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Company_Name" readonly lay-verify="required" value="{$info.Company_Name|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '语种' : 'Language'}">
+							            {:session('language') == '中文'? '语种' : 'Language'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Language" readonly lay-verify="required" value="{$info.Language|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '翻译难易程度' : 'Translation Difficulty'}">
+							            {:session('language') == '中文'? '翻译难易程度' : 'Translation Difficulty'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Translation_Difficulty" readonly value="{$info.Translation_Difficulty|default=''}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '漏译' : 'Omission'}">
+							            {:session('language') == '中文'? '漏译' : 'Omission'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Omission" lay-verify="required" value="{$info.Omission|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '多译' : 'Extra Translation'}">
+							            {:session('language') == '中文'? '多译' : 'Extra Translation'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Extra_Translation" lay-verify="required" value="{$info.Extra_Translation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '理解程度' : 'Understanding'}">
+							            {:session('language') == '中文'? '理解程度' : 'Understanding'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Understanding" lay-verify="required" value="{$info.Understanding|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '打字、数据错误' : 'Typo or Data Error'}">
+										{:session('language') == '中文'? '打字、数据错误' : 'Typo or Data Error'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Typo_or_Data_Error" lay-verify="required" value="{$info.Typo_or_Data_Error|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '自身术语不统一' : 'Inconsistent within the File'}">
+										{:session('language') == '中文'? '自身术语不统一' : 'Inconsistent within the File'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Inconsistent_within_the_File" lay-verify="required" value="{$info.Inconsistent_within_the_File|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '未和其他译者统一术语' : 'Inconsistent with Other Translators'}">
+										{:session('language') == '中文'? '未和其他译者统一术语' : 'Inconsistent with Other Translators'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Inconsistent_with_Other_Translators" value="{$info.Inconsistent_with_Other_Translators|default=''}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '术语翻译不恰当' : 'Mistranslation'}">
+							            {:session('language') == '中文'? '术语翻译不恰当' : 'Mistranslation'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Mistranslation" lay-verify="required" value="{$info.Mistranslation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '标点符号不恰当' : 'Incorrect Punctuation'}">
+							            {:session('language') == '中文'? '标点符号不恰当' : 'Incorrect Punctuation'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Incorrect_Punctuation" lay-verify="required" value="{$info.Incorrect_Punctuation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '不符合习惯用语' : 'Inconsistent with Target Language Features'}">
+										{:session('language') == '中文'? '不符合习惯用语' : 'Inconsistent with Target Language Features'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Inconsistent_with_Target_Language_Features" value="{$info.Inconsistent_with_Target_Language_Features|default=''}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '语法错误' : 'Grammar Mistakes'}">
+							            {:session('language') == '中文'? '语法错误' : 'Grammar Mistakes'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Grammar_Mistakes" lay-verify="required" value="{$info.Grammar_Mistakes|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '表达流畅度' : 'Sentence Quality'}">
+							            {:session('language') == '中文'? '表达流畅度' : 'Sentence Quality'}
+							        </label>
+							        <div class="layui-input-block">
+							            <input name="Sentence_Quality" lay-verify="required" value="{$info.Sentence_Quality|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '是否认真参考了参考文件' : 'Refer to the References'}">
+										{:session('language') == '中文'? '是否认真参考了参考文件' : 'Refer to the References'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Refer_to_the_References" lay-verify="required" value="{$info.Refer_to_the_References|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '既往纠正问题是否仍反复出现' : 'Corrected Problems Reoccur'}">
+										{:session('language') == '中文'? '既往纠正问题是否仍反复出现' : 'Corrected Problems Reoccur'}
+									</label>
+							        <div class="layui-input-block">
+							            <input name="Corrected_Problems_Reoccur" lay-verify="required" value="{$info.Corrected_Problems_Reoccur|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							        </div>
+							    </div>
+							</div>
+							
+							<div class="layui-col-xs4">
+							    <div class="layui-form-item">
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '整体评价' : 'Overall Evaluation'}">
+							            {:session('language') == '中文'? '整体评价' : 'Overall Evaluation'}
+							        </label>
+							        <div class="layui-input-block">
+										<input name="Overall_Evaluation" lay-verify="required" disabled value="{$info.Overall_Evaluation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+									</div>
+							    </div>
+							</div>
+
+							<div class="layui-col-xs12">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '备注' : 'Comment'}">
+										{:session('language') == '中文'? '备注' : 'Comment'}
+									</label>
+									<div class="layui-input-block">
+										<textarea placeholder="" id="Comment" name="Comment" class="layui-textarea">{$info.Comment|default=''}</textarea>
+									</div>
+								</div>
+							</div>
+							
+							<input type="hidden" name="id" value="{$info.id}" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+
+	layui.use(['form','laydate'], function () {
+		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
+
+		//同时绑定多个,单个日期选择，显示在input里面
+		$('.showDate').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				,type:'datetime'
+				,format: 'yyyy-MM-dd HH:mm'
+			});
+		});
+
+		// 表单验证
+		var validatorFunc = function () {
+			var validator = new Validator();
+
+			// 必填项
+			validator.add('Translator', [{
+				rule: 'require',
+				msg: '翻译人员不能为空'
+			}]);
+
+			validator.add('Job_Name', [{
+				rule: 'require',
+				msg: '文件名称不能为空'
+			}]);
+
+			validator.add('Filing_Code', [{
+				rule: 'require',
+				msg: '文件编号不能为空'
+			}]);
+
+			validator.add('Company_Name', [{
+				rule: 'require',
+				msg: '公司名称不能为空'
+			}]);
+
+            validator.add('Omission', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Extra_Translation', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Understanding', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Typo_or_Data_Error', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Inconsistent_within_the_File', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Inconsistent_with_Other_Translators', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Mistranslation', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Incorrect_Punctuation', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Inconsistent_with_Target_Language_Features', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Grammar_Mistakes', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Sentence_Quality', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Refer_to_the_References', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+            validator.add('Corrected_Problems_Reoccur', [{
+                rule: 'require',
+                msg: '评分项不能为空'
+            }]);
+
+			return validator.start();
+		};
+
+		// 数据提交
+		$('#save').on('click', function () {
+
+			// 表单验证
+			var errorMsg = validatorFunc();
+			if (errorMsg) {
+				layer.alert(errorMsg, {title: '提示'});
+				return false;
+			}
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+			// 表单提交
+			$('#form').submit();
+		});
+	})
+</script>
+{/block}

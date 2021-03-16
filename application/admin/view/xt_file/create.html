@@ -1,0 +1,312 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('xt_file/index')}">{:session('language') == '中文'? '文件管理' : 'File Management'}</a>
+							<a class="on">{:session('language') == '中文'? '新增文件' : 'Add File'}</a>
+						</div>
+						<div class="global_btn">
+							<button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+							<!--<a href="javascript:history.back(-1);">-->
+								<button class="layui-btn layui-btn-primary" type="button" id="back">{:session('language') == '中文'? '返回' : 'Back'}</button>
+							<!--</a>-->
+						</div>
+					</div>
+					<div class="mainCt mainSec formReset">
+						<div class="mainWrap">
+							<form class="layui-form" id="form" method="post">
+
+								<div class="layui-row layui-col-space10">
+
+									<div class="layui-col-xs6">
+										<div class="layui-form-item layui_ic">
+											<label class="layui-form-label" title="{:session('language') == '中文'? '文件夹名称' : 'File Directory'}">
+												{:session('language') == '中文'? '文件夹名称' : 'File Directory'}
+											</label>
+											<div class="layui-input-block">
+												<input id="file_dir" name="file_dir" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label">{:session('language') == '中文'? '文件类型' : 'File Type'}</label>
+											<div class="layui-input-block">
+												<select name="type" lay-filter="type" lay-search>
+													<option value="1">{:session('language') == '中文'? '初始资料文件' : 'Source File'}</option>
+													<option value="2">{:session('language') == '中文'? '预排文件' : 'Preformat File'}</option>
+													<option value="3">{:session('language') == '中文'? '预排完成文件' : 'Preformatted File'}</option>
+													<option value="4">{:session('language') == '中文'? '翻译完成文件' : 'Translated File'}</option>
+													<option value="5">{:session('language') == '中文'? '校对完成文件' : 'Revised File'}</option>
+													<option value="6">{:session('language') == '中文'? '后排完成文件' : 'Postformatted File'}</option>
+													<option value="7">{:session('language') == '中文'? '定稿文件' : 'Final File'}</option>
+													<option value="8">{:session('language') == '中文'? '客户反馈' : 'Customer Feedback'}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="layui-row layui-col-space10">
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label">{:session('language') == '中文'? '文件上传' : 'File Uploading'}</label>
+											<div class="layui-input-block">
+												<button type="button" class="layui-btn com_btn" id="file_upload">
+													<i class="layui-icon layui-icon-upload"></i>{:session('language') == '中文'? '点击上传' : 'Click Uploading'}
+												</button>
+											</div>
+										</div>
+									</div>
+								</div><br/>
+
+
+								<div class="layui-row layui-col-space10" id="file_div" style="display: none">
+									<div class="layui-col-xs6">
+										<div class="layui-form-item">
+											<label class="layui-form-label">{:session('language') == '中文'? '文件列表' : 'File List'}</label>
+											<div class="layui-input-block checkSelf">
+												<ul id="file_list">
+
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<!--文件名-->
+								<input type="hidden" id="file_name" name="file_name" value="">
+
+								<!--文件路径-->
+								<input type="hidden" id="file_path" name="file_path" value="">
+
+								<!--所属项目-->
+								<input type="hidden" id="pj_name" value="{$Project_Name}">
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+{/block}
+
+{block name="js"}
+
+<script>
+
+	layui.use(['form', 'layer','upload'], function () {
+		var upload = layui.upload; var tip, file_dir;
+		var form = layui.form, layer = layui.layer;
+
+		// 多文件 键值对 对象 存储
+		var file_name = '', file_path = '';
+
+		// 自定义 创建 文件目录
+		$('#file_dir').change(function () {
+
+		    file_dir = $.trim($('#file_dir').val());
+
+		    // 空验证
+		    if(file_dir == ''){
+		        layer.alert('文件夹名称不能为空');
+		        return false;
+			}
+
+		    // 验证文件夹 是否存在
+            /*$.ajax({
+                type: 'get',
+                url: "{:url('xt_file/file_dir')}",
+                data: {'file_dir': file_dir},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                }
+            })*/
+        });
+
+
+		// 文件上传
+		upload.render({
+			elem: '#file_upload',               //绑定元素
+			url: "{:url('xt_file/file_up')}",   //上传接口
+            multiple: true,						//多文件上传
+			accept: 'file',             		//允许类型(不限)
+			size: '1024*2',
+			//exts: 'zip|rar|7z|pdf|doc|docx|xls|xlsx|csv|txt|mp3|wav|aac|jpg|jpeg|png|gif',
+            data: {
+                file_dir: function(){
+                    return $('#file_dir').val(); 	// 额外参数(文件保存文件夹)
+                }
+            },
+			// 选中
+			choose: function(obj) {
+
+				obj.preview(function(index, file, result) {
+
+					//console.log('obj.index:' + index);
+					//console.log('obj.file:' + file.name);
+
+					$('#file_list').append('<li id="' + index + '"><span>' +file.name+ '</span></li>');
+
+                    //对上传失败的单个文件重新上传，一般在某个事件中使用
+                    //obj.upload(index, file);
+				});
+
+				tip = layer.msg('Uploading', {icon: 16, shade: 0.3, time:0});
+			},
+
+			done: function (res, index, upload) {
+
+				//console.log(index);
+				//console.log(res);
+
+				$('#file_div').show();
+
+                // 上传 完毕
+				if(res.code === 0) {
+
+				    $('#' + index).append('<p style="display: none">' + res.data + '</p>');
+
+				}else{ // 失败移除
+
+					layer.msg('上传失败请稍后再试');
+
+					$('#' + index).remove();
+				}
+			},
+
+            // 多文件
+            allDone: function(obj){ //当文件全部被提交后，才触发
+
+                //console.log('总文件数' + obj.total); //得到总文件数
+                //console.log('成功的文件数' + obj.successful); //请求成功的文件数
+                //console.log('失败的文件数' + obj.aborted); //请求失败的文件数
+
+				$('#file_div').find('li').each(function () {
+
+					file_name += $(this).find('span').text() + ",";
+
+					file_path += $(this).find('p').text() + ",";
+				});
+
+				//console.log(file_name);
+				//console.log(file_path);
+
+				file_name = file_name.substring(0, file_name.length - 1);
+				file_path = file_path.substring(0, file_path.length - 1);
+
+				// 写入 名称值
+				$('#file_name').val(file_name);
+
+				// 写入 路径值
+				$('#file_path').val(file_path);
+
+				// 关闭提示
+				layer.close(tip);
+
+				//上传完毕提示
+				layer.alert('success');
+
+				//重新上传的方法，一般在某个事件中使用
+				//uploadInst.upload();
+            },
+
+		});
+
+        var validatorFunc = function () {
+            var validator = new Validator();
+
+            validator.add('type', [{
+                rule: 'require',
+                msg: '文件类型不能为空'
+            }]);
+
+            validator.add('file_path', [{
+                rule: 'require',
+                msg: '文件不能为空'
+            }]);
+
+            return validator.start();
+        };
+
+		// 返回
+		$('#back').click(function () {
+
+			layer.confirm('数据未保存，确认返回？', {title: '提示'}, function (index) {
+				// 关闭alert
+				layer.close(index);
+
+				window.location.href = "javascript:history.go(-1)";
+			})
+		});
+
+		// 数据提交
+		$('#save').click(function () {
+
+            // 表单验证
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                layer.alert(errorMsg, {title: '提示'});
+                return false;
+            }
+
+            var tip = layer.msg('Data Uploading', {icon: 16, shade: 0.3, time:3000});
+
+			var data = {};
+
+			data.file_name = $('#file_name').val();
+
+			data.file_path = $('#file_path').val();
+
+            data.file_dir = $('#file_dir').val();
+
+			data.type = $('[name=type]').val();
+			data.Project_Name = $('#pj_name').val();
+
+			//console.log(data);
+
+			// 数据提交
+			//异步提交
+			$.ajax({
+				url: "{:url('xt_file/save')}",
+				type: 'post',
+				dataType: 'json',
+				data: data,
+				success: function (res) {
+					layer.alert(res.msg, {title: '提示'}, function (index) {
+
+						// 关闭alert
+						layer.close(index);
+
+						window.location.href = replaceEditUrlId("{:url('xt_file/file_list', ['Project_Name' => 1])}", data.Project_Name);
+					});
+				},
+				error: function (jqXHR) {
+					if (jqXHR.status === 422) {
+						layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+							layer.close(index);
+						});
+					}
+				}
+			});
+
+		})
+
+	})
+
+</script>
+
+{/block}

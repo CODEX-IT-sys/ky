@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+		<title>CODEX</title>
+		<link rel="shortcut icon" href="../images/logo-icon.ico">
+		<link href="../../../../static/css/animate.min.css" rel="stylesheet" type="text/css">
+		<link href="../../../../static/iconfont/iconfont.css" rel="stylesheet" type="text/css">
+		<link href="../../../../layui/css/layui.css" rel="stylesheet" type="text/css">
+		<link href="../../../../static/css/main.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="#">客户管理</a>
+							<a href="#">来稿需求</a>
+							<a href="#">报价单</a>
+							<a href="#">修改</a>
+							<a class="on">数据表格</a>
+						</div>
+						<div class="global_btn">
+							<a href="#" class="layui-btn">新增</a>
+							<button class="layui-btn">保存</button>
+						</div>
+					</div>
+					<div class="moduleCt module">
+						<div class="moduleWrap">
+							<div class="layui-tab-brief" lay-filter="">
+								<ul class="layui-tab-title">
+									<li><a href="quotation_el.html">基本信息</a></li>
+									<li class="layui-this"><a href="quotation_el_data.html">数据表格</a></li>
+								</ul>
+								<div class="layui-tab-content">
+									<div class="layui-tab-item layui-show">
+										<div class="forwardTable">
+											<table class="layui-hide" id="test" lay-filter="test"></table>
+										</div>
+									</div>
+								</div>
+							</div> 
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>	
+		<script type="text/javascript" src="../../../../js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../../../../layui/layui.js"></script>
+		<script type="text/javascript" src="../../../../js/main.js"></script>	
+		<script type="text/html" id="forwardBar">
+			<div class="forward">
+				<div class="forward_lead">
+					<div class="layui-form-item label_auto">
+						<label class="layui-form-label">字段选择</label>
+						<div class="layui-input-inline">
+							<select name="" lay-verify="">
+								<option value="">默认字段1</option>
+								<option value="0">字段2</option>
+								<option value="1">字段3</option>
+								<option value="2">字段4</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">查询内容</label>
+						<div class="layui-input-inline">
+							<input type="text" name="" placeholder="请输入查询内容" autocomplete="off" class="layui-input">
+						</div>	
+					</div>	
+					<span class="addCondition">
+						<i class="iconfont icon-icon-test"></i>
+					</span>
+					<div class="searchBtn">
+						<button class="layui-btn search_btn" type="button">
+							<i class="iconfont icon-sousuo"></i>
+							<span>查询</span>
+						</button>
+					</div>	
+				</div>
+			</div>	
+		</script>
+		<script type="text/html" id="barDemo">
+			<div class="table_btn">
+				<a href="#" class="layui-btn layui-btn-xs modify_btn">修改</a>
+				<button class="layui-btn layui-btn-xs delete_btn">删除</button>
+			</div>
+		</script>
+		<script>
+		layui.use('table', function(){
+			var table = layui.table;
+			
+			table.render({
+				elem: '#test'
+				,url:'../../json/customer.json'
+				,toolbar: '#forwardBar' 
+				,defaultToolbar: ['exports']
+				,title: '用户数据表'
+				,cols: [[
+					{field:'quotation-ct', title:'内容'}
+					,{field:'quotation-language', title:'语种', width:120 , sort: true}
+					,{field:'quotation-page', title:'页数',width: 100}
+					,{field:'quotation-cny', title:'单价/千中文字符（CNY）'}
+					,{field:'quotation-chinese-characters', title:'预估中文字符（不计空格）'}
+					,{field:'quotation-money', title:'预计金额（CNY）'}
+					,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:130},
+					
+				]]
+				,page: true
+			});
+			
+			
+			$(function(){
+				var index;
+				$(".addCondition").live("click",function(){
+					index = parent.layer.open({ //在父窗口打开
+						type: 2,
+						title: '条件查询',
+						maxmin: true,
+						shadeClose: true, //点击遮罩关闭层
+						area : ['900px' , '560px'],			
+						content: 'content/admin/promp/condition_query.html',
+						btn: ['查询', '取消'],
+					});
+				});
+			
+			});
+			
+			
+
+		});
+		
+		</script>		
+
+	</body>
+</html>

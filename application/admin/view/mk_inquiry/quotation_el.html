@@ -1,0 +1,169 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+	<body>
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="#">客户管理</a>
+							<a href="#">来稿需求</a>
+							<a href="#">报价单</a>
+							<a href="#">修改</a>
+							<a class="on">基本信息</a>
+						</div>
+						<div class="global_btn">
+							<button class="layui-btn">保存</button>
+						</div>
+					</div>
+					<div class="moduleCt module">
+						<div class="moduleWrap">
+							<div class="layui-tab-brief" lay-filter="">
+								<ul class="layui-tab-title">
+									<li class="layui-this"><a href="quotation_el.html">基本信息</a></li>
+									<li><a href="quotation_el_data.html">数据表格</a></li>
+								</ul>
+								<div class="layui-tab-content">
+									<div class="layui-tab-item layui-show">
+										<form class="layui-form formReset" action="">
+											<div class="layui-row layui-col-space10">
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="To">To</label>
+														<div class="layui-input-block">
+															<select name="" lay-verify="">
+																<option value="">默认字段1</option>
+																<option value="0">字段2</option>
+																<option value="1">字段3</option>
+																<option value="2">字段4</option>
+															</select>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-row layui-col-xs4">
+													<div class="layui-col-xs8">
+														<div class="layui-form-item">
+															<label class="layui-form-label" title="Invoice Code">Invoice Code</label>
+															<div class="layui-input-block">
+																<input name="title" lay-verify="" autocomplete="off" placeholder="请输入公司英文简称" class="layui-input" type="text">
+															</div>
+														</div>  		 
+													</div>
+													<div class="layui-col-xs4">
+														<div class="layui-form-item layui_ic label_none">
+															<div class="layui-input-block">
+																<input class="showDate layui-input" placeholder="日期" type="text">
+																<i class="layui-icon layui-icon-date"></i>
+															</div>
+														</div>  		 
+													</div>
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="Contact">Contact</label>
+														<div class="layui-input-block">
+															<input name="title" lay-verify="" autocomplete="off" placeholder="" class="layui-input" type="text">
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item layui_ic">
+														<label class="layui-form-label" title="Date">Date</label>
+														<div class="layui-input-block">
+															<input class="showDate layui-input" placeholder="" type="text">
+															<i class="layui-icon layui-icon-date"></i>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="公司名称">公司名称</label>
+														<div class="layui-input-block">
+															<select name="" lay-verify="">
+																<option value="">默认字段1</option>
+																<option value="0">字段2</option>
+																<option value="1">字段3</option>
+																<option value="2">字段4</option>
+															</select>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="开户行">开户行</label>
+														<div class="layui-input-block">
+															<select name="" lay-verify="">
+																<option value="">默认字段1</option>
+																<option value="0">字段2</option>
+																<option value="1">字段3</option>
+																<option value="2">字段4</option>
+															</select>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="账号">账号</label>
+														<div class="layui-input-block">
+															<select name="" lay-verify="">
+																<option value="">默认字段1</option>
+																<option value="0">字段2</option>
+																<option value="1">字段3</option>
+																<option value="2">字段4</option>
+															</select>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs4">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="账号">签字确认</label>
+														<div class="layui-input-block">
+															<select name="" lay-verify="">
+																<option value="">默认字段1</option>
+																<option value="0">字段2</option>
+																<option value="1">字段3</option>
+																<option value="2">字段4</option>
+															</select>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs12">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="地址">地址</label>
+														<div class="layui-input-block">
+															<textarea placeholder="" class="layui-textarea"></textarea>
+														</div>
+													</div>  		 
+												</div>
+												<div class="layui-col-xs12">
+													<div class="layui-form-item">
+														<label class="layui-form-label" title="备注">备注</label>
+														<div class="layui-input-block">
+															<textarea placeholder="" class="layui-textarea"></textarea>
+														</div>
+													</div>  		 
+												</div>
+											</div>
+										</form>
+													
+									</div>
+								</div>
+							</div> 
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+{/block}
+
+{block name="js"}
+	<!-- 脚本 -->
+	<script>
+
+	</script>
+{/block}

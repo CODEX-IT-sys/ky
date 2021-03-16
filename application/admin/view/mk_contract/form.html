@@ -1,0 +1,96 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+<body>
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a href="#">{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
+                    <a href="{:url('mk_contract/index')}">{:session('language') == '中文'? '合同信息' : 'Contract & Administrative Activities'}</a>
+
+                </div>
+                <div class="global_btn">
+
+                    <button class="layui-btn" id="save">{:session('language') == '中文'? '保存' : 'Save'}</button>
+
+                    <a href="javascript:history.back(-1);">
+                        <button class="layui-btn layui-btn-primary" type="button">{:session('language') == '中文'? '返回' : 'Back'}</button>
+                    </a>
+                </div>
+            </div>
+            <div class="mainCt mainSec formReset">
+                <div class="mainWrap">
+
+                    <form class="layui-form" id="form">
+
+                        <div class="layui-row layui-col-space10">
+
+                            <!--日期 时间 日历类型 int(11) datetime-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item layui_ic">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : $v.Field}">
+                                        {:session('language') == '中文'? $v.Comment : $v.Field}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input class="showDate layui-input" name="{$v.Field}" placeholder="请选择" type="text">
+                                        <i class="layui-icon layui-icon-date"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--input 字符类型 varchar(255)-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : $v.Field}">
+                                        {:session('language') == '中文'? $v.Comment : $v.Field}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="{$v.Field}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--金额类型 decimal(15,2)-->
+                            <div class="layui-col-xs4">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : $v.Field}">
+                                        {:session('language') == '中文'? $v.Comment : $v.Field}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <input name="{$v.Field}" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="text">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--文本类型 text-->
+                            <div class="layui-col-xs12">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" title="{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}">
+                                        {:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}
+                                    </label>
+                                    <div class="layui-input-block">
+                                        <textarea placeholder="" id="{$v.Field}" name="{$v.Field}" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+{/block}
+
+{block name="js"}
+
+{/block}

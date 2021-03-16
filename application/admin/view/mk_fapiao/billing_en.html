@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp"/>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<title>CODEX</title>
+		<link rel="shortcut icon" href="__STATIC__/template/images/logo-icon.ico">
+		<link href="__STATIC__/template/bills.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div class="tbShow tbShow_cn a4-broadwise">
+			<div class="tbWrap">
+				<div class="tbContent">
+					<div class="tbWatermark">
+						<img src="__STATIC__/template/images/ky-watermark.png" >
+					</div>
+					<div class="tbHeader half">
+						<ul>
+							<li class="header_logo">
+								<img src="__STATIC__/template/images/ky-logo.png" >
+							</li>
+							<li class="header_logoshow">
+								<img src="__STATIC__/template/images/ky-logo-show.png" >
+							</li>
+						</ul>
+					</div>
+					<div class="tbArticle">
+						<h2 class="art_title artitle_far">开票通知单</h2>
+						<div class="artItem">
+							<ul>
+								<li>
+									<b>公司: </b>
+									<span>{$info.Company_Name}</span>
+								</li>
+								<li>
+									<b>开票日期:</b>
+									<span><?php echo date('Y-m-d') ?></span>
+								</li>
+							</ul>
+						</div>
+						<div class="artTable textLeft">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<th>公司</th>
+									<th width="20%">开票信息</th>
+									<th>开票对应请款单</th>
+									<th>开票金额</th>
+									<th>开票类型</th>
+									<th>增值税<br>（CNY）</th>
+									<th>PO号</th>
+									<th>开票要求备注</th>
+								</tr>
+								<tr>
+									<td>{$info.Company}</td>
+									<td>
+										<ul>
+											<li>名称：{$info.Name}</li>
+											<li>税号：{$info.VAT_ID}</li>
+											<li>单位地址：{$info.Address}</li>
+											<li>电话号码：{$info.Phone}</li>
+											<li>开户银行：{$info.Bank}</li>
+											<li>银行账户：{$info.Bank_Account}</li>
+										</ul>
+									</td>
+									<td>{$info.Invoice_Number}</td>
+									<td>{$info.Fapiao_Amount}</td>
+									<td>{$info.Fapiao_Type}</td>
+									<td>{$info.VAT}</td>
+									<td>{$info.PO_Number}</td>
+									<td>{$info.Remarks}</td>
+								</tr>
+
+							</table>
+						</div>
+					</div>
+					<div class="tbFooter">
+						<ul>
+							<li>
+								<dl>
+									<dt>地址: </dt>
+									<dd>北京市西城区广安门外大街168号朗琴国际A座1009室</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>Add: </dt>
+									<dd>Room A1009 Langqin Int’l Building, No.168 Guang’an Men Wai Street, Xicheng District Beijing 100054, P.R.China</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>web: </dt>
+									<dd>www.codex-trans.com Email:info@codex-trans.com Tel：8610-53606018 Fax：8610-83525006</dd>
+								</dl>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>

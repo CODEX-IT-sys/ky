@@ -1,0 +1,521 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+
+		<div class="hn_body">
+			<div class="layui-fluid">
+				<div class="layui-row">
+					<div class="top">
+						<div class="position_lead">
+							<i class="iconfont icon-navigation"></i>
+							<a href="{:url('Statistics/index')}">{:session('language') == '中文'? '数据统计' : 'Statistics Management'}</a>
+							<a class="on">{:session('language') == '中文'? '工作绩效统计' : 'Performance Table'}</a>
+
+                            <a>{if $type == 'Y'}{$time}{else/} <?php  echo date('Y') ?> - {$time} {/if}</a>
+						</div>
+						<div class="global_btn form_lead">
+							<a class="layui-btn com_btn" id="out">{:session('language') == '中文'? '导出' : 'exportForExcle'}</a>
+						</div>
+					</div>
+					<div class="mainCt">
+						<div class="mainWrap">
+
+							<div class="forwardTable selftForward intCell wpsSign">
+								<table class="layui-hide" id="test" lay-filter="test"></table>
+							</div>
+
+							<div class="explain">
+								<h5 class="explainTitle">
+									<i class="iconfont icon-tishi"></i>
+									<span>注意</span>
+								</h5>
+								<ul class="explainCt">
+									<li>
+										<dl>
+											<dt>1、</dt>
+											<dd>“本职语种”指主要负责的翻译语种，如英语译员的本职语种是英语，日语译员的本职语种是日语。</dd>
+										</dl>
+									</li>
+									<li>
+										<dl>
+											<dt>2、</dt>
+											<dd>翻译完毕后无校对而直接提交的文件算在“翻译-非本职语种”部分。</dd>
+										</dl>
+									</li>
+								</ul>
+								<dl class="signShow">
+									<dd>
+										<i class="bg-sign1"></i>
+										<span>当月入职</span>
+									</dd>
+									<dd>
+										<i class="bg-sign2"></i>
+										<span>当月离职</span>
+									</dd>
+									<dd>
+										<i class="bg-sign3"></i>
+										<span>当月入职又离职</span>
+									</dd>
+								</dl>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{/block}
+
+{block name="js"}
+
+{js href="__JS__/table2excel.js"}
+
+	<script type="text/html" id="forwardBar">
+		<div class="forward">
+
+			<form class="layui-form" id="form">
+
+				<div class="forward_lead">
+
+				<div class="layui-form-item label_auto">
+					<label class="layui-form-label">{:session('language') == '中文'? '人员类别' : 'Job'}</label>
+					<div class="layui-input-inline">
+						<select id="job" name="job" lay-filter="job">
+							<option value="0">{:session('language') == '中文'? '全部' : 'All'}</option>
+							<option value="1" {$job==1?'selected':''}>{:session('language') == '中文'? '翻译' : 'TR'}</option>
+							<option value="2" {$job==2?'selected':''}>{:session('language') == '中文'? '校对' : 'RE'}</option>
+							<option value="3" {$job==3?'selected':''}>{:session('language') == '中文'? '排版' : 'DTP'}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item label_auto">
+					<label class="layui-form-label">{:session('language') == '中文'? '类型选择' : 'Select Type'}</label>
+					<div class="layui-input-inline">
+						<select id="type" name="type" lay-verify="" lay-filter="type">
+							<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+							<option value="M">{:session('language') == '中文'? '月份' : 'Month'}</option>
+							<option value="Q">{:session('language') == '中文'? '季度' : 'Quarter'}</option>
+							<option value="Y">{:session('language') == '中文'? '年份' : 'Year'}</option>
+						</select>
+					</div>
+				</div>
+
+				<!--月份选择-->
+				<div class="layui-form-item label_auto" id="M" style="display: none;">
+					<label class="layui-form-label">{:session('language') == '中文'? '月份选择' : 'Select Month'}</label>
+					<div class="layui-input-inline">
+						<select id="month" name="month" lay-verify="" lay-filter="Month" lay-search>
+							<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+							<option value="01">1</option>
+							<option value="02">2</option>
+							<option value="03">3</option>
+							<option value="04">4</option>
+							<option value="05">5</option>
+							<option value="06">6</option>
+							<option value="07">7</option>
+							<option value="08">8</option>
+							<option value="09">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+					</div>
+				</div>
+
+				<!--季度选择-->
+				<div class="layui-form-item label_auto" id="Q" style="display: none;">
+					<label class="layui-form-label">{:session('language') == '中文'? '季度选择' : 'Select Quarter'}</label>
+					<div class="layui-input-inline">
+						<select id="Quarter" name="Quarter" lay-verify="" lay-filter="Quarter">
+							<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+							<option value="Q1">Q1</option>
+							<option value="Q2">Q2</option>
+							<option value="Q3">Q3</option>
+							<option value="Q4">Q4</option>
+						</select>
+					</div>
+				</div>
+
+				<!--年份选择-->
+				<div class="layui-form-item label_auto" id="Y" style="display: none;">
+					<label class="layui-form-label">{:session('language') == '中文'? '年份选择' : 'Select Year'}</label>
+					<div class="layui-input-inline">
+						<select id="Year" name="Year" lay-verify="" lay-filter="Year">
+							<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+							<option value="{$year}">{$year}</option>
+							<option value="{$s_year}">{$s_year}</option>
+							<option value="{$f_year}">{$f_year}</option>
+						</select>
+					</div>
+				</div>
+
+				<!--继续月份选择-->
+				<div class="layui-form-item label_auto" id="sec_M" style="display: none;">
+					<label class="layui-form-label">{:session('language') == '中文'? '月份选择' : 'Select Month'}</label>
+					<div class="layui-input-inline">
+						<select id="sec_month" name="sec_month" lay-verify="" lay-filter="sec_Month" lay-search>
+							<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+							<option value="0">{:session('language') == '中文'? '全部' : 'All Month'}</option>
+							<option value="01">1</option>
+							<option value="02">2</option>
+							<option value="03">3</option>
+							<option value="04">4</option>
+							<option value="05">5</option>
+							<option value="06">6</option>
+							<option value="07">7</option>
+							<option value="08">8</option>
+							<option value="09">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+					</div>
+				</div>
+
+				<!--
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+					<div class="layui-input-inline">
+						<input type="text" id="keyword" value="{$keyword}" placeholder="{:session('language') == '中文'? '请输入查询内容' : 'Please input keyword'}" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<div class="searchBtn">
+					<button class="layui-btn search_btn" type="button">
+						<i class="iconfont icon-sousuo"></i>
+						<span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+					</button>
+				</div>-->
+
+				</div>
+
+			</form>
+
+		</div>
+	</script>
+
+	<script>
+		var tableIns;  // 数据表格对象，用于重载
+
+		var type = "{$type}"; var time = "{$time}"; var job = "{$job}";
+
+		var url = "{:url('performance_table/index')}" + '?type=' + type + '&time=' + time + '&job=' + job;
+
+		layui.use(['table', 'form'], function () {
+			var form = layui.form;
+			var table = layui.table;
+			var a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q;
+
+			// 切换语言
+			var language = "{:session('language') == '中文'? '中文' : 'english'}";
+
+			if(language === '中文'){
+				a = '序号';b = '部门';c = '姓名';d = '页数';e = '中文字数统计';
+				f = '原总字数';g = '校对';h = '本职语种';i = '非本职语种';j = '小计';
+				k = '工作时间<br/>(小时)';l = '效率';m = '翻译';o = '最终总数';
+				p = '校对比例';q = '工作时间<br/>(小时)';
+			}else{
+				a = 'No';b = 'Department';c = 'Name';d = 'Pages';e = 'Total Chinese Characters';
+				f = 'Original Chinese Characters';g = 'Revision';h = 'First Language';i = 'Other Language';
+				j = 'Sub-Total';k = 'Working Hours';l = 'Productivity';m = 'Translation';o = 'Weighted Total';
+				p = 'Revision Rate';q = 'Working Hours<br/>(Hours)';
+			}
+
+			// 表格 TYPE 切换时 (切换不同 类型选择框)
+			form.on('select(type)', function (data) {
+
+				// 选中的值
+				console.log(data.value);
+
+				if(data.value === 'M'){
+					$('#M').show();
+					$('#Q').hide();
+					$('#Y').hide();
+					$('#sec_M').hide();
+				}
+
+				if(data.value === 'Q'){
+					$('#Q').show();
+					$('#M').hide();
+					$('#Y').hide();
+					$('#sec_M').hide();
+				}
+
+				if(data.value === 'Y'){
+					$('#Y').show();
+					$('#M').hide();
+					$('#Q').hide();
+					$('#sec_M').show();
+				}
+			});
+
+			// 月份 切换
+			form.on('select(Month)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				var job = $('#job').val();
+
+				url = "{:url('performance_table/index', ['type'=>'M'])}"+ '&time=' + data.value + '&job=' + job;
+				//console.log(url);
+
+				window.location.href = url;
+			});
+
+			// 季度 切换
+			form.on('select(Quarter)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+                var job = $('#job').val();
+
+				url = "{:url('performance_table/index', ['type'=>'Q'])}"+ '&time=' + data.value + '&job=' + job;
+				//console.log(url);
+
+				window.location.href = url;
+			});
+
+			// 年度 切换
+			form.on('select(Year)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+                var job = $('#job').val();
+                layer.msg('请继续选择月份');
+
+				//url = "{:url('performance_table/index', ['type'=>'Y'])}"+ '&time=' + data.value + '&job=' + job;
+				//console.log(url);
+
+				//window.location.href = url;
+			});
+			//继续选择月份
+			form.on('select(sec_Month)', function (data) {
+				// 选中的值
+				console.log(data.value);
+
+				var job = $('#job').val();
+				var sec_time = $("select[name='Year'] option:selected").val();
+				if(data.value!=0){
+					sec_time = sec_time+'-'+data.value;
+				}
+
+
+				url = "{:url('performance_table/index', ['type'=>'Y'])}"+ '&time=' + sec_time + '&job=' + job;
+				//console.log(url);
+
+				window.location.href = url;
+			});
+			
+			table.render({
+				elem: '#test'
+				//,url:"{:url('performance_table/index')}"
+                ,url: url
+				,toolbar: '#forwardBar'
+				,defaultToolbar: []
+				,title: '工作绩效统计'
+				,cols: [
+					[
+						 {field:'No', title:a, rowspan: 2, align:'center'}
+						,{field:'Department', title:b, rowspan: 2}
+						,{field:'Name', title:c, rowspan: 2, minWidth: 200,
+							/*templet: function (d) {
+								var n = d.Name.status;
+								switch(n)
+								{
+										case '1':
+										return "<span class='cell_status bg-sign1'>" + d.Name.name + "</span>";
+
+										case '2':
+										return "<span class='cell_status bg-sign2'>" + d.Name.name + "</span>";
+
+										case '3':
+										return "<span class='cell_status bg-sign3'>" + d.Name.name + "</span>";
+
+										default:
+										return "<span class='cell_status'>" + d.Name.name + "</span>";
+								}
+							}*/
+						}
+						,{field:'Pages', title:d, rowspan: 2, align:'center'}
+						,{field:'Actual_total_number_of_words', title:e, rowspan: 2, minWidth: 200}
+						,{field:'Original_total_number_of_words', title:f, rowspan: 2, minWidth: 220}
+						,{field:'Proofread', title:g, colspan: 5, align:'center'}
+						,{field:'Translate', title:m, colspan: 5, align:'center'}
+						,{field:'Proofreading_proportion', title:p, rowspan: 2, minWidth: 120, align:'center'}
+						,{field:'Total_Time', title:q, rowspan: 2 , minWidth: 220, align:'center'}
+					],
+					[
+						 {field:'First_language', title:h, minWidth: 150, templet: function (d) {return d.re.b;}}
+						,{field:'Other_language', title:i, minWidth: 150, templet: function (d) {return d.re.o;}}
+						,{field:'Total', title:j, templet: function (d) {return d.re.total;}}
+						,{field:'re_time', title:k, style:'color: red;'}
+						,{field:'re_Productivity', title:l, style:'color: red;'}
+
+						,{field:'First_language', title:h, minWidth: 150, templet: function (d) {return d.tr.b;}}
+						,{field:'Other_language', title:i, minWidth: 150, templet: function (d) {return d.tr.o;}}
+						,{field:'Total', title:j, templet: function (d) {return d.tr.total;}}
+						,{field:'tr_time', title:k, style:'color: red;'}
+						,{field:'tr_Productivity', title:l, style:'color: red;'}
+					]
+				
+				]
+				,cellMinWidth: 120
+                ,page: true, limit:50, height:700
+
+                // 转换静态表格 导出excel(复杂表格)
+                ,done: function (res, curr, count) {
+
+					//console.log(res.sql)
+                    let header_tr = $($("#test").next().find(".layui-table-header")[0]).find("tr");
+                    let body_tr = $($("#test").next().find(".layui-table-body")[0]).find("tr");
+
+                    let header_html = "";
+                    let body_html = "";
+
+                    // 获取表头html，包括单元格的合并
+                    $.each(header_tr,function (i,tr) {
+
+                        let header_th = $(tr).find("th");
+
+                        header_html += "<tr>";
+                        $.each(header_th, function (j, th) {
+
+                            let rowspan_num = $(th).attr("rowspan");	// 行合并数
+                            let colspan_num = $(th).attr("colspan");	// 列合并数
+
+                            if (rowspan_num && !colspan_num) {	// 只有行合并时
+                                header_html += '<th rowspan= "' + rowspan_num + '">';
+                            } else if (colspan_num && !rowspan_num) {	// 只有列合并时
+                                header_html += '<th colspan= "' + colspan_num + '">';
+                            } else if (rowspan_num && colspan_num) {	// 行列合并均有时
+                                header_html += '<th rowspan= "' + rowspan_num + '" colspan="' + colspan_num + '">';
+                            } else {	// 没有发生单元格合并
+                                header_html += '<th>';
+                            }
+                            header_html += $(th).children().children().text() + '</th>';	// 获取表头名称并拼接th标签
+                        });
+                        header_html += '</tr>';
+                    });
+
+                    // 获取表格body数据
+                    $.each(body_tr,function (i,tr) {
+                        let body_td = $(tr).find("td");
+
+                        body_html += '<tr>';
+                        $.each(body_td,function (j,td) {
+                            body_html += '<td>' + $(td).children().text() + '</td>';
+                        });
+                        body_html += '</tr>';
+                    });
+
+                    $("#test tr").remove();	// 清除之前的doom结构
+                    $("#test").append(header_html).append(body_html);
+                    $("#test").hide();
+                }
+			});
+
+
+            /**
+             * 获取页面的元素
+             * @param id：表格的id
+             * @param fileName:导出的excel的名字
+             */
+            function exportForExcle(id,fileName){
+                var table = $(document.getElementById(id)).clone();
+                table.attr('id','datatab');
+                table.appendTo('body');
+                method5('datatab');
+                datatab.remove();
+
+                function method5(tableid) {
+                    var idTmr;
+                    var tableToExcel = (function() {
+                        var uri = 'data:application/vnd.ms-excel;base64,',
+                            template = '<html><head><meta charset="UTF-8"></head><body><table border="1px">{table}</table></body></html>',
+                            base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) },
+                            format = function(s, c) {return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+                        return function(table, name) {
+                            if (!table.nodeType) table = document.getElementById(table)
+                            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+                            var aTag = document.createElement('a');
+                            aTag.download = fileName;
+                            aTag.href = uri + base64(format(template, ctx));
+                            document.body.appendChild(aTag);
+                            aTag.onclick = function () {
+                                document.body.removeChild(aTag);
+                            };
+                            aTag.click();
+                        }
+                    })();
+                    if(getExplorer()=='ie') {
+                        var curTbl = document.getElementById(tableid);
+                        var oXL = new ActiveXObject("Excel.Application");
+                        var oWB = oXL.Workbooks.Add();
+                        var xlsheet = oWB.Worksheets(1);
+                        var sel = document.body.createTextRange();
+                        sel.moveToElementText(curTbl);
+                        sel.select();
+                        sel.execCommand("Copy");
+                        xlsheet.Paste();
+                        oXL.Visible = true;
+                        try {
+                            var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
+                        } catch (e) {
+                            print("Nested catch caught " + e);
+                        } finally {
+                            oWB.SaveAs(fname);
+                            oWB.Close(savechanges = false);
+                            oXL.Quit();
+                            oXL = null;
+                            idTmr = window.setInterval("Cleanup();", 1);
+                        }
+                    } else {
+                        tableToExcel(tableid)
+                    }
+                    function Cleanup() {
+                        window.clearInterval(idTmr);
+                        CollectGarbage();
+                    }
+                    function  getExplorer() {
+                        var explorer = window.navigator.userAgent ;
+                        //ie
+                        if (explorer.indexOf("MSIE") >= 0) {
+                            return 'ie';
+                        }
+                        //firefox
+                        else if (explorer.indexOf("Firefox") >= 0) {
+                            return 'Firefox';
+                        }
+                        //Chrome
+                        else if(explorer.indexOf("Chrome") >= 0){
+                            return 'Chrome';
+                        }
+                        //Opera
+                        else if(explorer.indexOf("Opera") >= 0){
+                            return 'Opera';
+                        }
+                        //Safari
+                        else if(explorer.indexOf("Safari") >= 0){
+                            return 'Safari';
+                        }
+                    }
+                }
+            }
+
+            /**
+             * 复杂表头导出
+             */
+            $("#out").click(function(){
+                let table2excel = new Table2Excel();
+                $('#test').show();
+                // 传入你的tableId即可导出
+                table2excel.export($('#test'), "工作绩效统计");
+                $("#test").hide();
+            });
+
+		});
+		
+	</script>
+
+{/block}
