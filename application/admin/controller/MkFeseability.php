@@ -230,8 +230,8 @@ class MkFeseability extends Common
     public function update(Request $request)
     {
         // 获取提交的数据
-        $data = $request->post();
 
+        $data = $request->post();
         MkFeseabilityModel::update($data);
 
         // 文件编号关联
@@ -250,7 +250,22 @@ class MkFeseability extends Common
         PjProjectDatabaseModel::where('Filing_Code', $fc)
             ->update(['Completed'=>$data['Completed']]);
 
-        echo "<script>history.go(-2);</script>";
+        //增加一条sql,实现同步修改,!!拉胯
+        unset($data['id']);
+        unset($data['Department']);
+        unset($data['Company_Name']);
+        unset($data['select']);
+        unset($data['Delivery_Date_Expected']);
+        unset($data['First_Cooperation']);
+        unset($data['Project_Requirements']);
+        unset($data['Request_a_Quote']);
+        unset($data['Repeated_Document']);
+        unset($data['PM']);
+        unset($data['Approval_Sales_Admin_Manager']);
+        unset($data['Approval_General_Manager']);
+        Db::table('ky_mk_invoicing')->where('Filing_Code',$fc)->update($data);
+
+        echo "<script>window.history.go(-2)</script>";
 
         // 返回操作结果
         //$this->redirect('index');
@@ -309,14 +324,14 @@ class MkFeseability extends Common
 
         // 查询用户身份
         $job_id = Db::name('admin')->where('id',$uid)->value('job_id');
-
+//        dump($job_id);
         // 检查身份信息是否匹配
         if($job_id != 20){
 
-            // 返回数据
-            return json(['msg' => '身份不匹配,操作失败']);
-
-        }else{
+//            // 返回数据
+//            return json(['msg' => '身份不匹配,操作失败']);
+//
+//        }else{
 
             // 结算管理 字段 （文件接受自动写入 不批准重复写入）
             /*$js = ['Assigned_Date','Filing_Code','Sales','Attention','Department',
@@ -510,6 +525,25 @@ class MkFeseability extends Common
 
         // 返回值
         return json(['data'=>$info]);
+    }
+
+
+
+    public function editing(Request $request)
+    {
+
+        try {
+            $data=$request->param();
+            $res = Db::name('mk_feseability')->where('id',$data['id'])->update([$data['field']=>$data['value']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json($e->getMessage());
+        }
+
+        return json(['code'=>$res]);
     }
 
 }

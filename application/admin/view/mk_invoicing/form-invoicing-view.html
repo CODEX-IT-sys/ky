@@ -387,7 +387,12 @@
 							            {:session('language') == '中文'? '发票类型' : 'Fapiao Type'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Fapiao_Type" lay-verify="required" value="{$info.Fapiao_Type|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							            <!--<input name="Fapiao_Type" lay-verify="required" value="{$info.Fapiao_Type|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">-->
+										<select name="Fapiao_Type" lay-filter="Fapiao_Type" lay-search>
+											<!--<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>-->
+											<option value="专票"{$info.Fapiao_Type=="专票"?'selected':''}>专票</option>
+											<option value="普票"{$info.Fapiao_Type=="普票"?'selected':''}>普票</option>
+										</select>
 							        </div>
 							    </div>
 							</div>

@@ -12,6 +12,8 @@ use think\facade\View;
 // 系统模块公共文件
 class Common extends Controller
 {
+
+
     /**
      * @var \think\Request Request实例
      */
@@ -20,6 +22,7 @@ class Common extends Controller
     // 构造函数(前置读写权限控制)
     public function __construct(Request $request = null)
     {
+        parent::__construct();
         //parent::__construct($request);
 
         // 栏目名
@@ -52,6 +55,14 @@ class Common extends Controller
                 $this->error('无权操作,Permission Denied');
             }
         }
+    }
+
+
+
+
+    protected function userinfo()
+    {
+       return session('administrator');
     }
 
 }

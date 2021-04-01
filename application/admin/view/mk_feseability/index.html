@@ -15,7 +15,7 @@
 						<a class="layui-btn com_btn" id="scxzpl">{:session('language') == '中文'? '市场行政经理批准' : 'Head of Sales Admin'}</a>
 
 						<a class="layui-btn com_btn" id="zjlpl">{:session('language') == '中文'? '总经理批准' : 'General Manager'}</a>
-
+						<a class="layui-btn com_btn" id="sjth">已选中列数据计算</a>
 						<a href="{:url('create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
 
 						<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
@@ -32,6 +32,7 @@
 							<h5 class="explainTitle">
 								<i class="iconfont icon-tishi"></i>
 								<span>说明</span>
+								<span id="jisuan"  style="background: #0ba4da;float: right;"></span>
 							</h5>
 							<div class="explainCt">
 								{$intro|raw}
@@ -118,7 +119,7 @@ layui.use(['table','form'], function(){
             if(colsData[i].Field !== 'delete_time'){
                 if(colsData[i].Field !== 'id'){
                     if(language === '中文'){
-                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:120, totalRow:true});
+                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:120, totalRow:true,edit:true});
                     }else{
                         cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:180, totalRow:true});
                     }
@@ -144,7 +145,13 @@ layui.use(['table','form'], function(){
             ,defaultToolbar: ['filter', 'exports', 'print']
             ,title: '来稿确认表'
             ,cols : commonCols(language, colsData)
-        	,page: true, limit:50, height:700
+        	 ,limit:50, height:700,
+			page: {
+				curr:location.hash.replace('#!fenye=', ''),
+				hash:'fenye'
+
+			},
+
     });
 
     // 回车亦可以搜索
@@ -258,7 +265,7 @@ layui.use(['table','form'], function(){
 	table.on('tool(test)', function(obj){
 		//获得当前行数据
       	var id = obj.data.id;
-
+		console.log(id);
 		// 删除
 		if(obj.event === 'del'){
 			  layer.confirm('确认删除？', function(index){
@@ -435,6 +442,50 @@ layui.use(['table','form'], function(){
                 elemCurr.prop('checked') ? (!$('input[lay-filter="LAY_TABLE_TOOL_COLS"]').not(':checked').length) : false);
         form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
     });
+
+
+	$('#sjth').click(function () {
+		var checkStatus = table.checkStatus('test');
+		var num = 0
+		var num2 = 0
+		for (v in checkStatus.data) {
+			num += checkStatus.data[v]['Pages'];
+			num2 += checkStatus.data[v]['Source_Text_Word_Count'];
+		}
+		var msg = "选中页数:" + num ;
+
+		$('#jisuan').html(msg)
+		layer.alert(msg);
+		// console.log(num);
+	});
+	table.on('edit(test)', function (obj) {
+		var value = obj.value //得到修改后的值
+				, data = obj.data //得到所在行所有键值
+				, field = obj.field; //得到字段
+
+		console.log(obj.tr) //得到当前行元素对象
+		console.log(obj.data) //得到当前行数据
+		obj.update(value) //修改当前行数据
+		$.ajax({
+			url: "{:url('editing')}",
+			type: "post",
+			data: {id: data.id, field: field, value},
+			success: function (result) {
+				if (result.code == 1) {
+					// 表格重载
+					tableIns.reload();
+					// window.location.reload();
+				} else {
+					layer.msg('编辑失败')
+				}
+
+			}
+		});
+
+
+		// layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+	});
+
 
 
 });

@@ -16,6 +16,7 @@
 
 						<a id="Invoice" class="layui-btn modify_btn">{:session('language') == '中文'? '生成请款单' : 'Invoice'}</a>
 
+						<a class="layui-btn com_btn" id="sjth">已选中列数据计算</a>
 						<a href="{:url('mk_invoicing/create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
 
 						<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
@@ -32,6 +33,7 @@
 							<h5 class="explainTitle">
 								<i class="iconfont icon-tishi"></i>
 								<span>说明</span>
+								<span id="jisuan"  style="background: #0ba4da;float: right;"></span>
 							</h5>
 							<div class="explainCt">
 								{$intro|raw}
@@ -117,7 +119,7 @@ layui.use(['table','form'], function(){
             if(colsData[i].Field !== 'delete_time'){
                 if(colsData[i].Field !== 'id'){
                     if(language === '中文'){
-                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:120, totalRow:true});
+                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:120, totalRow:true,edit:true});
                     }else{
                         cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:180, totalRow:true});
                     }
@@ -396,7 +398,54 @@ layui.use(['table','form'], function(){
         form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
     });
 
-})
+	$('#sjth').click(function () {
+		var checkStatus = table.checkStatus('test');
+		var num = 0
+		var num2 = 0
+		for (v in checkStatus.data) {
+			num += checkStatus.data[v]['Pages'];
+			num2 += parseInt(checkStatus.data[v]['Invoicing_Amount']);
+			console.log(num2);
+		}
+		var msg = "选中页数:" + num+'请款金额:'+num2 ;
+
+		$('#jisuan').html(msg)
+		layer.alert(msg);
+		// console.log(num);
+	});
+	table.on('edit(test)', function (obj) {
+		var value = obj.value //得到修改后的值
+				, data = obj.data //得到所在行所有键值
+				, field = obj.field; //得到字段
+
+		console.log(obj.tr) //得到当前行元素对象
+		console.log(obj.data) //得到当前行数据
+		obj.update(value) //修改当前行数据
+		$.ajax({
+			url: "{:url('editing')}",
+			type: "post",
+			data: {id: data.id, field: field, value},
+			success: function (result) {
+				if (result.code == 1) {
+					// 表格重载
+					tableIns.reload();
+					// window.location.reload();
+				} else {
+					layer.msg('编辑失败')
+				}
+
+			}
+		});
+
+
+		// layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+	});
+
+
+
+});
+
+
 </script>
 
 {/block}

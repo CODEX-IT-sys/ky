@@ -635,9 +635,7 @@ class MkInquiry extends Common
         // 生成 报价单编码
         $info['Quote_Number'] = 'Q-' . $company_code . date('Ymd') . $no;
 
-        // 更新 来稿需求 主附表信息及报价状态值
-        Db::name('mk_inquiry')->where('id', $info['id'])
-            ->update(['Request_a_Quote'=>'Yes', 'Quote_Number'=>$info['Quote_Number']]);
+
 
         // 查询/组装 客户及主体公司 相关信息
         $info['Company_Address'] = $customer_info['Company_Address'];
@@ -646,33 +644,45 @@ class MkInquiry extends Common
         // 字段别名
         $info['To'] = $info['Company_Full_Name'];
         unset($info['Company_Full_Name']);
-        unset($info['id']);
+
 
 
         // 查询 来稿需求 附表 文件信息
         $file_info = Db::name('mk_inquiry_file')
-            ->field('id, Job_Name, Pages, File_Type, Service, Language, VAT_Rate, Unit_Price, Units, Quote_Quantity')
+//            ->field('id, Job_Name, Pages, File_Type, Service, Language, VAT_Rate, Unit_Price, Units, Quote_Quantity')
             ->where('id', 'in', $id_arr)->select();
 
         // 将文件信息 写入 报价单 表格列表信息 更新来稿文件 报价状态
+
+        $num=0;
+        $num2=0;
         foreach ($file_info as $k => $v){
 
             $v['Quote_Number'] = $info['Quote_Number'];
 
             Db::name('mk_inquiry_file')->where('id',$file_info[$k]['id'])->update(['Request_a_Quote'=>'Yes']);
 
-            $v['Net_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'];
-            $v['VAT_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'] * $v['VAT_Rate']/100;
+             $v['Net_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'];
+             $v['VAT_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'] * $v['VAT_Rate']/100;
             $v['Quote_Amount'] = $v['Net_Amount'] + $v['VAT_Amount'];
+            $num2 += $v['Quote_Quantity'] * $v['Unit_Price'] * $v['VAT_Rate']/100;
+            $num += $v['Net_Amount'] + $v['VAT_Amount'];
 
             unset($v['id']);
 
             MkQuoteTableModel::create($v);
         }
 
+        // 更新 来稿需求 主附表信息及报价状态值
+      $a=  Db::name('mk_inquiry')->where('id', $info['id'])
+            ->update(['Request_a_Quote'=>'Yes', 'Quote_Number'=>$info['Quote_Number'],
+            'VAT_Amount'=>$num2,'Quote_Amount'=>$num
+            ]);
+
+        unset($info['id']);
         // 生成 填表人
         $info['Filled_by'] = session('administrator')['name'];
-
+//        dump($info);die;
         // 报价单 主表中写入一条关联信息
         MkQuoteModel::create($info);
 
@@ -712,6 +722,112 @@ class MkInquiry extends Common
 
         // 返回值
         return json(['bm'=>$bm]);
+    }
+    public function editing(Request $request)
+    {
+
+
+        try {
+            $data=$request->param();
+            $res = Db::name('mk_inquiry')->where('id',$data['id'])->update([$data['field']=>$data['value']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json($e->getMessage());
+        }
+
+        return json(['code'=>$res]);
+    }
+
+    public function import()
+    {
+
+        try{
+            require '../extend/PHPExcel/PHPExcel.php';
+            $iid=request()->param('i_id');
+            $file = request()->file('file');
+            if($file) {
+                $info = $file->validate(['size' => 10485760, 'ext' => 'xls,xlsx,'])->move( 'public/' . 'excel');
+                if (!$info) {
+                    $this->error('上传文件格式不正确');
+                } else {
+                    //获取上传到后台的文件名
+                    $fileName = $info->getSaveName();
+                    //获取文件路径
+                    $filePath =   'public/' . 'excel/' . $fileName;
+                    //获取文件后缀
+                    $suffix = $info->getExtension();
+                    // 判断哪种类型
+                    if($suffix=="xlsx"){
+                        $reader = \PHPExcel_IOFactory::createReader('Excel2007');
+                    }else{
+                        $reader = \PHPExcel_IOFactory::createReader('Excel5');
+                    }
+                }
+                $excel = $reader->load("$filePath",$encode = 'utf-8');
+                $sheet = $excel->getSheet(0);	// 读取第一个工作表(编号从 0 开始)
+                $highestRow = $sheet->getHighestRow(); 			// 取得总行数
+                $highestColumn = $sheet->getHighestColumn(); 	// 取得总列数
+                $arr = array('A','B','C','D','E','F','G','H','I','J','K','L','M', 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+                // 一次读取一列
+                $res_arr = array();
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $res_arr[$row-2]['Inquiry_Date']  = trim($sheet->getCell("A".$row)->getValue());
+                    $res_arr[$row-2]['Contract_Number']  = trim($sheet->getCell("B".$row)->getValue());
+                    $res_arr[$row-2]['Job_Name']  = trim($sheet->getCell("C".$row)->getValue());
+                    $res_arr[$row-2]['Pages']  = trim($sheet->getCell("D".$row)->getValue());
+                    $res_arr[$row-2]['Source_Text_Word_Count']  = trim($sheet->getCell("E".$row)->getValue());
+                    $res_arr[$row-2]['File_Type']  = trim($sheet->getCell("F".$row)->getValue());
+                    $res_arr[$row-2]['Service']  = trim($sheet->getCell("G".$row)->getValue());
+                    $res_arr[$row-2]['Language']  = trim($sheet->getCell("H".$row)->getValue());
+                    $res_arr[$row-2]['Unit_Price']  = trim($sheet->getCell("I".$row)->getValue());
+                    $res_arr[$row-2]['Units']  = trim($sheet->getCell("J".$row)->getValue());
+                    $res_arr[$row-2]['VAT_Rate']  = trim($sheet->getCell("K".$row)->getValue());
+                    $res_arr[$row-2]['Quote_Quantity']  = trim($sheet->getCell("I".$row)->getValue());
+                    $res_arr[$row-2]['Delivery_Date_Expected']  = trim($sheet->getCell("O".$row)->getValue());
+                    $res_arr[$row-2]['Customer_Requirements']  = trim($sheet->getCell("P".$row)->getValue());
+                    $res_arr[$row-2]['External_Reference_File']  = trim($sheet->getCell("Q".$row)->getValue());
+                    $res_arr[$row-2]['Order_Status']  = trim($sheet->getCell("R".$row)->getValue());
+                    $res_arr[$row-2]['Request_a_Quote']  = trim($sheet->getCell("S".$row)->getValue());
+                    $res_arr[$row-2]['Remarks']  = trim($sheet->getCell("T".$row)->getValue());
+                    $res_arr[$row-2]['Filled_by']  = trim($sheet->getCell("U".$row)->getValue());
+                    $res_arr[$row-2]['Update_Date']  = date("Ymd");
+                    $res_arr[$row-2]['Quote_Amount']  = trim($sheet->getCell("M".$row)->getValue());
+                    $res_arr[$row-2]['VAT_Amount']  = trim($sheet->getCell("N".$row)->getValue());
+                    $res_arr[$row-2]['i_id']  = $iid;
+
+//                $row_arr = array();
+//                for ($column = 0; $arr[$column] != 'V'; $column++) {
+//                    $val = $sheet->getCellByColumnAndRow($column, $row)->getValue();
+//                    $row_arr[] = $val;
+//                }
+//
+//                $res_arr[] = $row_arr;
+                }
+
+                Db::name('mk_inquiry_file')->insertAll($res_arr);
+//                dump($res_arr);
+            }
+        }catch(\Exception $e){
+            $this->error('执行错误');
+        }
+        return json(['code'=>1,'msg'=>'导入成功']);
+
+    }
+
+
+    public function adopt($id)
+    {
+        $id_arr = explode(',' , $id);
+        // 调用模型编辑
+        foreach ($id_arr as $k => $v){
+            MkInquiryFileModel::where('id',$v)->update(['Order_Status'=>'Accepted']);
+        }
+
+        // 返回数据
+        return json(['msg' => '成功']);
     }
 
 }

@@ -90,6 +90,32 @@ class MKContract extends Common
     // 显示新建的表单页
     public function create()
     {
+
+        //.语种
+        $language=Db::name('xt_dict')->where('c_id',1)->field('id,cn_name,en_name')->select();
+        $l=[];
+        foreach ($language as $k=>$v)
+        {
+            $l[$k]['name']=$v['cn_name'];
+            $l[$k]['value']=$v['cn_name'];
+        }
+
+        //服务
+        $serve=Db::name('xt_dict')->where('c_id',12)->field('id,cn_name,en_name')->select();
+        $s=[];
+        foreach ($serve as $k=>$v)
+        {
+            $s[$k]['name']=$v['cn_name'];
+            $s[$k]['value']=$v['cn_name'];
+        }
+        //单位
+        $danwei=Db::name('xt_dict')->where('c_id',3)->field('id,cn_name,en_name')->select();
+        $d=[];
+        foreach ($danwei as $k=>$v)
+        {
+            $d[$k]['name']=$v['cn_name'];
+            $d[$k]['value']=$v['cn_name'];
+        }
         // 查询 可供预选的 编号值
         $contract_code = MkCustomerModel::field('Contract_Number')->order('id desc')->select();
 		
@@ -110,6 +136,7 @@ class MKContract extends Common
         return view('form-Contract', [
             'contract_code'=>$contract_code, 'vat_rate'=>$vat_rate,
             'currency'=>$currency,  'gs'=>$gs, 'sales'=>$sales,
+            'language'=>$l,'Service'=>$s,'unit'=>$d
         ]);
     }
 
@@ -119,6 +146,7 @@ class MKContract extends Common
 
         // 查询信息
         $res = MkContractModel::get($id);
+
 
 		// 主体公司
         $gs = Db::name('xt_company')->field('id,cn_name,en_name')->select();
@@ -147,6 +175,48 @@ class MKContract extends Common
     //编辑视图
     public function edit($id)
     {
+
+        $res = MkContractModel::get($id);
+        $yz = explode(',', $res['Language']);
+        $dw= explode(',', $res['Units']);
+        $fw= explode(',', $res['Service']);
+        //.语种
+        $language=Db::name('xt_dict')->where('c_id',1)->field('id,cn_name,en_name')->select();
+        $l=[];
+        foreach ($language as $k=>$v)
+        {
+            $l[$k]['name']=$v['cn_name'];
+            $l[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$yz)){
+                $l[$k]['selected'] = true;
+            }
+        }
+
+//        dump($yz);
+//        dump($l);
+
+        //服务
+        $serve=Db::name('xt_dict')->where('c_id',12)->field('id,cn_name,en_name')->select();
+        $s=[];
+        foreach ($serve as $k=>$v)
+        {
+            $s[$k]['name']=$v['cn_name'];
+            $s[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$fw)){
+                $s[$k]['selected'] = true;
+            }
+        }
+        //单位
+        $danwei=Db::name('xt_dict')->where('c_id',3)->field('id,cn_name,en_name')->select();
+        $d=[];
+        foreach ($danwei as $k=>$v)
+        {
+            $d[$k]['name']=$v['cn_name'];
+            $d[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$dw)){
+                $d[$k]['selected'] = true;
+            }
+        }
         // 查询信息
         $res = MkContractModel::get($id);
 
@@ -174,7 +244,8 @@ class MKContract extends Common
 
         return view('form-Contract-view', [
             'contract_code'=>$contract_code, 'vat_rate'=>$vat_rate,'gs'=>$gs,
-            'gs_id'=>$gs_id, 'sales'=>$sales, 'info'=>$res,'currency'=>$currency
+            'gs_id'=>$gs_id, 'sales'=>$sales, 'info'=>$res,'currency'=>$currency,
+            'language'=>$l,'Service'=>$s,'unit'=>$d
         ]);
     }
 
@@ -183,7 +254,8 @@ class MKContract extends Common
     {
         // 获取提交的数据
         $data = $request->post();
-
+//        dump($data);
+//        die;
         /* 合同编码 C- + 公司编码 + 登记日期 自动生成*/
         $data['Contract_Number'] = 'C-'. $data['Company_Code'] . date("Ymd");
 

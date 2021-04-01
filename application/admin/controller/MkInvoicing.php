@@ -409,5 +409,20 @@ class MkInvoicing extends Common
         return json(['data'=>$info]);
     }
 
+    public function editing(Request $request)
+    {
 
+        try {
+            $data=$request->param();
+            $res = Db::name('mk_invoicing')->where('id',$data['id'])->update([$data['field']=>$data['value']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json($e->getMessage());
+        }
+
+        return json(['code'=>$res]);
+    }
 }

@@ -1,329 +1,439 @@
 {extend name="./layout/list.html" /}
 
 {block name="body"}
-	<div class="hn_body">
-		<div class="layui-fluid">
-			<div class="layui-row">
-				<div class="top">
-					<div class="position_lead">
-						<i class="iconfont icon-navigation"></i>
-						<a href="#">{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
-						<a href="{:url('mk_inquiry/index')}">{:session('language') == '中文'? '来稿需求' : 'Inquiry'}</a>
-						<a class="on">{:session('language') == '中文'? '文件列表' : 'File list'}</a>
-					</div>
-					<div class="global_btn">
-						<a class="layui-btn com_btn" id="quote">{:session('language') == '中文'? '生成报价单' : 'Quotation'}</a>
+<div class="hn_body">
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="top">
+                <div class="position_lead">
+                    <i class="iconfont icon-navigation"></i>
+                    <a href="#">{:session('language') == '中文'? '客户管理' : 'Customer Management'}</a>
+                    <a href="{:url('mk_inquiry/index')}">{:session('language') == '中文'? '来稿需求' : 'Inquiry'}</a>
+                    <a class="on">{:session('language') == '中文'? '文件列表' : 'File list'}</a>
+                </div>
+                <div class="global_btn">
+                    <a class="layui-btn com_btn" id="quote">{:session('language') == '中文'? '生成报价单' : 'Quotation'}</a>
+                    <a class="layui-btn com_btn" id="jieshou">{:session('language') == '中文'? '批量接受' : 'accept'}</a>
+                    <a class="layui-btn com_btn" id="daoru">{:session('language') == '中文'? '导入' : 'import'}</a>
 
-						<a href="{:url('mk_inquiry/file_create',['i_id'=>$i_id])}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
-						
-						<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
-					</div>
-				</div>
-				<div class="mainCt">
-					<div class="mainWrap">
-						<div class="forwardTable">
-							<table class="layui-hide" id="test" lay-filter="test"></table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <a href="{:url('mk_inquiry/file_create',['i_id'=>$i_id])}" class="layui-btn">{:session('language')
+                        == '中文'? '新增' : 'Add'}</a>
+
+                    <a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
+
+                </div>
+            </div>
+            <div class="mainCt">
+                <div class="mainWrap">
+                    <div class="forwardTable">
+                        <table class="layui-hide" id="test" lay-filter="test"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {/block}
 
 {block name="js"}
 <!-- 搜索 -->
 <script type="text/html" id="forwardBar">
-	<div class="forward">
-		<div class="forward_lead">
-			<div class="layui-form-item label_auto">
-				<label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
-				<div class="layui-input-inline">
-					<select name="field" id="field" lay-verify="" lay-search>
-						<option value="">{:session('language') == '中文'? '请选择查找字段' : 'Please Select'}</option>
-						{volist name="$select_field" id="v"}
-						{if $v.Field != 'id'}{if $v.Field != 'i_id'}{if $v.Field != 'delete_time'}
-						<option value="{$v.Field}">{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ', $v.Field)}</option>
-						{/if}{/if}{/if}
-						{/volist}
-					</select>
-				</div>
-			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
-				<div class="layui-input-inline">
-					<input type="text" id="keyword" placeholder="{:session('language') == '中文'? '请输入查询内容' : 'Please input keyword'}" autocomplete="off" class="layui-input">
-				</div>
-			</div>
-			<div class="searchBtn">
-				<button class="layui-btn search_btn" type="button">
-					<i class="iconfont icon-sousuo"></i>
-					<span>{:session('language') == '中文'? '查询' : 'Search'}</span>
-				</button>
-			</div>
-		</div>
-	</div>
+    <div class="forward">
+        <div class="forward_lead">
+            <div class="layui-form-item label_auto">
+                <label class="layui-form-label">{:session('language') == '中文'? '字段选择' : 'Select Field'}</label>
+                <div class="layui-input-inline">
+                    <select name="field" id="field" lay-verify="" lay-search>
+                        <option value="">{:session('language') == '中文'? '请选择查找字段' : 'Please Select'}</option>
+                        {volist name="$select_field" id="v"}
+                        {if $v.Field != 'id'}{if $v.Field != 'i_id'}{if $v.Field != 'delete_time'}
+                        <option value="{$v.Field}">{:session('language') == '中文'? $v.Comment : str_replace('_' , ' ',
+                            $v.Field)}
+                        </option>
+                        {/if}{/if}{/if}
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:session('language') == '中文'? '查询内容' : 'Keyword'}</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="keyword"
+                           placeholder="{:session('language') == '中文'? '请输入查询内容' : 'Please input keyword'}"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="searchBtn">
+                <button class="layui-btn search_btn" type="button">
+                    <i class="iconfont icon-sousuo"></i>
+                    <span>{:session('language') == '中文'? '查询' : 'Search'}</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </script>
 <!-- 行工具 -->
 <script type="text/html" id="barDemo">
-	<div class="table_btn">
-		<a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
-		<a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
-	</div>
+    <div class="table_btn">
+        <a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
+        <a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
+    </div>
 </script>
-		
+
 <!-- 脚本 -->
 <script>
-var tableIns;  //数据表格对象，用于重载
-layui.use('table', function(){
-	var table = layui.table;
-	//切换语言
-	var language = "{:session('language') == '中文'? '中文' : 'english'}";
-	//数据表格字段
-	var data = '{$colsData|raw}';
-	var colsData = JSON.parse(data);
+    var tableIns;  //数据表格对象，用于重载
+    layui.use('table', function () {
+        var table = layui.table;
+        //切换语言
+        var language = "{:session('language') == '中文'? '中文' : 'english'}";
+        //数据表格字段
+        var data = '{$colsData|raw}';
+        var colsData = JSON.parse(data);
 
-	var i_id = '{$i_id}';
+        var i_id = '{$i_id}';
 
-	//通用表头生成器
-	function commonCols(language,colsData){
-		//左侧勾选栏
-		var cols = [{type: 'checkbox', fixed: 'left', totalRowText: '合计'}];
-		var l = colsData.length;
+        //通用表头生成器
+        function commonCols(language, colsData) {
+            //左侧勾选栏
+            var cols = [{type: 'checkbox', fixed: 'left', totalRowText: '合计'}];
+            var l = colsData.length;
 
-		//遍历所有字段
-		for (var i = 0; i < l; i++) {
-			if(colsData[i].Field !== 'id'){
-			if(colsData[i].Field !== 'i_id'){
-			if(colsData[i].Field !== 'delete_time'){
-				if (language === '中文') {
-					cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:180});
-				} else {
-					cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:180});
-				}
-            }}}
-		}
-
-		//右侧操作工具
-		if (language === '中文') {
-			cols.push({title: '操作', toolbar: '#barDemo', fixed: 'right', align: 'center', width: 150});
-		}else{
-			cols.push({title: 'Action', toolbar: '#barDemo', fixed: 'right', align: 'center', width: 150});
-		}
-
-		return [cols];
-	}
-
-	//生成表格
-	tableIns = table.render({
-		elem: '#test'
-		,url:"{:url('mk_inquiry/file_index')}"+ '?id=' + i_id
-		,toolbar: '#forwardBar'
-		,defaultToolbar: ['filter', 'exports', 'print']
-		,title: '来稿需求表'
-		,cols : commonCols(language, colsData)
-		,page: true, limit:50, height: 700
-	});
-
-    // 回车亦可以搜索
-    $(document).keyup(function (event) {
-        if (event.keyCode == 13) {
-            $(".search_btn").trigger("click");
-        }
-    });
-
-	//表头搜索
-	$('.search_btn').click(function(){
-		var searchfield = $('#field').val();
-		var searchkeyword = $.trim($('#keyword').val());
-
-		if(!searchkeyword){
-			if(language === '中文') {
-				layer.msg('搜索内容不能为空');
-			}else{
-				layer.msg('Please input keyword');
-			}
-			return false
-		}
-		//表格重载
-		table.reload('test', {
-			url: "{:url('mk_inquiry/file_index')}"+ '?id=' + i_id,
-			where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
-			page: true
-		});
-	});
-
-	// 多条件 搜索弹框
-	$(function(){
-		var index;
-		$(".addCondition").live("click",function(){
-			index = parent.layer.open({ //在父窗口打开
-				type: 2,
-				title: '条件查询',
-				maxmin: true,
-				shadeClose: true, //点击遮罩关闭层
-				area : ['700px' , '560px'],
-				content: "{:url('mk_inquiry/condition')}",
-				end: function () {
-
-					var search_type = localStorage.getItem('search_type');
-					var s = localStorage.getItem('field');
-					var i = localStorage.getItem('keyword');
-
-					// 表格重载
-					table.reload('test', {
-						url: "{:url('mk_inquiry/index')}",
-						totalRow: true,
-						where: {search_type : search_type, field: s, keyword: i},  // 设定异步数据接口的额外参数
-						page: true
-					});
-				}
-			});
-		});
-	});
-
-	// 批量 生成报价单(多选操作)
-	$('#quote').click(function () {
-		var checkStatus = table.checkStatus('test');
-		var idstr = ''; var cd = checkStatus.data.length;
-
-		if(cd !== 0){
-			for(var i=0; i<cd; i++){
-				idstr +=  checkStatus.data[i].id + ',';
-			}
-			// 去除多余符号
-			idstr = idstr.substring(0, idstr.length - 1);
-
-			layer.confirm('Confirm？', function(index){
-
-                layer.msg('Please Wait', {icon: 16, shade: 0.3, time:5000});
-
-				// 向服务器发送请求
-				$.ajax({
-					type: 'get',
-					url: "{:url('mk_inquiry/quotation')}",
-					data: {id : idstr},
-					// 成功
-					success: function (res) {
-						layer.alert(res.msg, {title: '提示'}, function (index) {
-							// 关闭alert
-							layer.close(index);
-
-							// 跳转到 报价单列表
-							window.location.href = "{:url('mk_quote/index')}";
-						});
-					},
-					error: function (jqXHR) {
-						// 失败
-						if (jqXHR.status === 422) {
-							layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
-								layer.close(index);
-							});
-						}
-					}
-				});
-			});
-		}else{
-			if(language === '中文') {
-				layer.alert('请先勾选数据再操作');
-			}else{
-				layer.msg('Please check the box before operating');
-			}
-		}
-	});
-
-    //批量删除(多选操作)
-    $('#del').click(function () {
-        var checkStatus = table.checkStatus('test');
-        var idstr = ''; var cd = checkStatus.data.length;
-
-        if(cd !== 0){
-            for(var i=0; i<cd; i++){
-                idstr +=  checkStatus.data[i].id + ',';
-            }
-            // 去除多余符号
-            idstr = idstr.substring(0, idstr.length - 1);
-
-            layer.confirm('确认删除？', function(index){
-                // 向服务器发送删除请求
-                $.ajax({
-                    type: 'get',
-                    url: "{:url('mk_inquiry/file_batch_delete')}",
-                    data: {id : idstr},
-                    // 删除成功
-                    success: function (res) {
-                        layer.alert(res.msg, {title: '提示'}, function (index) {
-                            // 表格重载
-                            tableIns.reload();
-                            // 关闭alert
-                            layer.close(index);
-                        });
-                    },
-                    error: function (jqXHR) {
-                        // 删除失败
-                        if (jqXHR.status === 422) {
-                            layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
-                                layer.close(index);
-                            });
+            //遍历所有字段
+            for (var i = 0; i < l; i++) {
+                if (colsData[i].Field !== 'id') {
+                    if (colsData[i].Field !== 'i_id') {
+                        if (colsData[i].Field !== 'delete_time') {
+                            if (language === '中文') {
+                                cols.push({
+                                    field: colsData[i].Field,
+                                    title: colsData[i].Comment,
+                                    sort: true,
+                                    minWidth: 180
+                                });
+                            } else {
+                                cols.push({
+                                    field: colsData[i].Field,
+                                    title: colsData[i].Field,
+                                    sort: true,
+                                    minWidth: 180
+                                });
+                            }
                         }
+                    }
+                }
+            }
+
+            //右侧操作工具
+            if (language === '中文') {
+                cols.push({title: '操作', toolbar: '#barDemo', fixed: 'right', align: 'center', width: 150});
+            } else {
+                cols.push({title: 'Action', toolbar: '#barDemo', fixed: 'right', align: 'center', width: 150});
+            }
+
+            return [cols];
+        }
+
+        //生成表格
+        tableIns = table.render({
+            elem: '#test'
+            , url: "{:url('mk_inquiry/file_index')}" + '?id=' + i_id
+            , toolbar: '#forwardBar'
+            , defaultToolbar: ['filter', 'exports', 'print']
+            , title: '来稿需求表'
+            , cols: commonCols(language, colsData)
+            , page: true, limit: 50, height: 700
+        });
+
+        // 回车亦可以搜索
+        $(document).keyup(function (event) {
+            if (event.keyCode == 13) {
+                $(".search_btn").trigger("click");
+            }
+        });
+
+        //表头搜索
+        $('.search_btn').click(function () {
+            var searchfield = $('#field').val();
+            var searchkeyword = $.trim($('#keyword').val());
+
+            if (!searchkeyword) {
+                if (language === '中文') {
+                    layer.msg('搜索内容不能为空');
+                } else {
+                    layer.msg('Please input keyword');
+                }
+                return false
+            }
+            //表格重载
+            table.reload('test', {
+                url: "{:url('mk_inquiry/file_index')}" + '?id=' + i_id,
+                where: {field: searchfield, keyword: searchkeyword},  // 设定异步数据接口的额外参数
+                page: true
+            });
+        });
+
+        // 多条件 搜索弹框
+        $(function () {
+            var index;
+            $(".addCondition").live("click", function () {
+                index = parent.layer.open({ //在父窗口打开
+                    type: 2,
+                    title: '条件查询',
+                    maxmin: true,
+                    shadeClose: true, //点击遮罩关闭层
+                    area: ['700px', '560px'],
+                    content: "{:url('mk_inquiry/condition')}",
+                    end: function () {
+
+                        var search_type = localStorage.getItem('search_type');
+                        var s = localStorage.getItem('field');
+                        var i = localStorage.getItem('keyword');
+
+                        // 表格重载
+                        table.reload('test', {
+                            url: "{:url('mk_inquiry/index')}",
+                            totalRow: true,
+                            where: {search_type: search_type, field: s, keyword: i},  // 设定异步数据接口的额外参数
+                            page: true
+                        });
                     }
                 });
             });
-        }else{
-            if(language === '中文') {
-                layer.alert('请先勾选要删除的数据再操作');
-            }else{
-                layer.msg('Please check the box before operating');
+        });
+
+        // 批量 生成报价单(多选操作)
+        $('#quote').click(function () {
+            var checkStatus = table.checkStatus('test');
+            var idstr = '';
+            var cd = checkStatus.data.length;
+
+            if (cd !== 0) {
+                for (var i = 0; i < cd; i++) {
+                    idstr += checkStatus.data[i].id + ',';
+                }
+                // 去除多余符号
+                idstr = idstr.substring(0, idstr.length - 1);
+
+                layer.confirm('Confirm？', function (index) {
+
+                    layer.msg('Please Wait', {icon: 16, shade: 0.3, time: 5000});
+
+                    // 向服务器发送请求
+                    $.ajax({
+                        type: 'get',
+                        url: "{:url('mk_inquiry/quotation')}",
+                        data: {id: idstr},
+                        // 成功
+                        success: function (res) {
+                            layer.alert(res.msg, {title: '提示'}, function (index) {
+                                // 关闭alert
+                                layer.close(index);
+
+                                // 跳转到 报价单列表
+                                // window.location.href = "{:url('mk_quote/index')}";
+                            });
+                        },
+                        error: function (jqXHR) {
+                            // 失败
+                            if (jqXHR.status === 422) {
+                                layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    });
+                });
+            } else {
+                if (language === '中文') {
+                    layer.alert('请先勾选数据再操作');
+                } else {
+                    layer.msg('Please check the box before operating');
+                }
             }
-        }
+        });
+
+        //批量删除(多选操作)
+        $('#del').click(function () {
+            var checkStatus = table.checkStatus('test');
+            var idstr = '';
+            var cd = checkStatus.data.length;
+
+            if (cd !== 0) {
+                for (var i = 0; i < cd; i++) {
+                    idstr += checkStatus.data[i].id + ',';
+                }
+                // 去除多余符号
+                idstr = idstr.substring(0, idstr.length - 1);
+
+                layer.confirm('确认删除？', function (index) {
+                    // 向服务器发送删除请求
+                    $.ajax({
+                        type: 'get',
+                        url: "{:url('mk_inquiry/file_batch_delete')}",
+                        data: {id: idstr},
+                        // 删除成功
+                        success: function (res) {
+                            layer.alert(res.msg, {title: '提示'}, function (index) {
+                                // 表格重载
+                                tableIns.reload();
+                                // 关闭alert
+                                layer.close(index);
+                            });
+                        },
+                        error: function (jqXHR) {
+                            // 删除失败
+                            if (jqXHR.status === 422) {
+                                layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    });
+                });
+            } else {
+                if (language === '中文') {
+                    layer.alert('请先勾选要删除的数据再操作');
+                } else {
+                    layer.msg('Please check the box before operating');
+                }
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            //获得当前行数据
+            var id = obj.data.id;
+
+            // 删除
+            if (obj.event === 'del') {
+                layer.confirm('确认删除？', function (index) {
+                    // 向服务器发送删除请求
+                    $.ajax({
+                        type: 'delete',
+                        contentType: 'application/json',
+                        url: replaceEditUrlId("{:url('mk_inquiry/file_delete', ['id' => 1])}", id),
+                        dataType: 'json',
+                        // 删除成功
+                        success: function (res) {
+                            layer.alert(res.msg, {title: '提示'}, function (index) {
+                                // 表格重载
+                                tableIns.reload();
+                                // 关闭alert
+                                layer.close(index);
+                            });
+                        },
+                        error: function (jqXHR) {
+                            // 删除失败
+                            if (jqXHR.status === 422) {
+                                layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    });
+                });
+
+            } else if (obj.event === 'edit') {
+
+                window.location.href = "{:url('mk_inquiry/file_edit')}" + '?id=' + id + '&i_id=' + i_id;
+
+            } else if (obj.event === 'quota') {
+
+                // 报价单
+                window.location.href = replaceEditUrlId("{:url('mk_inquiry/quotation', ['id' => 1])}", id);
+            }
+        });
+        //批量删除(多选操作)
+        $('#jieshou').click(function () {
+            var checkStatus = table.checkStatus('test');
+            var idstr = '';
+            var cd = checkStatus.data.length;
+
+            if (cd !== 0) {
+                for (var i = 0; i < cd; i++) {
+                    idstr += checkStatus.data[i].id + ',';
+                }
+                // 去除多余符号
+                idstr = idstr.substring(0, idstr.length - 1);
+
+                layer.confirm('确认接受？', function (index) {
+                    // 向服务器发送删除请求
+                    $.ajax({
+                        type: 'get',
+                        url: "{:url('mk_inquiry/adopt')}",
+                        data: {id: idstr},
+                        // 删除成功
+                        success: function (res) {
+                            layer.alert(res.msg, {title: '提示'}, function (index) {
+                                // 表格重载
+                                tableIns.reload();
+                                // 关闭alert
+                                layer.close(index);
+                            });
+                        },
+                        error: function (jqXHR) {
+                            // 删除失败
+                            if (jqXHR.status === 422) {
+                                layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        }
+                    });
+                });
+            } else {
+                if (language === '中文') {
+                    layer.alert('请先勾选要接受的数据再操作');
+                } else {
+                    layer.msg('Please check the data you want to accept before you operate');
+                }
+            }
+        });
+        $("#daoru").click(function () {
+            var html =
+                '<div class="layui-upload" id="upload_file" style="margin-bottom:15px;margin-top:15px;text-align:center">'
+                + '     <button type="button" class="layui-btn layui-btn-radius layui-btn-primary" id="test8">上传xls,xlsx</button>'
+                + '<br />'
+                + '     <button type="button" style="margin-top:5px" class="layui-btn layui-btn-normal" id="test9">上传</button>'
+                + '     <button type="button" style="margin-top:5px" class="layui-btn close">取消</button>'
+                + '</div>'
+            layer.open({
+                title: '导入报价项目',
+                area: ['300px', '200px'], //宽高
+                type: 1,
+                content: html
+            });
+            layui.use('upload', function () {
+                var upload = layui.upload;
+                upload.render({
+                    elem: '#test8',
+                    url: '/admin/mk_inquiry/import',
+                    auto: false,
+                    accept: 'file',
+                    size: 10240,
+                    //,multiple: true
+                    bindAction: '#test9',
+                    data: {
+                        i_id: i_id
+                    },
+                    done: function (res) {
+                        if (res.code == 1) {
+                            layer.closeAll();
+                            layer.msg(res.msg);
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                        return false;
+                    }
+                });
+            });
+        });
+
     });
-
-	//监听行工具事件
-	table.on('tool(test)', function(obj){
-		//获得当前行数据
-		var id = obj.data.id;
-
-		// 删除
-		if(obj.event === 'del'){
-			  layer.confirm('确认删除？', function(index){
-				  // 向服务器发送删除请求
-				  $.ajax({
-					  type: 'delete',
-					  contentType: 'application/json',
-					  url: replaceEditUrlId("{:url('mk_inquiry/file_delete', ['id' => 1])}", id),
-					  dataType: 'json',
-					  // 删除成功
-					  success: function (res) {
-						  layer.alert(res.msg, {title: '提示'}, function (index) {
-							  // 表格重载
-							  tableIns.reload();
-							  // 关闭alert
-							  layer.close(index);
-						  });
-					  },
-					  error: function (jqXHR) {
-						  // 删除失败
-						  if (jqXHR.status === 422) {
-							  layer.alert(jqXHR.responseText, {title: '提示'}, function (index) {
-								  layer.close(index);
-							  });
-						  }
-					  }
-				  });
-			  });
-
-		} else if(obj.event === 'edit'){
-
-			window.location.href =  "{:url('mk_inquiry/file_edit')}" + '?id=' + id + '&i_id=' + i_id;
-
-		} else if(obj.event === 'quota'){
-
-			// 报价单
-			window.location.href = replaceEditUrlId("{:url('mk_inquiry/quotation', ['id' => 1])}", id);
-		}
-	});
-
-});
 
 </script>
 {/block}					
