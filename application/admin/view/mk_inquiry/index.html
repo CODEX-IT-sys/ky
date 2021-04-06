@@ -375,7 +375,20 @@ layui.use(['table','form'], function(){
 		obj.update(value) //修改当前行数据
 
 		layer.confirm('确认修改?', {
-			btn: ['确认','取消'] //按钮
+			btn: ['确认','取消'], //按钮
+			success:function(){
+				this.enterEsc = function (event) {
+					if (event.keyCode === 13) {
+						return false; //阻止系统默认回车事件
+					}else if(event.keyCode == 27){
+						return false;
+					}
+				};
+				$(document).on('keydown', this.enterEsc); //监听键盘事件，关闭层
+			},
+			end:function(){
+				$(document).off('keydown',this.enterEsc); //解除键盘关闭事件
+			}
 		}, function(){
 			$.ajax({
 				url: "{:url('editing')}",
