@@ -1,4 +1,4 @@
-<?php /*a:2:{s:77:"D:\largon\laragon\www\ky\application\admin\view\pj_project_profile\index.html";i:1615786782;s:18:"./layout/list.html";i:1615863909;}*/ ?>
+<?php /*a:2:{s:77:"D:\largon\laragon\www\ky\application\admin\view\pj_project_profile\index.html";i:1617787802;s:18:"./layout/list.html";i:1615863909;}*/ ?>
 <!doctype html>
 <html>
 <head>
@@ -34,7 +34,7 @@
 						<a href="<?php echo url('pj_project_profile/text_list'); ?>" class="layui-btn com_btn"><?php echo session('language') == '中文'? '基本信息' : 'General Info'; ?></a>
 
 						<a href="<?php echo url('pj_project_profile/create'); ?>" class="layui-btn"><?php echo session('language') == '中文'? '新增' : 'Add'; ?></a>
-
+						<a class="layui-btn com_btn" id="xzedit">已选中列数据编辑</a>
 						<!--<a class="layui-btn delete_btn" id="del"><?php echo session('language') == '中文'? '删除' : 'Delete'; ?></a>-->
 					</div>
 				</div>
@@ -317,6 +317,71 @@ layui.use(['table','form'], function(){
                 elemCurr.prop('checked') ? (!$('input[lay-filter="LAY_TABLE_TOOL_COLS"]').not(':checked').length) : false);
         form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
     });
+
+	$('#xzedit').click(function () {
+
+		var option =  '<?php if(is_array($select_field) || $select_field instanceof \think\Collection || $select_field instanceof \think\Paginator): if( count($select_field)==0 ) : echo "" ;else: foreach($select_field as $k=>$v): ?><option value="<?php echo htmlentities($v['Field']); ?>" <?php echo $field==$v['Field'] ? 'selected' : ''; ?>">  <?php echo htmlentities($v['Comment']); ?></option><?php endforeach; endif; else: echo "" ;endif; ?>'
+		// if(option.indexOf('value="'+pid+'"') != -1){
+		//     option = option.replace('value="'+pid+'"','value="'+pid+'" selected');
+		// }
+
+		var html = '';
+		html +=  '<div class="layui-form-item" >'
+		html +=     '<label class="layui-form-label" style="width:70px;padding:9px 5px">字段:</label>'
+		html +=    '<div class="layui-input-inline ">'
+		html +=         '<select name="field" lay-verify="" lay-search class="layui-input"style="margin-left:15px; width:100px;">'
+		html +=             option
+		html +=        '</select>'
+		html +=     '</div>'
+		html +=   '</div>'
+		html += '<div class="layui-form-item" style="margin:15px 10px">'
+		html += '  <label class="layui-form-label" style="width:70px;padding:9px 5px">修改的值：</label>'
+		html += '  <div class="layui-input-block" style="margin-left:85px">'
+		html += '    <input class="layui-input" style="width:70%;float:left" name="numsss" id="editstr" value="" /><span  class="h38" style="display:block;float:left;margin-left:5px;"></span>'
+		html += '  </div>'
+		html += '</div>'
+
+		layer.open({
+			area: ['320px', '300px'], //宽高
+			title: '批量修改',
+			btn: ['确定', '取消'],
+			content: html,
+			yes: function (index, layero) {
+				var field = $('select[name="field"]').val();
+				var editstr = $('input[name="numsss"]').val();
+				var checkStatus = table.checkStatus('test');
+				console.log(checkStatus.data)
+				var arr=new Object();
+				for(var i=0;i<checkStatus.data.length;i++){
+					arr[i] = checkStatus.data[i]['id']
+				}
+				console.log(arr);
+				// 向服务器发送删除请求
+				$.ajax({
+					type: 'post',
+					url: "<?php echo url('Batch_edit'); ?>",
+					data: {arr: arr,field:field,numsss:editstr},
+					// 删除成功
+					success: function (res) {
+						if(res.code==9999){
+							layer.msg('修改失败');
+						}else{
+							tableIns.reload();
+							layer.close(index);
+							layer.msg(res);
+						}
+
+					},
+
+				});
+				console.log(field);
+			},
+			btn2: function (index, layero) {
+				layer.close(index);
+			},
+		});
+
+	})
 });
 </script>
 

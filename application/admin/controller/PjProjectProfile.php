@@ -11,7 +11,7 @@ use think\Controller;
 use think\Request;
 use think\Db;
 
-// 项目描述 控制器
+// 项目描述 控制器描述
 class PjProjectProfile extends Common
 {
 
@@ -298,9 +298,9 @@ class PjProjectProfile extends Common
         $data['Filled_by'] = session('administrator')['name'];
 
         // 保存
-        PjProjectProfileModel::create($data);
-
-        // 项目任务分配 提醒消息 信息(Pre、Post format; TR、RE、PA)
+        $save=  PjProjectProfileModel::create($data);
+//        $save->schedule()->save(['status' => 'thinkphp']);
+//         项目任务分配 提醒消息 信息(Pre、Post format; TR、RE、PA)
         $pjm_data['cn_title'] = '您有新项目信息待处理！';
         $pjm_data['en_title'] = 'You have new Project to pending';
         $pjm_data['status'] = 0;
@@ -536,5 +536,22 @@ class PjProjectProfile extends Common
             'data'=>$info, 'fc'=>json_encode($document_type),
             'tr'=>json_encode($tr), 're'=>json_encode($re), 'yp'=>json_encode($yp), 'hp'=>json_encode($hp)
         ]);
+    }
+    //批量修改
+    public function Batch_edit(Request $request)
+    {
+
+        try {
+            $data=$request->param();
+            $res = Db::name('pj_project_profile')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json(['code'=>9999,'error'=>$e->getMessage()]);
+        }
+
+        return json(['code'=>$res]);
     }
 }
