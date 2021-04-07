@@ -214,4 +214,21 @@ class PjDailyProgressDtp extends Common
         return json(['data'=>$info]);
     }
 
+    public function Batch_edit(Request $request)
+    {
+
+        try {
+            $data=$request->param();
+            $res = Db::name('pj_daily_progress_dtp')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json(['code'=>9999,'error'=>$e->getMessage()]);
+        }
+
+        return json(['code'=>$res]);
+    }
+
 }
