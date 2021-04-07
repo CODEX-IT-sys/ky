@@ -143,7 +143,8 @@ layui.use(['table','form'], function(){
             ,defaultToolbar: ['filter', 'exports', 'print']
             ,title: '项目描述表'
             ,cols : commonCols(language, colsData)
-        	,page: true, limit:50, height:700
+        	,page: true, limit:50,			height: 'full-20',
+		even: true
     });
 
     // 回车亦可以搜索

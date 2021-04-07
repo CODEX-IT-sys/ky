@@ -14,7 +14,7 @@
 					<div class="global_btn">
 						<a href="{:url('pj_project_database/create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
 						<a class="layui-btn com_btn" id="xzedit">已选中列数据编辑</a>
-
+						<a class="layui-btn com_btn" id="sjth">已选中列数据计算</a>
 						<!--<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>-->
 					</div>
 				</div>
@@ -29,6 +29,9 @@
 							<h5 class="explainTitle">
 								<i class="iconfont icon-tishi"></i>
 								<span>说明</span>
+								<span id="jisuan"  style="background: #0ba4da;float: right;">
+
+                            </span>
 							</h5>
 							<div class="explainCt">
 								{$intro|raw}
@@ -140,7 +143,8 @@ layui.use(['table','form'], function(){
             ,defaultToolbar: ['filter', 'exports', 'print']
             ,title: '项目数据库'
             ,cols : commonCols(language, colsData)
-            ,page: true, limit:50, height:700
+            ,page: true, limit:50, 			height: 'full-20',
+		even: true
     });
 
     // 回车亦可以搜索
@@ -336,7 +340,20 @@ layui.use(['table','form'], function(){
         form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
     });
 
+	$('#sjth').click(function () {
+		var checkStatus = table.checkStatus('test');
+		var num = 0
+		var num2 = 0
+		for (v in checkStatus.data) {
+			num += checkStatus.data[v]['Pages'];
+			num2 += checkStatus.data[v]['Source_Text_Word_Count'];
+		}
+		var msg = "选中页数:" + num + ';源语数量:' + num2;
 
+		$('#jisuan').html(msg)
+		layer.alert(msg);
+		// console.log(num);
+	});
 	$('#xzedit').click(function () {
 
 		var option =  '{foreach name="select_field" item="v" key="k"}<option value="{$v.Field}" {$field==$v.Field?\'selected\':\'\'}">  {$v.Comment}</option>{/foreach}'

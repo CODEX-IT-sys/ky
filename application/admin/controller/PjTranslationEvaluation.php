@@ -265,4 +265,20 @@ class PjTranslationEvaluation extends Common
             return json(['code'=>1]);
         }
     }
+    public function Batch_edit(Request $request)
+    {
+
+        try {
+            $data=$request->param();
+            $res = Db::name('pj_translation_evaluation')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json(['code'=>9999,'error'=>$e->getMessage()]);
+        }
+
+        return json(['code'=>$res]);
+    }
 }
