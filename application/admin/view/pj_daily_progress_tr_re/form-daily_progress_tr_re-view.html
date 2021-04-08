@@ -399,10 +399,36 @@
 		var validatorFunc = function () {
 			var validator = new Validator();
 
+			validator.add('Work_Content', [{
+				rule: 'require',
+				msg: '工作内容不能为空'
+			}]);
+			validator.add('Language', [{
+				rule: 'require',
+				msg: '语种不能为空'
+			}]);
+			validator.add('Update_TM', [{
+				rule: 'require',
+				msg: '请选择是否更新主库'
+			}]);
+			validator.add('Update_TB', [{
+				rule: 'require',
+				msg: '请选择是否提交术语表'
+			}]);
+			validator.add('Go_to_Finalize_in_Trados', [{
+				rule: 'require',
+				msg: '请选择文件阶段是否转至定稿'
+			}]);
+
 			// 人员必填
 			validator.add('Name_of_Translator_or_Reviser', [{
 				rule: 'require',
 				msg: '翻译/校对人员姓名不能为空'
+			}]);
+
+			validator.add('Filing_Code', [{
+				rule: 'require',
+				msg: '文件编号不能为空'
 			}]);
 
 			validator.add('Total_Chinese_Characters', [{
@@ -410,11 +436,21 @@
 				msg: '中文字数统计不能为空'
 			}]);
 
+			validator.add('Company_Name', [{
+				rule: 'require',
+				msg: '公司名称不能为空'
+			}]);
+
+			validator.add('Job_Name', [{
+				rule: 'require',
+				msg: '文件名称不能为空'
+			}]);
+
 			// 日期必填项
-            validator.add('Work_Date', [{
-                rule: 'require',
-                msg: '工作日期不能为空'
-            }]);
+			validator.add('Work_Date', [{
+				rule: 'require',
+				msg: '工作日期不能为空'
+			}]);
 
 			validator.add('Start_Time', [{
 				rule: 'require',
@@ -426,11 +462,12 @@
 				msg: '结束时间不能为空'
 			}]);
 
-            // 数值验证
-            validator.add('Number_of_Pages_Completed', [{
-                rule: 'isNum',
-                msg: '页数只允许是数值数据'
-            }]);
+
+			// 数值验证
+			validator.add('Number_of_Pages_Completed', [{
+				rule: 'isNum',
+				msg: '页数只允许是数值数据'
+			}]);
 
 			return validator.start();
 		};
@@ -449,6 +486,15 @@
 
 			// 表单提交
 			$('#form').submit();
+		});
+
+		$('#yzs').blur(function(){
+			var bfb = $('#bfb').val();
+			if(bfb!=100){
+				$('#yzs').val(0);
+				$('#zzs').val(0);
+				layer.msg('完成百分比为100才可填写');
+			}
 		});
 	})
 </script>

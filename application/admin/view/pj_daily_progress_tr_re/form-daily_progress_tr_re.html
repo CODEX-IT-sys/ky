@@ -106,7 +106,7 @@
 							<div class="layui-col-xs4">
 							    <div class="layui-form-item">
 							        <label class="layui-form-label" title="{:session('language') == '中文'? '完成页码' : 'Number of Pages Completed'}">
-							            {:session('language') == '中文'? '完成页码' : 'Number of Pages Completed'}
+							            {:session('language') == '中文'? '完成页码(所有该文件进度和不能超过项目页数)' : 'Number of Pages Completed'}
 							        </label>
 							        <div class="layui-input-block">
 							            <input name="Number_of_Pages_Completed" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number" value="0">
@@ -156,7 +156,7 @@
 							            {:session('language') == '中文'? '已完成百分比' : 'Percentage Completed'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Percentage_Completed" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Percentage_Completed" lay-verify="required" autocomplete="off" id="bfb" placeholder="" class="layui-input" value="0" type="number">
 							        </div>
 									<span class="signTip">%</span>
 							    </div>
@@ -202,7 +202,7 @@
 										{:session('language') == '中文'? '中文字数统计' : 'Total Chinese Characters'}
 									</label>
 									<div class="layui-input-block">
-										<input name="Total_Chinese_Characters" id="zzs" autocomplete="off" placeholder="" class="layui-input" type="number">
+										<input name="Total_Chinese_Characters" id="zzs" autocomplete="off" placeholder="" class="layui-input" type="number" disabled>
 									</div>
 								</div>
 							</div>
@@ -481,7 +481,18 @@
 				rule: 'require',
 				msg: '语种不能为空'
 			}]);
-
+			validator.add('Update_TM', [{
+				rule: 'require',
+				msg: '请选择是否更新主库'
+			}]);
+			validator.add('Update_TB', [{
+				rule: 'require',
+				msg: '请选择是否提交术语表'
+			}]);
+			validator.add('Go_to_Finalize_in_Trados', [{
+				rule: 'require',
+				msg: '请选择文件阶段是否转至定稿'
+			}]);
 
 			// 人员必填
 			validator.add('Name_of_Translator_or_Reviser', [{
@@ -550,6 +561,15 @@
 			// 表单提交
 			$('#form').submit();
 		})
+
+		$('#yzs').blur(function(){
+			var bfb = $('#bfb').val();
+			if(bfb!=100){
+				$('#yzs').val(0);
+				$('#zzs').val(0);
+				layer.msg('完成百分比为100才可填写');
+			}
+		});
 	})
 
 </script>

@@ -100,10 +100,24 @@ class PjDailyProgressTrRe extends Common
     {
         // 获取提交的数据
         $data = $request->post();
+        $admin=$this->userinfo();
         //如果不是翻译,排版.完成页数为0
-        if($data['Work_Content']!='Revise'&&$data['Work_Content']!='Translate'){
+        if($data['Work_Content']!='Revise'&&$data['Work_Content']!='Translate'&&$data['Work_Content']!='RE (Sampling)'&&$data['Work_Content']!='RE (Highlight)'&&$data['Work_Content']!='RE (Sampling_Highlight)'){
             $data['Number_of_Pages_Completed']=0;
         };
+        //计算项目描述表中的文件编号的页数
+        $xmms=Db::name('pj_project_profile')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->value('Pages');
+        //计算改文件的页数和
+         $ysh   =Db::name('pj_daily_progress_tr_re')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->where('Filled_by',$admin['name'])
+             ->where('Work_Content',$data['Work_Content'])->sum('Number_of_Pages_Completed');
+
+         if($ysh+$data['Number_of_Pages_Completed']>$xmms){
+
+          return $this->error('该文件完成页数和和超过项目描述页数');
+        }
+
+
+
 
         // 计算实际用时
         $s = strtotime($data['Start_Time']);
@@ -161,7 +175,24 @@ class PjDailyProgressTrRe extends Common
     {
         // 获取提交的数据
         $data = $request->post();
+//        dump($data);die;
+        $admin=$this->userinfo();
+        //如果不是翻译,排版.完成页数为0
+        if($data['Work_Content']!='Revise'&&$data['Work_Content']!='Translate'&&$data['Work_Content']!='RE (Sampling)'&&$data['Work_Content']!='RE (Highlight)'&&$data['Work_Content']!='RE (Sampling_Highlight)'){
+            $data['Number_of_Pages_Completed']=0;
+        };
+        //计算项目描述表中的文件编号的页数
+        $xmms=Db::name('pj_project_profile')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->value('Pages');
+        //去除正在修改的页数
+        $page=Db::name('pj_daily_progress_tr_re')->where('id',$data['id'])->value('Number_of_Pages_Completed');
+//        dump($page);die;
+        //计算改文件的页数和
+        $ysh   =Db::name('pj_daily_progress_tr_re')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->where('Filled_by',$admin['name'])
+            ->where('Work_Content',$data['Work_Content'])->sum('Number_of_Pages_Completed');
 
+        if($ysh+$data['Number_of_Pages_Completed']-$page>$xmms){
+            return $this->error('该文件完成页数和和超过项目描述页数');
+        }
         // 计算实际用时
         $s = strtotime($data['Start_Time']);
         $e = strtotime($data['End_Time']);
