@@ -110,7 +110,7 @@
 							            {:session('language') == '中文'? '完成页码' : 'Number of Pages Completed'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Number_of_Pages_Completed" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Number_of_Pages_Completed" id="yzs" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
 							        </div>
 							    </div>
 							</div>
@@ -157,7 +157,7 @@
 							            {:session('language') == '中文'? '已完成百分比' : 'Percentage Completed'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Percentage_Completed" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Percentage_Completed" lay-verify="required" id="bfb" autocomplete="off" placeholder="" class="layui-input" type="number">
 							        </div>
 									<span class="signTip">%</span>
 							    </div>
@@ -349,6 +349,10 @@
 				rule: 'require',
 				msg: '排版人员姓名不能为空'
 			}]);
+			validator.add('Work_Content', [{
+				rule: 'require',
+				msg: '请选择工作内容'
+			}]);
 
 			validator.add('Filing_Code', [{
 				rule: 'require',
@@ -359,7 +363,10 @@
 				rule: 'require',
 				msg: '公司名称不能为空'
 			}]);
-
+			validator.add('Delivery_Delay', [{
+				rule: 'require',
+				msg: '请选择是否延迟提交'
+			}]);
 			validator.add('Job_Name', [{
 				rule: 'require',
 				msg: '文件名称不能为空'
@@ -404,6 +411,15 @@
 
 			// 表单提交
 			$('#form').submit();
+		});
+
+		$('#yzs').blur(function(){
+			var bfb = $('#bfb').val();
+			if(bfb!=100){
+				$('#yzs').val(0);
+				$('#zzs').val(0);
+				layer.msg('完成百分比为100才可填写完成页码');
+			}
 		});
 	})
 </script>

@@ -105,7 +105,29 @@ class PjDailyProgressDtp extends Common
     {
         // 获取提交的数据
         $data = $request->post();
+        //获取工作内容页数和
+        $ysh   =Db::name('pj_daily_progress_dtp')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->where('Name_of_Formatter',$data['Name_of_Formatter'])
+            ->where('Work_Content',$data['Work_Content'])->sum('Number_of_Pages_Completed');
 
+        //计算项目描述表中的文件编号的页数
+        $xmms=Db::name('pj_project_profile')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->value('Pages');
+        if($ysh+$data['Number_of_Pages_Completed']>$xmms){
+            return $this->error('该文件完成页数和和超过项目描述页数');
+        }
+
+        if($data['Work_Content']=='Postformat'){
+            //获取y排版人员
+            $ypb=Db::name('pj_daily_progress_dtp')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])
+                ->where('Work_Content','Preformat')->select();
+            $man=[];
+            foreach ($ypb as $k=>$v)
+            {
+                $man[]=$v['Name_of_Formatter'];
+            }
+            if(in_array($data['Name_of_Formatter'],$man)){
+                $data['Number_of_Pages_Completed']=0;
+            }
+        }
         // 计算实际用时
         $s = strtotime($data['Start_Time']);
         $e = strtotime($data['End_Time']);
@@ -147,7 +169,30 @@ class PjDailyProgressDtp extends Common
     {
         // 获取提交的数据
         $data = $request->post();
+        //获取工作内容页数和
+        $ysh   =Db::name('pj_daily_progress_dtp')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->where('Name_of_Formatter',$data['Name_of_Formatter'])
+            ->where('Work_Content',$data['Work_Content'])->sum('Number_of_Pages_Completed');
 
+        //计算项目描述表中的文件编号的页数
+        $xmms=Db::name('pj_project_profile')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])->value('Pages');
+        //去除正在修改的页数
+        $page=Db::name('pj_project_profile')->where('id',$data['id'])->value('Number_of_Pages_Completed');
+        if($ysh+$data['Number_of_Pages_Completed']-$page>$xmms){
+            return $this->error('该文件完成页数和和超过项目描述页数');
+        }
+        if($data['Work_Content']=='Postformat'){
+            //获取y排版人员
+            $ypb=Db::name('pj_daily_progress_dtp')->where('Filing_Code',$data['Filing_Code'])->where('Job_Name',$data['Job_Name'])
+                ->where('Work_Content','Preformat')->select();
+            $man=[];
+            foreach ($ypb as $k=>$v)
+            {
+                $man[]=$v['Name_of_Formatter'];
+            }
+            if(in_array($data['Name_of_Formatter'],$man)){
+                $data['Number_of_Pages_Completed']=0;
+            }
+        }
         // 计算实际用时
         $s = strtotime($data['Start_Time']);
         $e = strtotime($data['End_Time']);
