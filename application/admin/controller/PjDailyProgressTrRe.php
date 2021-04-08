@@ -100,6 +100,10 @@ class PjDailyProgressTrRe extends Common
     {
         // 获取提交的数据
         $data = $request->post();
+        //如果不是翻译,排版.完成页数为0
+        if($data['Work_Content']!='Revise'&&$data['Work_Content']!='Translate'){
+            $data['Number_of_Pages_Completed']=0;
+        };
 
         // 计算实际用时
         $s = strtotime($data['Start_Time']);
@@ -255,6 +259,7 @@ class PjDailyProgressTrRe extends Common
     // 根据 文件编码、文件名称 获取相关信息
     public function get_info($code, $name)
     {
+
 
         $info = PjProjectProfileModel::where('Filing_Code', $code)
             ->field('Company_Name, Language, Translation_Difficulty, Total_Repetition_Rate, Excluding_Words')
