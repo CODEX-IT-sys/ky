@@ -21,14 +21,128 @@ class PjProjectDatabase extends Common
         // 数据库表字段集
         $colsData = getAllField('ky_pj_project_database');
 
+//        dump($colsData);
+//        die;
+        foreach ($colsData as $k=>$v)
+        {
+            switch($v['Field']){
+                case 'Filing_Code':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['fixed']='left';
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Company_Name':
+                    $colsData[$k]['width']=100;
+                    break;
+                case 'Project_Name':
+                    $colsData[$k]['width']=200;
+                    break;
+                case 'Job_Name':
+                    $colsData[$k]['width']=140;
+                    $colsData[$k]['fixed']='left';
+                    break;
+                case 'Pages':
+                    $colsData[$k]['width']=60;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Source_Text_Word_Count':
+                    $colsData[$k]['width']=90;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Filled_by':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'PA':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'CODEX_Team':
+//                    $colsData[$k]['width']=100;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Sub_Contracted':
+                    $colsData[$k]['hide']=true;
+                    break;
+
+                case 'Pre_Format_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'PA':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Post_Formatter':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Pre_Formatter':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'File_Type':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Completed':
+                    $colsData[$k]['width']=100;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Translator':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Reviser':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Translation_Start_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                default:
+                    $colsData[$k]['width']=80;
+
+            }
+
+        }
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',7)->value('intro');
+        $edit=[
+            [
+                'Field'=>'Update_Company_TM',
+                'Comment'=>'是否更新公司主库'
+            ],
+            [
+                'Field'=>'Update_File_TM',
+                'Comment'=>'是否更新文件主库'
+            ],
+            [
+                'Field'=>'Updating_Means',
+                'Comment'=>'更新方式'
+            ],
+            [
+                'Field'=>'Update_Time',
+                'Comment'=>'更新时间'
+            ],
+            [
+                'Field'=>'Product_Involved',
+                'Comment'=>'涉及产品    '
+            ],
+            [
+                'Field'=>'Product_Parts',
+                'Comment'=>'产品部件'
+            ],
+            [
+                'Field'=>'Brand_and_Model',
+                'Comment'=>'品牌型号'
+            ],
+            [
+                'Field'=>'Industry_Field',
+                'Comment'=>'应用领域'
+            ],
+            [
+                'Field'=>'Comment',
+                'Comment'=>'备注'
+            ],
 
+        ];
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
                 'select_field'=>$colsData, 'colsData' => json_encode($colsData),
-                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword
+                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,'editor'=>$edit
             ]);
         }
 

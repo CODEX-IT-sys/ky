@@ -37,6 +37,7 @@ class PjProjectProfile extends Common
                 case 'Filing_Code':
                     $colsData[$k]['width']=180;
                     $colsData[$k]['fixed']='left';
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Company_Name':
                     $colsData[$k]['width']=100;
@@ -82,6 +83,12 @@ class PjProjectProfile extends Common
                     break;
                 case 'Final_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    break;
+                case 'Translator':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Reviser':
+                    $colsData[$k]['sort']='true';
                     break;
                 default:
                     $colsData[$k]['width']=80;

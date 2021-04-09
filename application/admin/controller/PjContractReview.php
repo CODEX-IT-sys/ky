@@ -20,14 +20,152 @@ class PjContractReview extends Common
         // 数据库表字段集
         $colsData = getAllField('ky_pj_contract_review');
 
+        foreach ($colsData as $k=>$v)
+        {
+            switch($v['Field']){
+                case 'Filing_Code':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['fixed']='left';
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Company_Name':
+                    $colsData[$k]['width']=100;
+                    break;
+                case 'Project_Name':
+                    $colsData[$k]['width']=200;
+                    break;
+                case 'Job_Name':
+                    $colsData[$k]['width']=140;
+                    $colsData[$k]['fixed']='left';
+                    break;
+                case 'Pages':
+                    $colsData[$k]['width']=60;
+                    break;
+                case 'Source_Text_Word_Count':
+                    $colsData[$k]['width']=90;
+                    break;
+                case 'Filled_by':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'PA':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'CODEX_Team':
+//                    $colsData[$k]['width']=100;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Sub_Contracted':
+                    $colsData[$k]['hide']=true;
+                    break;
+
+                case 'Pre_Format_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Translation_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Revision_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Post_Format_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Final_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Delivery_Date_Expected':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Translator':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Reviser':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Translation_Start_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                default:
+                    $colsData[$k]['width']=80;
+
+            }
+
+        }
+
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',6)->value('intro');
+        $edit=[
+            [
+                'Field'=>'File_Category',
+                'Comment'=>'文件分类'
+            ],
+            [
+                'Field'=>'Format_Difficulty',
+                'Comment'=>'排版难易程度'
+            ],
+            [
+                'Field'=>'Translation_Difficulty',
+                'Comment'=>'翻译难易程度'
+            ],
+            [
+                'Field'=>'Translator',
+                'Comment'=>'翻译人员'
+            ],
+            [
+                'Field'=>'Translation_Start_Time',
+                'Comment'=>'翻译开始时间'
+            ],
+            [
+                'Field'=>'Translation_Delivery_Time',
+                'Comment'=>'翻译交付时间'
+            ],
+            [
+                'Field'=>'Pre_Formatter',
+                'Comment'=>'预排版人员'
+            ],
+            [
+                'Field'=>'Pre_Format_Delivery_Time',
+                'Comment'=>'预排版交付时间'
+            ],
+            [
+                'Field'=>'Reviser',
+                'Comment'=>'校对人员'
+            ],
+            [
+                'Field'=>'Revision_Delivery_Time',
+                'Comment'=>'校对交付时间'
+            ],
+            [
+                'Field'=>'Post_Formatter',
+                'Comment'=>'后排版人员'
+            ],
+            [
+                'Field'=>'Post_Format_Delivery_Time',
+                'Comment'=>'后排版交付时间'
+            ],
+            [
+                'Field'=>'Delivered_or_Not',
+                'Comment'=>'是否交稿'
+            ],
+            [
+                'Field'=>'Quality_Requirements',
+                'Comment'=>'质量要求'
+            ],
+            [
+                'Field'=>'PA',
+                'Comment'=>'项目助理'
+            ],
+            [
+                'Field'=>'PM',
+                'Comment'=>'项目经理'
+            ],
 
+        ];
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
                 'select_field'=>$colsData, 'colsData' => json_encode($colsData),
-                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword
+                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,'editor'=>$edit
             ]);
         }
 
