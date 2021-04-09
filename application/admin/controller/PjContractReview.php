@@ -78,9 +78,11 @@ class PjContractReview extends Common
                     break;
                 case 'Translator':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Reviser':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Translation_Start_Time':
                     $colsData[$k]['width']=150;
@@ -501,7 +503,7 @@ class PjContractReview extends Common
         PjContractReviewModel::create($data);
 
         // 同步更新 项目数据库表 相关信息
-        $f = ['Translator','Reviser','Pre_Formatter','Post_Formatter',
+        $f = ['Translator','Reviser','Pre_Formatter','Post_Formatter','Language','File_Type','File_Category',
             'Completed','Delivered_or_Not', 'File_Category', 'PA'];
 
         $db_data = [];

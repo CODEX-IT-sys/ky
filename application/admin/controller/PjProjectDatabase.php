@@ -84,9 +84,11 @@ class PjProjectDatabase extends Common
                     break;
                 case 'Translator':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Reviser':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Translation_Start_Time':
                     $colsData[$k]['width']=150;
