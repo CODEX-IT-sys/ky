@@ -75,7 +75,11 @@ class PjTranslationEvaluation extends Model
         }
 
         // 返回分页对象
-        return $query->where($where)->order('id desc')->where('Filled_by',$name)->paginate($limit);
+        if(in_array($job_id,['10','11','12','13'])){
+            return $query->order('id desc')->where('Filled_by',$name)->paginate($limit);
+        }
+        // 返回分页对象
+        return $query->order('id desc')->paginate($limit);
     }
 
     // 查询所有

@@ -11,9 +11,24 @@ use think\model\concern\SoftDelete;
 class PjProjectProfile extends Model
 {
     // 软删除
-    use SoftDelete;
+//    use SoftDelete;
     protected $deleteTime = 'delete_time';
     protected $defaultSoftDelete = 0;
+
+
+
+
+    //反向关联项目描述
+    public function schedule()
+    {
+        return $this->hasOne('ZSchedule','profile_id','id');
+    }
+
+
+
+
+
+
 
     /**
      * 获取列表
@@ -113,7 +128,7 @@ class PjProjectProfile extends Model
         }
 
         // 返回分页对象
-        return $query->where($where)->order('id desc')->paginate($limit);
+        return $query->where($where)->with('schedule')->order('id desc')->paginate($limit);
     }
 
     public function getAll()
