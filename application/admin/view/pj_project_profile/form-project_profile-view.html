@@ -558,27 +558,35 @@
         });
 
         // 100%
-        $('#ybcfz').change(function () {
-
+        // $('#ybcfz').change(function () {
+			$("#ybcfz").bind('input porpertychange',function(){
             var ybcfz = $.trim($('#ybcfz').val());
             var jwcfz = $.trim($('#jwcfz').val());
-
+            var yzs = $.trim($('#yzs').val());
+				var kczs = $.trim($('#kczs').val());
             ybcfz?ybcfz:0; jwcfz?jwcfz:0;
 
             var zcfz = Number(ybcfz) + Number(jwcfz);
-
+            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+            $('#sjyzs').val(sjyzs);
             $('#zcfz').val(zcfz);
         });
 
         // 95-99%
-        $('#jwcfz').change(function () {
+		$("#jwcfz").bind('input porpertychange',function(){
+        // $('#jwcfz').oninput(function () {
 
             var ybcfz = $.trim($('#ybcfz').val());
             var jwcfz = $.trim($('#jwcfz').val());
-
+			var yzs = $.trim($('#yzs').val());
+			var kczs = $.trim($('#kczs').val());
             ybcfz?ybcfz:0; jwcfz?jwcfz:0;
 
             var zcfz = Number(ybcfz) + Number(jwcfz);
+
+			var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+
+			$('#sjyzs').val(sjyzs);
 
             $('#zcfz').val(zcfz);
         });
@@ -612,7 +620,8 @@
         });
 
         // 扣除字数
-        $('#kczs').change(function () {
+        // $('#kczs').oninput(function () {
+			$("#kczs").bind('input porpertychange',function(){
 
             var yzs = $.trim($('#yzs').val());
             var zcfz = $.trim($('#zcfz').val());
