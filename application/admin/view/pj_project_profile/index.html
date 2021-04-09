@@ -92,7 +92,7 @@
 		<a class="layui-btn layui-btn-xs com_btn" lay-event="view_file">{:session('language') == '中文'? '查看资料' : 'View File'}</a>
 		<a class="layui-btn layui-btn-xs modify_btn" lay-event="edit">{:session('language') == '中文'? '修改' : 'Edit'}</a>
 		<a class="layui-btn layui-btn-xs delete_btn" lay-event="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>
-		<a class="layui-btn layui-btn-xs com_btn" lay-event="data_read">{:session('language') == '中文'? '数据读取' : 'Data Read'}</a>
+		<!--<a class="layui-btn layui-btn-xs com_btn" lay-event="data_read">{:session('language') == '中文'? '数据读取' : 'Data Read'}</a>-->
 	</div>
 </script>
 
@@ -119,7 +119,7 @@ layui.use(['table','form'], function(){
             if(colsData[i].Field !== 'delete_time'){
                 if(colsData[i].Field !== 'id'){
                     if(language === '中文'){
-                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true,totalRow:true,width:colsData[i].width});
+                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, totalRow:true,width:colsData[i].width,fixed:colsData[i].fixed,hide:colsData[i].hide});
                     }else{
                         cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:200, totalRow:true});
                     }
@@ -128,7 +128,7 @@ layui.use(['table','form'], function(){
         }
 		// 右侧操作工具
 		if(language === '中文') {
-			cols.push({fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo', width: 300});
+			cols.push({fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo', width: 195});
 		}else{
 			cols.push({fixed: 'right', title: 'Action', align: 'center', toolbar: '#barDemo', width: 320});
 		}
@@ -319,7 +319,7 @@ layui.use(['table','form'], function(){
 
 	$('#xzedit').click(function () {
 
-		var option =  '{foreach name="select_field" item="v" key="k"}<option value="{$v.Field}" {$field==$v.Field?\'selected\':\'\'}">  {$v.Comment}</option>{/foreach}'
+		var option =  '{foreach name="editor" item="v" key="k"}<option value="{$v.Field}" {$field==$v.Field?\'selected\':\'\'}">  {$v.Comment}</option>{/foreach}'
 		// if(option.indexOf('value="'+pid+'"') != -1){
 		//     option = option.replace('value="'+pid+'"','value="'+pid+'" selected');
 		// }

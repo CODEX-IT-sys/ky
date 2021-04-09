@@ -23,23 +23,116 @@ class PjProjectProfile extends Common
     {
         // 数据库表字段集
         $colsData = getAllField('ky_pj_project_profile');
-
+        $a=$colsData[0];
+        $colsData[0]=$colsData[3];
+        $colsData[3]=$a;
+        $b=$colsData[1];
+        $colsData[1]=$colsData[4];
+        $colsData[4]=$b;
+//        dump($colsData);
+//        die;
         foreach ($colsData as $k=>$v)
         {
-            if($v['Field']=='Company_Name'){
-                $colsData[$k]['width']=300;
+            switch($v['Field']){
+                case 'Filing_Code':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['fixed']='left';
+                    break;
+                case 'Company_Name':
+                    $colsData[$k]['width']=100;
+                    break;
+                case 'Project_Name':
+                    $colsData[$k]['width']=140;
+                    break;
+                case 'Job_Name':
+                    $colsData[$k]['width']=140;
+                    $colsData[$k]['fixed']='left';
+                    break;
+                case 'Pages':
+                    $colsData[$k]['width']=60;
+                    break;
+                case 'Source_Text_Word_Count':
+                    $colsData[$k]['width']=90;
+                    break;
+                case 'Filled_by':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'PA':
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'CODEX_Team':
+//                    $colsData[$k]['width']=100;
+                    $colsData[$k]['hide']=true;
+                    break;
+                case 'Sub_Contracted':
+                    $colsData[$k]['hide']=true;
+                    break;
+                default:
+                    $colsData[$k]['width']=100;
+
             }
+
         }
 
 //        dump($colsData);die;
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',8)->value('intro');
+        $edit=[
+            [
+                'Field'=>'Product_Involved',
+                'Comment'=>'涉及产品'
+            ],
+            [
+                'Field'=>'File_Usage_and_Linguistic_Specification',
+                'Comment'=>'文件用途和语言规范'
+            ],
+            [
+                'Field'=>'Pre_Formatter',
+                'Comment'=>'预排版人员'
+            ],
+            [
+                'Field'=>'Product_Involved',
+                'Comment'=>'涉及产品'
+            ],
+            [
+                'Field'=>'Pre_Format_Delivery_Time',
+                'Comment'=>'预排版交付时间'
+            ],
+            [
+                'Field'=>'Translator',
+                'Comment'=>'翻译人员'
+            ],
+            [
+                'Field'=>'Translation_Delivery_Time',
+                'Comment'=>'翻译交付时间'
+            ],
+            [
+                'Field'=>'Reviser',
+                'Comment'=>'校对人员'
+            ],
+            [
+                'Field'=>'Revision_Delivery_Time',
+                'Comment'=>'校对交付时间'
+            ],
+            [
+                'Field'=>'Post_Formatter',
+                'Comment'=>'后排版人员'
+            ],
+            [
+                'Field'=>'Post_Format_Delivery_Time',
+                'Comment'=>'后排版交付时间'
+            ],
+            [
+                'Field'=>'Final_Delivery_Time',
+                'Comment'=>'最终交付时间'
+            ],
 
+        ];
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
                 'select_field'=>$colsData, 'colsData' => json_encode($colsData),
-                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword
+                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,'editor'=>$edit
             ]);
         }
 
