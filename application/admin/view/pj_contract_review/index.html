@@ -144,8 +144,12 @@ layui.use(['table','form'], function(){
             ,defaultToolbar: ['filter', 'exports', 'print']
             ,title: '项目汇总表'
             ,cols : commonCols(language, colsData)
-        ,page: true, limit:50, 			height: 'full-20',
-        even: true
+        , limit:50, 			height: 'full-20',
+        even: true,
+		page: {
+			curr:location.hash.replace('#!fenye=', ''),
+			hash:'fenye'
+		},
     });
 
     // 回车亦可以搜索

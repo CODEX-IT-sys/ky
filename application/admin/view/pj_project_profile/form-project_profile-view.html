@@ -567,7 +567,7 @@
             ybcfz?ybcfz:0; jwcfz?jwcfz:0;
 
             var zcfz = Number(ybcfz) + Number(jwcfz);
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+				var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs));
             $('#sjyzs').val(sjyzs);
             $('#zcfz').val(zcfz);
         });
@@ -584,7 +584,7 @@
 
             var zcfz = Number(ybcfz) + Number(jwcfz);
 
-			var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs));
 
 			$('#sjyzs').val(sjyzs);
 
@@ -600,7 +600,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs));
 
             $('#sjyzs').val(sjyzs);
         });
@@ -614,7 +614,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs));
 
             $('#sjyzs').val(sjyzs);
         });
@@ -629,7 +629,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+				var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs));
 
             $('#sjyzs').val(sjyzs);
         });
