@@ -24,12 +24,16 @@ class PjDailyProgressTrRe extends Common
 
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',9)->value('intro');
-
+        if($request->has('search_type')){
+            $data= $request->only(['search_type']);
+            $search_type=$data ["search_type"];
+        }
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
                 'select_field'=>$colsData, 'colsData' => json_encode($colsData),
-                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword
+                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,
+                'search_type'=>$search_type
             ]);
         }
 

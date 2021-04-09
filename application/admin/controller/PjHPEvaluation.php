@@ -30,11 +30,15 @@ class PjHPEvaluation extends Common
 
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',13)->value('intro');
-
+        if($request->has('search_type')){
+            $data= $request->only(['search_type']);
+            $search_type=$data ["search_type"];
+        }
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [ 'sign' => $sign, 'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,
-                'select_field'=>$colsData, 'colsData' => json_encode($colsData)
+                'select_field'=>$colsData, 'colsData' => json_encode($colsData),
+                'search_type'=>$search_type
             ]);
         }
 

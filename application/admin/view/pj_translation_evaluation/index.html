@@ -209,12 +209,12 @@ layui.use(['table','form'], function(){
             ]
         ];
     }
-
+	var search_type = '{$search_type}';
 	// 生成表格
     tableIns = table.render({
             elem: '#test'
             ,url:"{:url('index')}"
-        	,where: {field: field, keyword: keyword}
+		,where: {field: field, keyword: keyword,search_type:search_type}
             ,toolbar: '#forwardBar'
             ,defaultToolbar: []
             ,title: '翻译评估表'
@@ -355,11 +355,12 @@ $("#out").click(function(){
 					var s = localStorage.getItem('field');
 					var i = localStorage.getItem('keyword');
 					// 表格重载
-					table.reload('test', {
-						url: "{:url('pj_translation_evaluation/index')}",
-						where: {search_type : search_type, field: s, keyword: i},  // 设定异步数据接口的额外参数
-						page: true, limit:50
-					});
+					window.location.href = "{:url('index')}" + '?field=' + s + '&keyword=' + i + '&search_type=' + search_type;
+					// table.reload('test', {
+					// 	url: "{:url('pj_translation_evaluation/index')}",
+					// 	where: {search_type : search_type, field: s, keyword: i},  // 设定异步数据接口的额外参数
+					// 	page: true, limit:50
+					// });
 				}
 			});
 		});

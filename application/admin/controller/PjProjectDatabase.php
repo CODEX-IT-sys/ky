@@ -138,11 +138,16 @@ class PjProjectDatabase extends Common
             ],
 
         ];
+        if($request->has('search_type')){
+            $data= $request->only(['search_type']);
+            $search_type=$data ["search_type"];
+        }
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
                 'select_field'=>$colsData, 'colsData' => json_encode($colsData),
-                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,'editor'=>$edit
+                'intro'=>$intro, 'field'=>$field, 'keyword'=>$keyword,'editor'=>$edit,
+                                'search_type'=>$search_type
             ]);
         }
 
