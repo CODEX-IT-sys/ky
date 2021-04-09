@@ -42,7 +42,7 @@ class PjProjectProfile extends Common
                     $colsData[$k]['width']=100;
                     break;
                 case 'Project_Name':
-                    $colsData[$k]['width']=140;
+                    $colsData[$k]['width']=180;
                     break;
                 case 'Job_Name':
                     $colsData[$k]['width']=140;
@@ -67,8 +67,24 @@ class PjProjectProfile extends Common
                 case 'Sub_Contracted':
                     $colsData[$k]['hide']=true;
                     break;
+
+                case 'Pre_Format_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Translation_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Revision_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Post_Format_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
+                case 'Final_Delivery_Time':
+                    $colsData[$k]['width']=150;
+                    break;
                 default:
-                    $colsData[$k]['width']=100;
+                    $colsData[$k]['width']=80;
 
             }
 
