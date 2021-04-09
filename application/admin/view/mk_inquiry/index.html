@@ -143,8 +143,12 @@ layui.use(['table','form'], function(){
 		,defaultToolbar: ['filter', 'exports', 'print']
 		,title: '来稿需求表'
 		//,totalRow: true
-		,cols : commonCols(language, colsData)
-        ,page: true, limit:50, height:700
+		,cols : commonCols(language, colsData),
+         limit:50, height:700,
+		page: {
+			curr:location.hash.replace('#!fenye=', ''),
+			hash:'fenye'
+		},
 	});
 
     // 回车亦可以搜索

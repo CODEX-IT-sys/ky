@@ -692,7 +692,7 @@ class PjContractReview extends Common
         // 根据 合同编码 获取相关信息
         $info = Db::name('mk_feseability')
             ->where('Filing_Code', $code)->find();
-
+        $info['Company_Full_Name']= Db::table('ky_mk_invoicing')->where('Filing_Code',$code)->value('Company_Full_Name');;
         $fw_arr = explode(',', $info['Service']);
 
         // 服务类型

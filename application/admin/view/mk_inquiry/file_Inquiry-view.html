@@ -372,9 +372,12 @@
 
 			var bjje = Number(bjsl) * Number(dj) + Number(zzse);
 
-			$('#zzse').val(zzse);
+			// $('#zzse').val(zzse);
+			//
+			// $('#bjje').val(bjje);
+			$('#zzse').val(zzse.toFixed(2));
 
-			$('#bjje').val(bjje);
+			$('#bjje').val(bjje.toFixed(2));
         });
 
         // 报价数量
@@ -389,6 +392,10 @@
             var zzse = Number(bjsl) * Number(dj) * sl/100;
 
 			var bjje = Number(bjsl) * Number(dj) + Number(zzse);
+			//
+			// $('#zzse').val(zzse);
+			//
+			// $('#bjje').val(bjje);
 
 			$('#zzse').val(zzse);
 
