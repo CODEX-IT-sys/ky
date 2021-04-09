@@ -249,8 +249,25 @@ class MkFeseability extends Common
 
         PjProjectDatabaseModel::where('Filing_Code', $fc)
             ->update(['Completed'=>$data['Completed']]);
+        //同步修改项目汇总
 
         //增加一条sql,实现同步修改,!!拉胯
+        //项目汇总同步修改
+        $a=  Db::table('ky_pj_contract_review')->where('Filing_Code',$fc)->find();
+        if($a){
+            Db::table('ky_pj_contract_review')->where('Filing_Code',$fc)->update(
+                [
+                    'Delivery_Date_Expected'=>$data['Delivery_Date_Expected'],
+                    'Attention'=>$data['Attention'],
+                    'First_Cooperation'=>$data['First_Cooperation'],
+                    'Sales'=>$data['Sales'],
+                    'Customer_Requirements'=>$data['Customer_Requirements'],
+                    'External_Reference_File'=>$data['External_Reference_File'],
+
+                ]
+            );
+        }
+
         unset($data['id']);
         unset($data['Department']);
         unset($data['Company_Name']);
@@ -264,6 +281,11 @@ class MkFeseability extends Common
         unset($data['Approval_Sales_Admin_Manager']);
         unset($data['Approval_General_Manager']);
         Db::table('ky_mk_invoicing')->where('Filing_Code',$fc)->update($data);
+
+
+
+
+
 
         echo "<script>window.history.go(-2)</script>";
 

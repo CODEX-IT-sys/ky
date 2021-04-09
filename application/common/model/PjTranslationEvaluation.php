@@ -75,7 +75,7 @@ class PjTranslationEvaluation extends Model
         }
 
         // 返回分页对象
-        return $query->where($where)->order('id desc')->paginate($limit);
+        return $query->where($where)->order('id desc')->where('Filled_by',$name)->paginate($limit);
     }
 
     // 查询所有

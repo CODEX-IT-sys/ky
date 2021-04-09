@@ -73,7 +73,7 @@ class PjHPEvaluation extends Model
         }
 
         // 返回分页对象
-        return $query->order('id desc')->paginate($limit);
+        return $query->order('id desc')->where('Filled_by',$name)->paginate($limit);
     }
 
     public function getAll()

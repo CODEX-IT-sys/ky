@@ -531,7 +531,7 @@ class PjContractReview extends Common
         PjContractReviewModel::update($data);
 
         // 同步更新 项目数据库表 相关信息
-        $d = ['Translator','Reviser','Pre_Formatter','Post_Formatter',
+        $d = ['Translator','Reviser','Pre_Formatter','Post_Formatter','Language','File_Type','File_Category',
             'Completed','Delivered_or_Not','File_Category', 'PA'];
 
         foreach ($data as $k => $v){
@@ -546,7 +546,7 @@ class PjContractReview extends Common
 
 
         // 同步更新 项目描述表
-        $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter',
+        $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty',
             'Pre_Format_Delivery_Time','Translation_Delivery_Time',
             'Revision_Delivery_Time','Post_Format_Delivery_Time'];
 
