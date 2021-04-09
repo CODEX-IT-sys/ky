@@ -42,7 +42,7 @@ class PjProjectProfile extends Common
                     $colsData[$k]['width']=100;
                     break;
                 case 'Project_Name':
-                    $colsData[$k]['width']=180;
+                    $colsData[$k]['width']=200;
                     break;
                 case 'Job_Name':
                     $colsData[$k]['width']=140;
