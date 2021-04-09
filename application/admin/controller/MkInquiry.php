@@ -843,16 +843,52 @@ class MkInquiry extends Common
 
             // 筛选存在 来稿确认表、结算管理表 字段
             $fz_data = []; $iz_data = [];
-//            foreach ($data as $k => $v){
-//                if(in_array($k, $f_field)){
-//                    $fz_data[$k] = $v;
+
+//            dump($a);
+//            foreach ($a as $key => $val){
+//                dump($val);
+//                if(in_array($key, $f_field)){
+//                    $fz_data[$key] = $val;
 //                }
-//                if(in_array($k, $in_field)){
-//                    $iz_data[$k] = $v;
+//                if(in_array($key, $in_field)){
+//                    $iz_data[$key] = $val;
 //                }
 //            }
-//            $fz_data['id']=$v;
-//            $iz_data['id'] = $v;
+//            die;
+//            dump($fz_data);
+//            dump($iz_data);
+
+            $fz_data['Pages']=$a['Pages'];
+            $fz_data['Job_Name']=$a['Job_Name'];
+            $fz_data['Source_Text_Word_Count']=$a['Source_Text_Word_Count'];
+            $fz_data['File_Type']=$a['File_Type'];
+            $fz_data['Service']=$a['Service'];
+            $fz_data['Language']=$a['Language'];
+            $fz_data['Unit_Price']=$a['Unit_Price'];
+            $fz_data['Units']=$a['Units'];
+            $fz_data['VAT_Rate']=$a['VAT_Rate'];
+            $fz_data['Quote_Quantity']=$a['Quote_Quantity'];
+            $fz_data['Quote_Amount']=$a['Quote_Amount'];
+            $fz_data['VAT_Amount']=$a['VAT_Amount'];
+            $fz_data['Customer_Requirements']=$a['Customer_Requirements'];
+            $fz_data['External_Reference_File']=$a['External_Reference_File'];
+
+
+
+            $iz_data['Pages']=$a['Pages'];
+            $iz_data['Job_Name']=$a['Job_Name'];
+            $iz_data['Source_Text_Word_Count']=$a['Source_Text_Word_Count'];
+            $iz_data['File_Type']=$a['File_Type'];
+            $iz_data['Service']=$a['Service'];
+            $iz_data['Language']=$a['Language'];
+            $iz_data['Unit_Price']=$a['Unit_Price'];
+            $iz_data['Units']=$a['Units'];
+            $iz_data['VAT_Rate']=$a['VAT_Rate'];
+            $iz_data['Quote_Quantity']=$a['Quote_Quantity'];
+            $iz_data['Quote_Amount']=$a['Quote_Amount'];
+            $iz_data['VAT_Amount']=$a['VAT_Amount'];
+            $iz_data['Customer_Requirements']=$a['Customer_Requirements'];
+            $iz_data['External_Reference_File']=$a['External_Reference_File'];
             // 合并数组 得到 来稿确认表 关联写入的字段
             $f_data = array_merge($fz_data,$i);
             // 合并数组 得到 结算管理表 关联写入的字段
