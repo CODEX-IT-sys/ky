@@ -824,8 +824,102 @@ class MkInquiry extends Common
         // 调用模型编辑
         foreach ($id_arr as $k => $v){
             MkInquiryFileModel::where('id',$v)->update(['Order_Status'=>'Accepted']);
-        }
+            $a=  MkInquiryFileModel::find($v);
+            //查询来稿需求主表
+            $i = Db::name('mk_inquiry')->where('id',$a['i_id'])
+                ->field('Contract_Number,Subject_Company,Sales,Attention,Department,Company_Name,Company_Full_Name,
+                    Quote_Number, First_Cooperation, Request_a_Quote, PM, Currency,
+                    Subject_Company_VAT_ID, Subject_Company_Address, Subject_Company_Bank_Info')->find();
+//                dump($i);
+            // 筛选 来稿确认表 字段
+            $f_field = ['Job_Name','Pages','Source_Text_Word_Count','File_Type','Service', 'VAT_Rate',
+                'Language','Currency','Unit_Price','Units','Quote_Quantity','Quote_Amount','VAT_Amount',
+                'Delivery_Date_Expected','Customer_Requirements','External_Reference_File', 'Remarks'];
 
+            // 筛选 结算管理表 字段
+            $in_field = ['Job_Name','Pages','Source_Text_Word_Count','File_Type','Service', 'VAT_Rate',
+                'Language','Currency','Unit_Price','Units','Quote_Quantity','Quote_Amount','VAT_Amount',
+                'Customer_Requirements','External_Reference_File', 'Remarks'];
+
+            // 筛选存在 来稿确认表、结算管理表 字段
+            $fz_data = []; $iz_data = [];
+//            foreach ($data as $k => $v){
+//                if(in_array($k, $f_field)){
+//                    $fz_data[$k] = $v;
+//                }
+//                if(in_array($k, $in_field)){
+//                    $iz_data[$k] = $v;
+//                }
+//            }
+//            $fz_data['id']=$v;
+//            $iz_data['id'] = $v;
+            // 合并数组 得到 来稿确认表 关联写入的字段
+            $f_data = array_merge($fz_data,$i);
+            // 合并数组 得到 结算管理表 关联写入的字段
+            $in_data = array_merge($iz_data,$i);
+
+            // 来稿存公司名、结算存公司全名
+            unset($f_data['Company_Full_Name']);
+            unset($in_data['Company_Name']);
+            unset($in_data['Contract_Number']);
+            unset($in_data['Department']);
+            unset($in_data['First_Cooperation']);
+            unset($in_data['Request_a_Quote']);
+            unset($in_data['PM']);
+            unset($in_data['VAT_Amount']);
+
+            // 查询 公司编码
+            $company_code = Db::name('mk_contract')
+                ->where('Contract_Number', $i['Contract_Number'])->value('Company_Code');
+
+            // 获取当天的文件数
+            $arr = Db::name('mk_feseability')->field('id')
+                ->where('Assigned_Date',  intval(date("Ymd")))
+                ->select();
+            $no = count($arr);
+
+            /*调用方法 生成 文件编号*/
+            $f_data['Filing_Code'] = filing_number($company_code, $no);
+
+            // 来稿 委托日期
+            $f_data['Assigned_Date'] = date("Ymd");
+            // 来稿 填表人
+            $f_data['Filled_by'] = session('administrator')['name'];
+
+            // 结算 文件编号
+            $in_data['Filing_Code'] = $f_data['Filing_Code'];
+            // 结算 委托日期
+            $in_data['Assigned_Date'] = date("Ymd");
+            // 结算 填表人
+            $in_data['Filled_by'] = session('administrator')['name'];
+
+
+            /*自动写入 来稿确认表 数据*/
+            Db::name('mk_feseability')->insert($f_data);
+
+            /*自动写入 结算管理表 数据*/
+            Db::name('mk_invoicing')->insert($in_data);
+
+
+            // 提醒消息 信息
+            $m_data['cn_title'] = '您有新来稿待批准，请尽快确认！';
+            $m_data['en_title'] = 'You have new file to confirm';
+
+            $m_data['content'] = 'Filing_Code: '. $f_data['Filing_Code'];
+            $m_data['status'] = 0;
+
+            // 通知 市场行政经理
+            $res = Db::name('admin')->field('name')->where('job_id', 20)
+                ->where('status',0)->where('delete_time',0)->find();
+            $m_data['name'] = $res['name'];
+            XtMsgModel::create($m_data);
+
+            // 通知 总经理
+            $res = Db::name('admin')->field('name')->where('job_id', 9)
+                ->where('status',0)->where('delete_time',0)->find();
+            $m_data['name'] = $res['name'];
+            XtMsgModel::create($m_data);
+        }
         // 返回数据
         return json(['msg' => '成功']);
     }
