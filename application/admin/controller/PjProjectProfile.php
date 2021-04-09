@@ -24,6 +24,14 @@ class PjProjectProfile extends Common
         // 数据库表字段集
         $colsData = getAllField('ky_pj_project_profile');
 
+        foreach ($colsData as $k=>$v)
+        {
+            if($v['Field']=='Company_Name'){
+                $colsData[$k]['width']=300;
+            }
+        }
+
+//        dump($colsData);die;
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',8)->value('intro');
 

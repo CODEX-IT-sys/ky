@@ -16,8 +16,8 @@
 						<a href="{:url('pj_project_profile/text_list')}" class="layui-btn com_btn">{:session('language') == '中文'? '基本信息' : 'General Info'}</a>
 
 						<a href="{:url('pj_project_profile/create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
-						<a class="layui-btn com_btn" id="xzedit">已选中列数据编辑</a>
-						<a class="layui-btn com_btn" id="sjth">已选中列数据计算</a>
+						<a class="layui-btn com_btn" id="xzedit">批量修改</a>
+						<a class="layui-btn com_btn" id="sjth">数据计算</a>
 						<!--<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>-->
 					</div>
 				</div>
@@ -119,7 +119,7 @@ layui.use(['table','form'], function(){
             if(colsData[i].Field !== 'delete_time'){
                 if(colsData[i].Field !== 'id'){
                     if(language === '中文'){
-                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:180, totalRow:true});
+                        cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true,totalRow:true,width:colsData[i].width});
                     }else{
                         cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:200, totalRow:true});
                     }

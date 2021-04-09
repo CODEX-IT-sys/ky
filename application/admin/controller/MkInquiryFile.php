@@ -19,7 +19,7 @@ class MkInquiryFile extends Controller
     {
         // 数据库表字段集
         $colsData = getAllField('ky_mk_inquiry');
-		
+
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
 
