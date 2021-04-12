@@ -483,7 +483,9 @@ class PjProjectProfile extends Common
     {
         // 获取提交的数据
         $data = $request->post();
-
+//        dump($data);die;
+        Db::name('pj_project_database')->where('Filing_Code',$data['Filing_Code'])->update(['Product_Involved'=>$data['Product_Involved']]);
+        Db::name('pj_project_profile')->where('Filing_Code',$data['Filing_Code'])->update(['Product_Involved'=>$data['Product_Involved']]);
         PjProjectProfileModel::update($data);
 
         echo "<script>history.go(-2);</script>";

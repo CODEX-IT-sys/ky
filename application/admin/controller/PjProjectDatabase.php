@@ -327,7 +327,8 @@ class PjProjectDatabase extends Common
         $re_arr = explode(',', $res['Reviser']);
         $yp_arr = explode(',', $res['Pre_Formatter']);
         $hp_arr = explode(',', $res['Post_Formatter']);
-
+            //更新项目描述的涉及产品Product_Involved
+        Db::name('pj_project_profile')->where('Filing_Code',$res['Filing_Code'])->update(['Product_Involved'=>$res['Product_Involved']]);
         // N/A 选项
         $na = [['value'=>0, 'name'=>'N/A']];
 		
