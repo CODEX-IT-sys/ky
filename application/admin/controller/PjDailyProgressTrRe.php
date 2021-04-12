@@ -179,7 +179,7 @@ class PjDailyProgressTrRe extends Common
     {
         // 获取提交的数据
         $data = $request->post();
-//        dump($data);die;
+
         $admin=$this->userinfo();
         //如果不是翻译,排版.完成页数为0
         if($data['Work_Content']!='Revise'&&$data['Work_Content']!='Translate'&&$data['Work_Content']!='RE (Sampling)'&&$data['Work_Content']!='RE (Highlight)'&&$data['Work_Content']!='RE (Sampling_Highlight)'){
@@ -214,9 +214,12 @@ class PjDailyProgressTrRe extends Common
             $data['Actual_Work_Time'] = $hours;
         }
 
-        // 计算效率  总字数/实际工作时间    保留2位小数
-        if($hours != '' or 0){
 
+        $data['Productivity']=0;
+//        dump($data);
+        PjDailyProgressTrReModel::update($data);
+        // 计算效率  总字数/实际工作时间    保留2位小数(这里写的修改时还没有参与计算!)
+        if($hours != '' or 0){
             // 进度100% 计算总效率
             if($data['Percentage_Completed'] == 100){
 
@@ -245,14 +248,13 @@ class PjDailyProgressTrRe extends Common
                 // 查询 之前这条记录用时
                 $old_time = PjDailyProgressTrReModel::where('id', $data['id'])->value('Actual_Work_Time');
 
-                $total_time = $f_time + $data['Actual_Work_Time'] - $old_time;
 
+                $total_time = $f_time + $data['Actual_Work_Time'] - $old_time;
                 if($total_time > 0){
                     $data['Productivity'] = round($data['Total_Chinese_Characters']/$total_time,2);
                 }else{
                     $data['Productivity'] = 0;
                 }
-
             }else{
 
                 $data['Productivity'] = round($data['Total_Chinese_Characters']/$data['Actual_Work_Time'],2);
@@ -262,6 +264,7 @@ class PjDailyProgressTrRe extends Common
             $data['Productivity'] = 0;
         }
 
+//        die;
         PjDailyProgressTrReModel::update($data);
 
         echo "<script>history.go(-2);</script>";
