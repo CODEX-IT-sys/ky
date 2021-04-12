@@ -350,10 +350,10 @@ class MkFeseability extends Common
         // 检查身份信息是否匹配
         if($job_id != 20){
 
-//            // 返回数据
-//            return json(['msg' => '身份不匹配,操作失败']);
-//
-//        }else{
+            // 返回数据
+            return json(['msg' => '身份不匹配,操作失败']);
+
+        }else{
 
             // 结算管理 字段 （文件接受自动写入 不批准重复写入）
             /*$js = ['Assigned_Date','Filing_Code','Sales','Attention','Department',
