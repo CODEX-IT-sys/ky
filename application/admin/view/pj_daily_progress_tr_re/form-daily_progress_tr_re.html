@@ -202,7 +202,7 @@
 										{:session('language') == '中文'? '中文字数统计' : 'Total Chinese Characters'}
 									</label>
 									<div class="layui-input-block">
-										<input name="Total_Chinese_Characters" id="zzs" autocomplete="off" placeholder="" class="layui-input" type="number" disabled>
+										<input name="Total_Chinese_Characters" id="zzs" autocomplete="off" placeholder="" class="layui-input" type="number" >
 									</div>
 								</div>
 							</div>
@@ -546,6 +546,18 @@
 			return validator.start();
 		};
 
+
+		$('#yzs').blur(function(){
+			var bfb = $('#bfb').val();
+			if(bfb!=100){
+				$('#yzs').val(0);
+				$('#zzs').val(0);
+
+				layer.msg('完成百分比为100才可填写');
+			}
+		});
+
+
 		// 数据提交
 		$('#save').on('click', function () {
 
@@ -562,14 +574,6 @@
 			$('#form').submit();
 		})
 
-		$('#yzs').blur(function(){
-			var bfb = $('#bfb').val();
-			if(bfb!=100){
-				$('#yzs').val(0);
-				$('#zzs').val(0);
-				layer.msg('完成百分比为100才可填写');
-			}
-		});
 	})
 
 </script>
