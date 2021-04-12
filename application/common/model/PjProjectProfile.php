@@ -19,10 +19,10 @@ class PjProjectProfile extends Model
 
 
     //反向关联项目描述
-    public function schedule()
-    {
-        return $this->hasOne('ZSchedule','profile_id','id');
-    }
+//    public function schedule()
+//    {
+//        return $this->hasOne('ZSchedule','profile_id','id');
+//    }
 
 
 
@@ -128,7 +128,7 @@ class PjProjectProfile extends Model
         }
 
         // 返回分页对象
-        return $query->where($where)->with('schedule')->order('id desc')->paginate($limit);
+        return $query->where($where)->order('id desc')->paginate($limit);
     }
 
     public function getAll()
