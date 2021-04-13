@@ -871,6 +871,7 @@ class MkInquiry extends Common
             $fz_data['VAT_Rate']=$a['VAT_Rate'];
             $fz_data['Quote_Quantity']=$a['Quote_Quantity'];
             $fz_data['Quote_Amount']=$a['Quote_Amount'];
+            $fz_data['Delivery_Date_Expected']=$a['Delivery_Date_Expected'];
             $fz_data['VAT_Amount']=$a['VAT_Amount'];
             $fz_data['Customer_Requirements']=$a['Customer_Requirements'];
             $fz_data['External_Reference_File']=$a['External_Reference_File'];
