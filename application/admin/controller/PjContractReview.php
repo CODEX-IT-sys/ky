@@ -74,8 +74,8 @@ class PjContractReview extends Common
                     $colsData[$k]['width']=150;
                     break;
                 case 'Delivery_Date_Expected':
-                    $colsData[$k]['style']='background-color:green';
-                    $colsData[$k]['width']=150;
+                    $colsData[$k]['style']='background-color:green;color:white';
+                    $colsData[$k]['width']=141;
                     break;
                 case 'Translator':
                     $colsData[$k]['sort']='true';
@@ -93,8 +93,9 @@ class PjContractReview extends Common
                     $colsData[$k]['width']=180;
                     break;
                 case 'Completed':
-                    $colsData[$k]['width']=120;
-                    $colsData[$k]['style']='background-color:green';
+                    $colsData[$k]['width']=96;
+                    $colsData[$k]['style']='background-color:green;color:white';
+
                     break;
 
                 default:
