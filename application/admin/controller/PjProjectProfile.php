@@ -57,9 +57,11 @@ class PjProjectProfile extends Common
                     break;
                 case 'Filled_by':
                     $colsData[$k]['hide']=true;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'PA':
                     $colsData[$k]['hide']=true;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'CODEX_Team':
 //                    $colsData[$k]['width']=100;
@@ -71,24 +73,38 @@ class PjProjectProfile extends Common
 
                 case 'Pre_Format_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Translation_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Revision_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Post_Format_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Final_Delivery_Time':
                     $colsData[$k]['style']='background-color:green;color:white';
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Translator':
                     $colsData[$k]['sort']='true';
                     break;
                 case 'Reviser':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Actual_Source_Text_Count':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Pre_Formatter':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Post_Formatter':
                     $colsData[$k]['sort']='true';
                     break;
                 default:

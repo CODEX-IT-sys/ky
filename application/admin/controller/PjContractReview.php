@@ -30,6 +30,7 @@ class PjContractReview extends Common
                     break;
                 case 'Company_Name':
                     $colsData[$k]['width']=100;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Project_Name':
                     $colsData[$k]['width']=200;
@@ -60,21 +61,27 @@ class PjContractReview extends Common
 
                 case 'Pre_Format_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Translation_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Revision_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Post_Format_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Final_Delivery_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'Delivery_Date_Expected':
                     $colsData[$k]['style']='background-color:green;color:white';
+                    $colsData[$k]['sort']='true';
                     $colsData[$k]['width']=141;
                     break;
                 case 'Translator':
@@ -88,16 +95,26 @@ class PjContractReview extends Common
                 case 'Translation_Start_Time':
                     $colsData[$k]['width']=150;
                     break;
-
                 case 'File_Category':
                     $colsData[$k]['width']=180;
                     break;
                 case 'Completed':
                     $colsData[$k]['width']=96;
+                    $colsData[$k]['sort']='true';
                     $colsData[$k]['style']='background-color:green;color:white';
-
                     break;
-
+                case 'Pre_Formatter':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Post_Formatter':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Delivered_or_Not':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Attention':
+                    $colsData[$k]['sort']='true';
+                    break;
                 default:
                     $colsData[$k]['width']=80;
 
