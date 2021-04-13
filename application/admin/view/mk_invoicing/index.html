@@ -408,7 +408,7 @@ layui.use(['table','form'], function(){
 		var num2 = 0
 		for (v in checkStatus.data) {
 			num += checkStatus.data[v]['Pages'];
-			num2 += parseInt(checkStatus.data[v]['Invoicing_Amount'])|| 0 ;
+			num2 += parseFloat(checkStatus.data[v]['Invoicing_Amount'])|| 0 ;
 
 		}
 		var msg = "选中页数:" + num+'请款金额:'+num2 ;
