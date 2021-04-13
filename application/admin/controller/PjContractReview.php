@@ -74,6 +74,7 @@ class PjContractReview extends Common
                     $colsData[$k]['width']=150;
                     break;
                 case 'Delivery_Date_Expected':
+                    $colsData[$k]['style']='background-color:green';
                     $colsData[$k]['width']=150;
                     break;
                 case 'Translator':
@@ -87,6 +88,15 @@ class PjContractReview extends Common
                 case 'Translation_Start_Time':
                     $colsData[$k]['width']=150;
                     break;
+
+                case 'File_Category':
+                    $colsData[$k]['width']=180;
+                    break;
+                case 'Completed':
+                    $colsData[$k]['width']=120;
+                    $colsData[$k]['style']='background-color:green';
+                    break;
+
                 default:
                     $colsData[$k]['width']=80;
 
@@ -132,6 +142,10 @@ class PjContractReview extends Common
             [
                 'Field'=>'Reviser',
                 'Comment'=>'校对人员'
+            ],
+            [
+                'Field'=>'Revision_Start_Time',
+                'Comment'=>'校对开始时间'
             ],
             [
                 'Field'=>'Revision_Delivery_Time',

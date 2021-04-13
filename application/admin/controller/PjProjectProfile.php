@@ -82,6 +82,7 @@ class PjProjectProfile extends Common
                     $colsData[$k]['width']=150;
                     break;
                 case 'Final_Delivery_Time':
+                    $colsData[$k]['style']='background-color:green';
                     $colsData[$k]['width']=150;
                     break;
                 case 'Translator':
@@ -147,6 +148,7 @@ class PjProjectProfile extends Common
             ],
             [
                 'Field'=>'Final_Delivery_Time',
+
                 'Comment'=>'最终交付时间'
             ],
 
