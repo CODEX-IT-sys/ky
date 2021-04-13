@@ -251,10 +251,10 @@
 										{:session('language') == '中文'? '服务' : 'Service'}
 									</label>
 									<div class="layui-input-block">
-										<!--<input name="Service" id="Service" value="{$info.Service}" type="text" autocomplete="off" placeholder="" class="layui-input">-->
-										<div id="Service" class="xm-select-demo"></div>
-										<input name="Service" id="fw" type="hidden" value="" autocomplete="off"
-											   placeholder="" class="layui-input">
+										<input name="Service" id="Service" value="{$info.Service}" type="text" autocomplete="off" placeholder="" class="layui-input">
+										<!--<div id="Service" class="xm-select-demo"></div>-->
+										<!--<input name="Service" id="fw" type="hidden" value="" autocomplete="off"-->
+											   <!--placeholder="" class="layui-input">-->
 									</div>
 								</div>
 							</div>
@@ -265,10 +265,10 @@
 										{:session('language') == '中文'? '语种' : 'Language'}
 									</label>
 									<div class="layui-input-block">
-										<!--<input name="Language" id="Language" value="{$info.Language}" type="text" autocomplete="off" placeholder="" class="layui-input">-->
-										<div id="Language" class="xm-select-demo"></div>
-										<input name="Language" id="la" type="hidden" value="" autocomplete="off"
-											   placeholder="" class="layui-input">
+										<input name="Language" id="Language" value="{$info.Language}" type="text" autocomplete="off" placeholder="" class="layui-input">
+										<!--<div id="Language" class="xm-select-demo"></div>-->
+										<!--<input name="Language" id="la" type="hidden" value="" autocomplete="off"-->
+											   <!--placeholder="" class="layui-input">-->
 									</div>
 								</div>
 							</div>
@@ -307,11 +307,11 @@
 										{:session('language') == '中文'? '单位' : 'Units'}
 									</label>
 									<div class="layui-input-block">
+
+										<input name="Units" id="Units" value="{$info.Units}" type="text" autocomplete="off" placeholder="" class="layui-input">
 										<!--<div id="dw" class="xm-select-demo"></div>-->
-										<!--<input name="Units" id="Units" value="{$info.Units}" type="text" autocomplete="off" placeholder="" class="layui-input">-->
-										<div id="dw" class="xm-select-demo"></div>
-										<input name="Units" id="unit" type="hidden" value="" autocomplete="off"
-											   placeholder="" class="layui-input">
+										<!--<input name="Units" id="unit" type="hidden" value="" autocomplete="off"-->
+											   <!--placeholder="" class="layui-input">-->
 									</div>
 								</div>
 							</div>
@@ -684,62 +684,6 @@
 			return validator.start();
 		};
 
-		//语种下拉框
-		var lang = '<?php echo  json_encode($language);?>';
-		var hpData = JSON.parse(lang);
-		var hpz = xmSelect.render({
-			el: '#Language',
-			toolbar: {
-				show: true,
-				list: ['ALL', 'CLEAR', 'REVERSE']
-			},
-			paging: true,
-			pageSize: 10,
-			filterable: true,
-			pageEmptyShow: false,
-			theme: {
-				color: '#0073FF'
-			},
-			data: hpData
-		});
-
-		//语种下拉框
-		var serve = '<?php echo  json_encode($Service);?>';
-		var serve = JSON.parse(serve);
-		var servevalue = xmSelect.render({
-			el: '#Service',
-			toolbar: {
-				show: true,
-				list: ['ALL', 'CLEAR', 'REVERSE']
-			},
-			paging: true,
-			pageSize: 10,
-			filterable: true,
-			pageEmptyShow: false,
-			theme: {
-				color: '#0073FF'
-			},
-			data: serve
-		});
-
-		//单位下拉框
-		var unit = '<?php echo  json_encode($unit);?>';
-		var unit = JSON.parse(unit);
-		var unitvalue = xmSelect.render({
-			el: '#dw',
-			toolbar: {
-				show: true,
-				list: ['ALL', 'CLEAR', 'REVERSE']
-			},
-			paging: true,
-			pageSize: 10,
-			filterable: true,
-			pageEmptyShow: false,
-			theme: {
-				color: '#0073FF'
-			},
-			data: unit
-		});
 
 
 		// 数据提交
