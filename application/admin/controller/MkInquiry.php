@@ -765,12 +765,22 @@ class MkInquiry extends Common
                     }
                 }
                 $excel = $reader->load("$filePath",$encode = 'utf-8');
+
                 $sheet = $excel->getSheet(0);	// 读取第一个工作表(编号从 0 开始)
+
                 $highestRow = $sheet->getHighestRow(); 			// 取得总行数
                 $highestColumn = $sheet->getHighestColumn(); 	// 取得总列数
                 $arr = array('A','B','C','D','E','F','G','H','I','J','K','L','M', 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
                 // 一次读取一列
                 $res_arr = array();
+//                $row_arr = array();
+//                for ($column = 0; $arr[$column] != 'V'; $column++) {
+//                    $val = $sheet->getCellByColumnAndRow($column, 2)->getValue();
+//                    $row_arr[] = $val;
+//                }
+//
+//                $res_arr[] = $row_arr;
+//                                dump($res_arr);die;
                 for ($row = 2; $row <= $highestRow; $row++) {
                     $res_arr[$row-2]['Inquiry_Date']  = trim($sheet->getCell("A".$row)->getValue());
                     $res_arr[$row-2]['Contract_Number']  = trim($sheet->getCell("B".$row)->getValue());
@@ -784,7 +794,7 @@ class MkInquiry extends Common
                     $res_arr[$row-2]['Units']  = trim($sheet->getCell("J".$row)->getValue());
                     $res_arr[$row-2]['VAT_Rate']  = trim($sheet->getCell("K".$row)->getValue());
                     $res_arr[$row-2]['Quote_Quantity']  = trim($sheet->getCell("L".$row)->getValue());
-                    $res_arr[$row-2]['Delivery_Date_Expected']  = trim($sheet->getCell("O".$row)->getValue());
+                    $res_arr[$row-2]['Delivery_Date_Expected']  =date('Y-m-d H:i',strtotime(gmdate('Y-m-d H:i',\PHPExcel_Shared_Date::ExcelToPHP($sheet->getCell("O".$row)->getValue()))));
                     $res_arr[$row-2]['Customer_Requirements']  = trim($sheet->getCell("P".$row)->getValue());
                     $res_arr[$row-2]['External_Reference_File']  = trim($sheet->getCell("Q".$row)->getValue());
                     $res_arr[$row-2]['Order_Status']  = trim($sheet->getCell("R".$row)->getValue());
@@ -796,17 +806,11 @@ class MkInquiry extends Common
                     $res_arr[$row-2]['VAT_Amount']  = trim($sheet->getCell("N".$row)->getValue());
                     $res_arr[$row-2]['i_id']  = $iid;
 
-//                $row_arr = array();
-//                for ($column = 0; $arr[$column] != 'V'; $column++) {
-//                    $val = $sheet->getCellByColumnAndRow($column, $row)->getValue();
-//                    $row_arr[] = $val;
-//                }
-//
-//                $res_arr[] = $row_arr;
+
                 }
 
                 Db::name('mk_inquiry_file')->insertAll($res_arr);
-//                dump($res_arr);
+
             }
         }catch(\Exception $e){
             $this->error('执行错误');
