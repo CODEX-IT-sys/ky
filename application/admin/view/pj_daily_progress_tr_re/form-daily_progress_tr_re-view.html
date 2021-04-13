@@ -149,7 +149,7 @@
 							            {:session('language') == '中文'? '已完成百分比' : 'Percentage Completed'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Percentage_Completed" lay-verify="required" value="{$info.Percentage_Completed|default=''}" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Percentage_Completed" lay-verify="required" value="{$info.Percentage_Completed|default=''}" id="bfb" autocomplete="off" placeholder="" class="layui-input" type="number">
 							        </div>
 									<span class="signTip">%</span>
 							    </div>
@@ -377,6 +377,16 @@
             });
         });
 
+		$('#yzs').blur(function(){
+			var bfb = $('#bfb').val();
+			console.log(bfb);
+			if(bfb!=100){
+				$('#yzs').val(0);
+				$('#zzs').val(0);
+				layer.msg('完成百分比为100才可填写');
+			}
+		});
+
         // 计算 中文总字数
         $('#yzs').change(function () {
 
@@ -488,14 +498,7 @@
 			$('#form').submit();
 		});
 
-		$('#yzs').blur(function(){
-			var bfb = $('#bfb').val();
-			if(bfb!=100){
-				$('#yzs').val(0);
-				$('#zzs').val(0);
-				layer.msg('完成百分比为100才可填写');
-			}
-		});
+
 	})
 </script>
 {/block}
