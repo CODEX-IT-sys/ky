@@ -659,7 +659,6 @@ class MkInquiry extends Common
         foreach ($file_info as $k => $v){
 
             $v['Quote_Number'] = $info['Quote_Number'];
-            $v['Quote_Quantity'] = $v['Quote_Quantity'];
             Db::name('mk_inquiry_file')->where('id',$file_info[$k]['id'])->update(['Request_a_Quote'=>'Yes']);
 
              $v['Net_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'];
@@ -669,7 +668,6 @@ class MkInquiry extends Common
             $num += $v['Net_Amount'] + $v['VAT_Amount'];
 
             unset($v['id']);
-//            dump($v);die;
             MkQuoteTableModel::create($v);
         }
 
@@ -785,7 +783,7 @@ class MkInquiry extends Common
                     $res_arr[$row-2]['Unit_Price']  = trim($sheet->getCell("I".$row)->getValue());
                     $res_arr[$row-2]['Units']  = trim($sheet->getCell("J".$row)->getValue());
                     $res_arr[$row-2]['VAT_Rate']  = trim($sheet->getCell("K".$row)->getValue());
-                    $res_arr[$row-2]['Quote_Quantity']  = trim($sheet->getCell("I".$row)->getValue());
+                    $res_arr[$row-2]['Quote_Quantity']  = trim($sheet->getCell("L".$row)->getValue());
                     $res_arr[$row-2]['Delivery_Date_Expected']  = trim($sheet->getCell("O".$row)->getValue());
                     $res_arr[$row-2]['Customer_Requirements']  = trim($sheet->getCell("P".$row)->getValue());
                     $res_arr[$row-2]['External_Reference_File']  = trim($sheet->getCell("Q".$row)->getValue());
