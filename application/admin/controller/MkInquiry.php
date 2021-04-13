@@ -659,7 +659,7 @@ class MkInquiry extends Common
         foreach ($file_info as $k => $v){
 
             $v['Quote_Number'] = $info['Quote_Number'];
-
+            $v['Quote_Quantity'] = $v['Quote_Quantity'];
             Db::name('mk_inquiry_file')->where('id',$file_info[$k]['id'])->update(['Request_a_Quote'=>'Yes']);
 
              $v['Net_Amount'] = $v['Quote_Quantity'] * $v['Unit_Price'];
@@ -669,7 +669,7 @@ class MkInquiry extends Common
             $num += $v['Net_Amount'] + $v['VAT_Amount'];
 
             unset($v['id']);
-
+//            dump($v);die;
             MkQuoteTableModel::create($v);
         }
 
