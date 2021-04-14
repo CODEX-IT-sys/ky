@@ -94,6 +94,7 @@ class PjContractReview extends Common
                     break;
                 case 'Translation_Start_Time':
                     $colsData[$k]['width']=150;
+                    $colsData[$k]['sort']='true';
                     break;
                 case 'File_Category':
                     $colsData[$k]['width']=180;
@@ -113,6 +114,9 @@ class PjContractReview extends Common
                     $colsData[$k]['sort']='true';
                     break;
                 case 'Attention':
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Revision_Start_Time':
                     $colsData[$k]['sort']='true';
                     break;
                 default:
@@ -765,7 +769,7 @@ class PjContractReview extends Common
             if(in_array($data['field'], $d)) {
                 foreach ($Filing_Code as $k=>$v){
                     Db::name('pj_project_database')
-                        ->where('Filing_Code', $data['Filing_Code'])
+                        ->where('Filing_Code', $v['Filing_Code'])
                         ->update([$data['field'] =>$data['numsss']]);
                 }
             }
