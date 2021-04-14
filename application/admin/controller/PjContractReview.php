@@ -739,9 +739,37 @@ class PjContractReview extends Common
     public function Batch_edit(Request $request)
     {
 
+
+
         try {
             $data=$request->param();
             $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+
+            $Filing_Code=Db::name('pj_contract_review')->wherein('id',$data['arr'])->field('Filing_Code')->select();
+
+            // 同步更新 项目描述表复制上面的
+            $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty',
+                'Pre_Format_Delivery_Time','Translation_Delivery_Time',
+                'Revision_Delivery_Time','Post_Format_Delivery_Time'];
+
+            if(in_array($data['field'], $f)){
+                foreach ($Filing_Code as $k=>$v){
+                    Db::name('pj_project_profile')
+                        ->where('Filing_Code', $v['Filing_Code'])
+                        ->update([$data['field'] =>$data['numsss']]);
+                }
+            }
+            // 同步更新 项目数据库表 相关信息
+            $d = ['Translator','Reviser','Pre_Formatter','Post_Formatter','Language','File_Type','File_Category',
+                'Completed','Delivered_or_Not','File_Category', 'PA'];
+            if(in_array($data['field'], $d)) {
+                foreach ($Filing_Code as $k=>$v){
+                    Db::name('pj_project_database')
+                        ->where('Filing_Code', $data['Filing_Code'])
+                        ->update([$data['field'] =>$data['numsss']]);
+                }
+            }
+
         } catch (ValidateException $e) {
             // 这是进行验证异常捕获
             return json($e->getError());
