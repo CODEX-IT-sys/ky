@@ -94,12 +94,15 @@ class PjProjectProfile extends Common
                     break;
                 case 'Translator':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Reviser':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Actual_Source_Text_Count':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Pre_Formatter':
                     $colsData[$k]['sort']='true';
