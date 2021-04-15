@@ -371,7 +371,7 @@ layui.use(['table','form'], function(){
 		})
 
 		layer.open({
-			area: ['500px', '800px'], //宽高
+			area: ['500px', '500px'], //宽高
 			offset: '100px',
 			title: '批量修改',
 			btn: ['确定', '取消'],
@@ -407,7 +407,7 @@ layui.use(['table','form'], function(){
 						if(res.code==9999){
 							layer.msg('修改失败');
 						}else{
-							tableIns.reload();
+							location.reload();
 							layer.close(index);
 							layer.msg(res);
 						}
@@ -418,6 +418,7 @@ layui.use(['table','form'], function(){
 			},
 			btn2: function (index, layero) {
 				layer.close(index);
+				location.reload();
 			},
 		});
 
