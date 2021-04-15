@@ -781,23 +781,29 @@ class PjContractReview extends Common
                 'Pre_Format_Delivery_Time','Translation_Delivery_Time',
                 'Revision_Delivery_Time','Post_Format_Delivery_Time'];
 
-            if(in_array($data['field'], $f)){
-                foreach ($Filing_Code as $k=>$v){
-                    Db::name('pj_project_profile')
-                        ->where('Filing_Code', $v['Filing_Code'])
-                        ->update($arr);
+            foreach ($field as $key=>$val){
+                if(in_array($val, $f)){
+                    foreach ($Filing_Code as $k=>$v){
+                        $res=   Db::name('pj_project_profile')
+                            ->where('Filing_Code', $v['Filing_Code'])
+                            ->update($arr);
+                        dump($res);
+                    }
                 }
             }
+
             // 同步更新 项目数据库表 相关信息
             $d = ['Translator','Reviser','Pre_Formatter','Post_Formatter','Language','File_Type','File_Category',
                 'Completed','Delivered_or_Not','File_Category', 'PA'];
-            if(in_array($data['field'], $d)) {
+        foreach ($field as $key=>$val){
+            if(in_array($val, $d)) {
                 foreach ($Filing_Code as $k=>$v){
                     Db::name('pj_project_database')
                         ->where('Filing_Code', $v['Filing_Code'])
                         ->update($arr);
                 }
             }
+        }
 
         } catch (ValidateException $e) {
             // 这是进行验证异常捕获
