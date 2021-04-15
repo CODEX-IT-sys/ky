@@ -404,13 +404,13 @@ layui.use(['table','form'], function(){
 					url: "{:url('Batch_edit')}",
 					data: {arr: arr,field:s,numsss:n},
 					success: function (res) {
-						// if(res.code==9999){
-						// 	layer.msg('修改失败');
-						// }else{
-						// 	tableIns.reload();
-						// 	layer.close(index);
-						// 	layer.msg(res);
-						// }
+						if(res.code==9999){
+							layer.msg('修改失败');
+						}else{
+							tableIns.reload();
+							layer.close(index);
+							layer.msg(res);
+						}
 
 					},
 
