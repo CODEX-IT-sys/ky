@@ -106,9 +106,11 @@ class PjProjectProfile extends Common
                     break;
                 case 'Pre_Formatter':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Post_Formatter':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=100;
                     break;
                 default:
                     $colsData[$k]['width']=80;
