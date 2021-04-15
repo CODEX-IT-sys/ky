@@ -714,7 +714,7 @@ class PjProjectProfile extends Common
         try {
             $data=$request->param();
             $res = Db::name('pj_project_profile')->wherein('Filing_Code',$data['Filing_Code'])->count();
-            if($res<=1){
+            if($res<1){
                 return json(['code'=>6666,]);
             }
         } catch (ValidateException $e) {
