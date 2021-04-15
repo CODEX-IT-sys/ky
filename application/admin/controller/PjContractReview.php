@@ -747,7 +747,20 @@ class PjContractReview extends Common
 
         try {
             $data=$request->param();
-            $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+            $field=array_filter(explode(',',$data['field']));
+            $numsss=array_filter(explode(',',$data['numsss']));
+            $arr=[];
+            foreach ($field as $k=>$v)
+            {
+                foreach ($numsss as $k1=>$v1)
+                {
+                    if($k==$k1)
+                    {
+                        $arr[$v]=$v1;
+                    }
+                }
+            }
+            $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update($arr);
 
             $Filing_Code=Db::name('pj_contract_review')->wherein('id',$data['arr'])->field('Filing_Code')->select();
 
@@ -760,7 +773,7 @@ class PjContractReview extends Common
                 foreach ($Filing_Code as $k=>$v){
                     Db::name('pj_project_profile')
                         ->where('Filing_Code', $v['Filing_Code'])
-                        ->update([$data['field'] =>$data['numsss']]);
+                        ->update($arr);
                 }
             }
             // 同步更新 项目数据库表 相关信息
@@ -770,7 +783,7 @@ class PjContractReview extends Common
                 foreach ($Filing_Code as $k=>$v){
                     Db::name('pj_project_database')
                         ->where('Filing_Code', $v['Filing_Code'])
-                        ->update([$data['field'] =>$data['numsss']]);
+                        ->update($arr);
                 }
             }
 

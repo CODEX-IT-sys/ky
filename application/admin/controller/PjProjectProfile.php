@@ -746,10 +746,22 @@ class PjProjectProfile extends Common
     //基本信息批量修改
     public function Batch_edite(Request $request)
     {
-
         try {
             $data=$request->param();
-            $res = Db::name('pj_project_profile_text')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+            $field=array_filter(explode(',',$data['field']));
+            $numsss=array_filter(explode(',',$data['numsss']));
+            $arr=[];
+            foreach ($field as $k=>$v)
+            {
+                foreach ($numsss as $k1=>$v1)
+                {
+                    if($k==$k1)
+                    {
+                        $arr[$v]=$v1;
+                    }
+                }
+            }
+            $res = Db::name('pj_project_profile_text')->wherein('id',$data['arr'])->update($arr);
         } catch (ValidateException $e) {
             // 这是进行验证异常捕获
             return json($e->getError());
@@ -759,5 +771,6 @@ class PjProjectProfile extends Common
         }
 
         return json(['code'=>$res]);
+
     }
 }
