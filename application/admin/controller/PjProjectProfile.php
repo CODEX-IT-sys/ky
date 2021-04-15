@@ -202,7 +202,7 @@ class PjProjectProfile extends Common
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
 
-            return view('', ['colsData' => json_encode($colsData)]);
+            return view('', ['colsData' => json_encode($colsData),'colsDatae'=>$colsData]);
         }
 
         // 调用模型获取列表
@@ -697,6 +697,44 @@ class PjProjectProfile extends Common
         try {
             $data=$request->param();
             $res = Db::name('pj_project_profile')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json(['code'=>9999,'error'=>$e->getMessage()]);
+        }
+
+        return json(['code'=>$res]);
+    }
+
+    //文件名编号效验
+    public function inspection(Request $request)
+    {
+        try {
+            $data=$request->param();
+            $res = Db::name('pj_project_profile')->wherein('Filing_Code',$data['Filing_Code'])->count();
+            if($res<=1){
+                return json(['code'=>6666,]);
+            }
+        } catch (ValidateException $e) {
+            // 这是进行验证异常捕获
+            return json($e->getError());
+        } catch (\Exception $e) {
+            // 这是进行异常捕获
+            return json(['code'=>9999,'error'=>$e->getMessage()]);
+        }
+
+        return json(['code'=>$res]);
+    }
+
+    //基本信息批量修改
+    public function Batch_edite(Request $request)
+    {
+
+        try {
+            $data=$request->param();
+            $res = Db::name('pj_project_profile_text')->wherein('id',$data['arr'])->update([$data['field']=>$data['numsss']]);
         } catch (ValidateException $e) {
             // 这是进行验证异常捕获
             return json($e->getError());

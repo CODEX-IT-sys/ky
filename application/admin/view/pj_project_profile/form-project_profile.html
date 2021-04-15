@@ -565,7 +565,28 @@
 		// 下拉选择器值发生变化
 		form.on('select(Filing_Code)', function (data) {
 			var code = data.value;
-            //console.log(code);
+            console.log(code);
+
+			$.ajax({
+				//请求方式
+				type : "get",
+				//请求地址
+				url : "{:url('pj_project_profile/inspection')}",
+				//数据，json字符串
+				data : {'Filing_Code':code},
+				//请求成功
+				success : function(result) {
+					if(result.code!=6666){
+						layer.msg("已经有"+result.code+"条记录了!");
+					}
+					console.log(result);
+				},
+				//请求失败，包含具体的错误信息
+				error : function(e){
+					console.log(e.status);
+					console.log(e.responseText);
+				}
+			});
 
             // 选中第一个选项时，不请求数据
             if (data.value === '') {

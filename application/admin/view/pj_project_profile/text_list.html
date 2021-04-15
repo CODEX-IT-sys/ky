@@ -15,7 +15,7 @@
                 <div class="global_btn">
 
                     <a href="{:url('pj_project_profile/text_create')}" class="layui-btn">{:session('language') == '中文'? '新增' : 'Add'}</a>
-
+                    <a class="layui-btn com_btn" id="xzedit">批量修改</a>
                     <!--<a class="layui-btn delete_btn" id="del">{:session('language') == '中文'? '删除' : 'Delete'}</a>-->
                 </div>
             </div>
@@ -91,7 +91,8 @@
         // 数据表格字段
         var data = '{$colsData|raw}';
         var colsData = JSON.parse(data);
-
+        console.log(data);
+        console.log(colsData);
         // 通用表头生成器
         function commonCols(language,colsData){
             // 左侧勾选栏
@@ -103,7 +104,7 @@
                 if(colsData[i].Field !== 'delete_time'){
                     if(colsData[i].Field !== 'id'){
                         if(language === '中文'){
-                            cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:180, totalRow:true});
+                            cols.push({field: colsData[i].Field ,title: colsData[i].Comment, sort:true, minWidth:240, totalRow:true});
                         }else{
                             cols.push({field: colsData[i].Field ,title: colsData[i].Field, sort:true, minWidth:200, totalRow:true});
                         }
@@ -243,6 +244,66 @@
                     elemCurr.prop('checked') ? (!$('input[lay-filter="LAY_TABLE_TOOL_COLS"]').not(':checked').length) : false);
             form.render('checkbox', 'LAY_TABLE_TOOL_COLS_FORM');
         });
+        $('#xzedit').click(function () {
+
+            var option =  '{foreach name="colsDatae" item="v" key="k"}<option value="{$v.Field}">  {$v.Comment}</option>{/foreach}'
+            var html = '';
+            html +=  '<div class="layui-form-item" >'
+            html +=     '<label class="layui-form-label" style="width:70px;padding:9px 5px">字段:</label>'
+            html +=    '<div class="layui-input-inline ">'
+            html +=         '<select name="field" lay-verify="" lay-search class="layui-input"style="margin-left:15px; width:100px;">'
+            html +=             option
+            html +=        '</select>'
+            html +=     '</div>'
+            html +=   '</div>'
+            html += '<div class="layui-form-item" style="margin:15px 10px">'
+            html += '  <label class="layui-form-label" style="width:70px;padding:9px 5px">修改的值：</label>'
+            html += '  <div class="layui-input-block" style="margin-left:85px">'
+            html += '    <input class="layui-input" style="width:70%;float:left" name="numsss" id="editstr" value="" /><span  class="h38" style="display:block;float:left;margin-left:5px;"></span>'
+            html += '  </div>'
+            html += '</div>'
+
+            layer.open({
+                area: ['320px', '300px'], //宽高
+                title: '批量修改',
+                btn: ['确定', '取消'],
+                content: html,
+                yes: function (index, layero) {
+                    var field = $('select[name="field"]').val();
+                    var editstr = $('input[name="numsss"]').val();
+                    var checkStatus = table.checkStatus('test');
+                    console.log(checkStatus.data)
+                    var arr=new Object();
+                    for(var i=0;i<checkStatus.data.length;i++){
+                        arr[i] = checkStatus.data[i]['id']
+                    }
+                    console.log(arr);
+                    // 向服务器发送删除请求
+                    $.ajax({
+                        type: 'post',
+                        url: "{:url('Batch_edite')}",
+                        data: {arr: arr,field:field,numsss:editstr},
+                        // 删除成功
+                        success: function (res) {
+                            if(res.code==9999){
+                                layer.msg('修改失败');
+                            }else{
+                                tableIns.reload();
+                                layer.close(index);
+                                layer.msg(res);
+                            }
+
+                        },
+
+                    });
+                    console.log(field);
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+            });
+
+        })
     });
 </script>
 
