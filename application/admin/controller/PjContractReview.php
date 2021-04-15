@@ -787,7 +787,6 @@ class PjContractReview extends Common
                         $res=   Db::name('pj_project_profile')
                             ->where('Filing_Code', $v['Filing_Code'])
                             ->update($arr);
-                        dump($res);
                     }
                 }
             }
