@@ -106,11 +106,11 @@ class PjContractReview extends Common
                     break;
                 case 'Pre_Formatter':
                     $colsData[$k]['sort']='true';
-                    $colsData[$k]['width']=180;
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Post_Formatter':
                     $colsData[$k]['sort']='true';
-                    $colsData[$k]['width']=180;
+                    $colsData[$k]['width']=100;
                     break;
                 case 'Delivered_or_Not':
                     $colsData[$k]['sort']='true';
@@ -122,6 +122,13 @@ class PjContractReview extends Common
                     break;
                 case 'Revision_Start_Time':
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['width']=180;
+                    break;
+
+                case 'External_Reference_File':
+                    $colsData[$k]['width']=180;
+                    break;
+                case 'Customer_Requirements':
                     $colsData[$k]['width']=180;
                     break;
                 default:
