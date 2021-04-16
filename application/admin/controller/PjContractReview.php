@@ -777,6 +777,7 @@ class PjContractReview extends Common
                     }
                 }
             }
+            $arr1=$arr;
             $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update($arr);
 
             $Filing_Code=Db::name('pj_contract_review')->wherein('id',$data['arr'])->field('Filing_Code')->select();
@@ -785,29 +786,30 @@ class PjContractReview extends Common
             $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty',
                 'Pre_Format_Delivery_Time','Translation_Delivery_Time',
                 'Revision_Delivery_Time','Post_Format_Delivery_Time'];
-
             foreach ($field as $key=>$val){
-                if(in_array($val, $f)){
-                    foreach ($Filing_Code as $k=>$v){
-                        $res=   Db::name('pj_project_profile')
-                            ->where('Filing_Code', $v['Filing_Code'])
-                            ->update($arr);
-                    }
+                if(!in_array($val, $f)){
+                    unset($arr[$val]);
                 }
+            }
+            foreach ($Filing_Code as $k=>$v){
+                $res=   Db::name('pj_project_profile')
+                    ->where('Filing_Code', $v['Filing_Code'])
+                    ->update($arr);
             }
 
             // 同步更新 项目数据库表 相关信息
             $d = ['Translator','Reviser','Pre_Formatter','Post_Formatter','Language','File_Type','File_Category',
                 'Completed','Delivered_or_Not','File_Category', 'PA'];
-        foreach ($field as $key=>$val){
-            if(in_array($val, $d)) {
-                foreach ($Filing_Code as $k=>$v){
-                    Db::name('pj_project_database')
-                        ->where('Filing_Code', $v['Filing_Code'])
-                        ->update($arr);
+            foreach ($field as $key=>$val){
+                if(!in_array($val, $d)) {
+                    unset($arr1[$val]);
                 }
             }
-        }
+            foreach ($Filing_Code as $k=>$v){
+                Db::name('pj_project_database')
+                    ->where('Filing_Code', $v['Filing_Code'])
+                    ->update($arr1);
+            }
             // 提交事务
             Db::commit();
         } catch (ValidateException $e) {
