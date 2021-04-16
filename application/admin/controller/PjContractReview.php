@@ -759,7 +759,8 @@ class PjContractReview extends Common
     public function Batch_edit(Request $request)
     {
 
-
+// 启动事务
+        Db::startTrans();
 
         try {
             $data=$request->param();
@@ -807,11 +808,14 @@ class PjContractReview extends Common
                 }
             }
         }
-
+            // 提交事务
+            Db::commit();
         } catch (ValidateException $e) {
             // 这是进行验证异常捕获
             return json($e->getError());
         } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
             // 这是进行异常捕获
             return json(['code'=>9999,'error'=>$e->getMessage()]);
         }
