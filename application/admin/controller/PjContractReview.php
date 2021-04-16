@@ -764,8 +764,8 @@ class PjContractReview extends Common
 
         try {
             $data=$request->param();
-            $field=array_filter(explode(',',$data['field']));
-            $numsss=array_filter(explode(',',$data['numsss']));
+            $field=array_filter(explode('&',$data['field']));
+            $numsss=array_filter(explode('&',$data['numsss']));
             $arr=[];
             foreach ($field as $k=>$v)
             {

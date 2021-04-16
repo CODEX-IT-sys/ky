@@ -106,6 +106,7 @@ layui.use(['table','form'], function(){
 	var data = '{$colsData|raw}';
 	var colsData = JSON.parse(data);
 
+
 	// 通用表头生成器
 	function commonCols(language,colsData){
 		// 左侧勾选栏
@@ -510,11 +511,11 @@ layui.use(['table','form'], function(){
 			yes: function (index, layero) {
 				var s ='' ; var n ='';
 				$('#add_form select[name="field[]"]').each(function (index ) {
-					s+= $(this).val() + ",";
+					s+= $(this).val() + "&";
 				});
 
 				$('#add_form input[name="numsss[]"]').each(function (index ) {
-					n+= $(this).val() + ",";
+					n+= $(this).val() + "&";
 				});
 				// var field = $('select[name="field[]"]').val();
 				// var editstr = $('input[name="numsss[]"]').val();
