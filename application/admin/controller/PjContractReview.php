@@ -209,6 +209,10 @@ class PjContractReview extends Common
                 'Field'=>'PM',
                 'Comment'=>'项目经理'
             ],
+            [
+                'Field'=>'Comment',
+                'Comment'=>'备注'
+            ],
 
         ];
 
