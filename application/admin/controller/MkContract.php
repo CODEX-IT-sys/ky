@@ -146,7 +146,46 @@ class MKContract extends Common
 
         // 查询信息
         $res = MkContractModel::get($id);
+        $yz = explode(',', $res['Language']);
+        $dw= explode(',', $res['Units']);
+        $fw= explode(',', $res['Service']);
+        //.语种
+        $language=Db::name('xt_dict')->where('c_id',1)->field('id,cn_name,en_name')->select();
+        $l=[];
+        foreach ($language as $k=>$v)
+        {
+            $l[$k]['name']=$v['cn_name'];
+            $l[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$yz)){
+                $l[$k]['selected'] = true;
+            }
+        }
 
+//        dump($yz);
+//        dump($l);
+
+        //服务
+        $serve=Db::name('xt_dict')->where('c_id',12)->field('id,cn_name,en_name')->select();
+        $s=[];
+        foreach ($serve as $k=>$v)
+        {
+            $s[$k]['name']=$v['cn_name'];
+            $s[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$fw)){
+                $s[$k]['selected'] = true;
+            }
+        }
+        //单位
+        $danwei=Db::name('xt_dict')->where('c_id',3)->field('id,cn_name,en_name')->select();
+        $d=[];
+        foreach ($danwei as $k=>$v)
+        {
+            $d[$k]['name']=$v['cn_name'];
+            $d[$k]['value']=$v['cn_name'];
+            if(in_array($v['cn_name'],$dw)){
+                $d[$k]['selected'] = true;
+            }
+        }
 
 		// 主体公司
         $gs = Db::name('xt_company')->field('id,cn_name,en_name')->select();
@@ -168,7 +207,8 @@ class MKContract extends Common
         // 直接返回视图
         return view('form-Contract-view', [
             'info'=>$res, 'vat_rate'=>$vat_rate,'gs'=>$gs,
-            'gs_id'=>$gs_id, 'sales'=>$sales, 'currency'=>$currency
+            'gs_id'=>$gs_id, 'sales'=>$sales, 'currency'=>$currency,
+                        'language'=>$l,'Service'=>$s,'unit'=>$d
         ]);
     }
 
