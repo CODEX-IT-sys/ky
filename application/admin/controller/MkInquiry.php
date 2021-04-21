@@ -824,7 +824,7 @@ class MkInquiry extends Common
     {
         $id_arr = explode(',' , $id);
         // 调用模型编辑
-        foreach ($id_arr as $k => $v){
+        foreach (array_reverse($id_arr) as $k => $v){
             MkInquiryFileModel::where('id',$v)->update(['Order_Status'=>'Accepted']);
             $a=  MkInquiryFileModel::find($v);
             //查询来稿需求主表
