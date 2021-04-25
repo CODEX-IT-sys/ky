@@ -366,7 +366,7 @@ class MkFeseability extends Common
 
             // 项目汇总 字段
             $pj = ['Filing_Code','Job_Name','Company_Name','Sales','Attention','Department','Pages',
-                'File_Type','Service','Language','Source_Text_Word_Count','Delivery_Date_Expected','Completed',
+                'File_Type','Service','Language','Source_Text_Word_Count','Delivery_Date_Expected','Completed','PM',
                 'Customer_Requirements','External_Reference_File','First_Cooperation'];
 
             // 项目数据库 字段
@@ -467,7 +467,7 @@ class MkFeseability extends Common
 
             // 项目汇总 字段
             $pj = ['Filing_Code','Job_Name','Company_Name','Sales','Attention','Department','Pages',
-                'File_Type','Service','Language','Source_Text_Word_Count','Delivery_Date_Expected','Completed',
+                'File_Type','Service','Language','Source_Text_Word_Count','Delivery_Date_Expected','Completed','PM',
                 'Customer_Requirements','External_Reference_File','First_Cooperation'];
 
             // 项目数据库 字段

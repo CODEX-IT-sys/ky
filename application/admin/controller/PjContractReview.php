@@ -48,9 +48,6 @@ class PjContractReview extends Common
                 case 'Filled_by':
                     $colsData[$k]['hide']=true;
                     break;
-                case 'PA':
-                    $colsData[$k]['hide']=true;
-                    break;
                 case 'CODEX_Team':
 //                    $colsData[$k]['width']=100;
                     $colsData[$k]['hide']=true;
