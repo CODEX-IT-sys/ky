@@ -34,16 +34,31 @@ class PjDailyProgressTrRe extends Model
         $where = [];
 
         $query = $this;
+        if($name=="程君"||"张攀") {
+            //查询所有实习生
+            $sxs = Db::table("ky_admin")->where('trainee', 1)->field("name")->select();
+            $a = [];
+            foreach ($sxs as $k => $v) {
+                $a[] = $v['name'];
+            }
 
-        // 查询器对象 判断管理层
-        if(!in_array($job_id, [1,8,9,16,17,20])) {
-
-            // 否则 就只显示自己录入的 或 项目助理数据
-            $query = $this->where(function ($query) use($name) {
-                $query->where('Filled_by', $name)
-                    ->whereOr('Name_of_Translator_or_Reviser', 'like', "$name%");
+            $query = $this->where(function ($query) use ($a) {
+                $query->where('Name_of_Translator_or_Reviser', 'in', $a)
+                ->whereOr('Name_of_Translator_or_Reviser', 'like', "程君%")
+                ->whereOr('Name_of_Translator_or_Reviser', 'like', "张攀%");
             });
+        }else{
+            // 查询器对象 判断管理层
+            if(!in_array($job_id, [1,8,9,16,17,20])) {
+
+                // 否则 就只显示自己录入的 或 项目助理数据
+                $query = $this->where(function ($query) use($name) {
+                    $query->where('Filled_by', $name)
+                        ->whereOr('Name_of_Translator_or_Reviser', 'like', "$name%");
+                });
+            }
         }
+
 
         // 如果有搜索类型，添加查询条件
         $field_arr = explode(',' , $field);//字段数组

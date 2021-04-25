@@ -46,55 +46,77 @@ class PjProjectProfile extends Model
         $job_id = session('administrator')['job_id'];
 
         $where = [];
-
         $query = $this;
-
-        // 查询器对象 判断管理层
-        if(in_array($job_id, [1,8,9,20])) {
-
-            $query = $this;
-
-            // 翻、校、排、助理
-        }else if(in_array($job_id, [7,10,11,12,13,19])) {
-
-            $field_name = '';
-
-            if($job_id == 7){
-                $field_name = 'PA';
-            } else if($job_id == 10 or $job_id == 19){
-                $field_name = 'Translator';
-            } else if($job_id == 11){
-                $field_name = 'Reviser';
-            } else if($job_id == 12){
-                $field_name = 'Pre_Formatter';
-            } else if($job_id == 13){
-                $field_name = 'Post_Formatter';
+        if($name=="程君"||"张攀"){
+            //查询所有实习生
+            $sxs=Db::table("ky_admin")->where('trainee',1)->field("name")->select();
+            $a=[];
+            foreach ($sxs as $k=>$v)
+            {
+                $a[]=$v['name'];
             }
-
-            // 否则 就只显示自己录入和参与的数据
-            $query = $this->where(function ($query) use($field_name, $name) {
-                $query->where($field_name, 'like', "%$name%");
-            });
-
-            // codex 校长、副校长、质控主管
-        }else if(in_array($job_id, [4,6,15])) {
-
-            $query = $this->where(function ($query) use($name) {
-                $query->where('Translator', 'like', "%$name%")
-                    ->whereOr('Reviser', 'like', "%$name%");
-            });
-
-        }else if($job_id = 5) { // 培训专员
-
-            $query = $this->where(function ($query) use($name) {
-                $query->where('Pre_Formatter', 'like', "%$name%")
-                    ->whereOr('Post_Formatter', 'like', "%$name%");
+            $query = $this->where(function ($query) use($a) {
+                $query->where('Translator', 'in', $a)
+                    ->whereXor('Reviser', 'in', $a)
+                    ->whereXor('Pre_Formatter', 'in', $a)
+                     ->whereOr('Pre_Formatter', 'like', "程君%")
+                    ->whereOr('Pre_Formatter', 'like', "张攀%")
+                ->whereOr('Reviser', 'like', "程君%")
+                    ->whereOr('Reviser', 'like', "张攀%")
+                ->whereOr('Translator', 'like', "程君%")
+                    ->whereOr('Translator', 'like', "张攀%");
             });
 
         }else{
-            // 否则 就只显示自己录入的数据
-            $where['Filled_by'] = $name;
+
+            // 查询器对象 判断管理层
+            if(in_array($job_id, [1,8,9,20])) {
+
+                $query = $this;
+
+                // 翻、校、排、助理
+            }else if(in_array($job_id, [7,10,11,12,13,19])) {
+
+                $field_name = '';
+
+                if($job_id == 7){
+                    $field_name = 'PA';
+                } else if($job_id == 10 or $job_id == 19){
+                    $field_name = 'Translator';
+                } else if($job_id == 11){
+                    $field_name = 'Reviser';
+                } else if($job_id == 12){
+                    $field_name = 'Pre_Formatter';
+                } else if($job_id == 13){
+                    $field_name = 'Post_Formatter';
+                }
+
+                // 否则 就只显示自己录入和参与的数据
+                $query = $this->where(function ($query) use($field_name, $name) {
+                    $query->where($field_name, 'like', "%$name%");
+                });
+
+                // codex 校长、副校长、质控主管
+            }else if(in_array($job_id, [4,6,15])) {
+
+                $query = $this->where(function ($query) use($name) {
+                    $query->where('Translator', 'like', "%$name%")
+                        ->whereOr('Reviser', 'like', "%$name%");
+                });
+
+            }else if($job_id = 5) { // 培训专员
+
+                $query = $this->where(function ($query) use($name) {
+                    $query->where('Pre_Formatter', 'like', "%$name%")
+                        ->whereOr('Post_Formatter', 'like', "%$name%");
+                });
+
+            }else{
+                // 否则 就只显示自己录入的数据
+                $where['Filled_by'] = $name;
+            }
         }
+
 
         // 如果有搜索类型，添加查询条件
         $field_arr = explode(',' , $field);//字段数组
