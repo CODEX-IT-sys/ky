@@ -7,7 +7,7 @@ use think\Model;
 use think\Paginator;
 use think\model\concern\SoftDelete;
 
-// 每日进度（排版） 模型
+// 每日进度（排版） 模型1
 class PjDailyProgressDtp extends Model
 {
     // 软删除
