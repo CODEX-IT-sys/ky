@@ -34,7 +34,7 @@ class PjDailyProgressTrRe extends Model
         $where = [];
 
         $query = $this;
-        if($name=="程君"||"张攀") {
+        if($name=="程君"||$name=="张攀"){
             //查询所有实习生
             $sxs = Db::table("ky_admin")->where('trainee', 1)->field("name")->select();
             $a = [];
