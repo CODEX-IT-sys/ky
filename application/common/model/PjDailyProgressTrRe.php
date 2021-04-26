@@ -34,20 +34,7 @@ class PjDailyProgressTrRe extends Model
         $where = [];
 
         $query = $this;
-        if($name=="程君"||$name=="张攀"){
-            //查询所有实习生
-            $sxs = Db::table("ky_admin")->where('trainee', 1)->field("name")->select();
-            $a = [];
-            foreach ($sxs as $k => $v) {
-                $a[] = $v['name'];
-            }
 
-            $query = $this->where(function ($query) use ($a) {
-                $query->where('Name_of_Translator_or_Reviser', 'in', $a)
-                ->whereOr('Name_of_Translator_or_Reviser', 'like', "程君%")
-                ->whereOr('Name_of_Translator_or_Reviser', 'like', "张攀%");
-            });
-        }else{
             // 查询器对象 判断管理层
             if(!in_array($job_id, [1,8,9,16,17,20])) {
 
@@ -57,7 +44,7 @@ class PjDailyProgressTrRe extends Model
                         ->whereOr('Name_of_Translator_or_Reviser', 'like', "$name%");
                 });
             }
-        }
+
 
 
         // 如果有搜索类型，添加查询条件
