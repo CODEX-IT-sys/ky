@@ -232,7 +232,7 @@
 							            {:session('language') == '中文'? '总重复率' : 'Total Repetition Rate'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Total_Repetition_Rate" id="zcfz" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Total_Repetition_Rate" id="zcfz" readonly lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
 							        </div>
 									<span class="signTip">%</span>
 							    </div>
@@ -255,7 +255,7 @@
 										{:session('language') == '中文'? '实际源语数量' : 'Actual Source Text Count'}
 									</label>
 							        <div class="layui-input-block">
-							            <input name="Actual_Source_Text_Count" id="sjyzs" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
+							            <input name="Actual_Source_Text_Count" id="sjyzs" readonly lay-verify="required" autocomplete="off" placeholder="" class="layui-input" type="number">
 							        </div>
 							    </div>
 							</div>
@@ -699,8 +699,7 @@
 		});
 
 		// 100%
-        $('#ybcfz').change(function () {
-
+        $('#ybcfz').bind('input porpertychange',function(){
             var ybcfz = $.trim($('#ybcfz').val());
 			var jwcfz = $.trim($('#jwcfz').val());
 
@@ -712,7 +711,7 @@
 		});
 
         // 95-99%
-        $('#jwcfz').change(function () {
+        $('#jwcfz').bind('input porpertychange',function(){
 
             var ybcfz = $.trim($('#ybcfz').val());
 			var jwcfz = $.trim($('#jwcfz').val());
@@ -725,7 +724,7 @@
 		});
 
         // 实际源语数量 自动计算
-        $('#yzs').change(function () {
+        $('#yzs').bind('input porpertychange',function(){
 
             var yzs = $.trim($('#yzs').val());
             var zcfz = $.trim($('#zcfz').val());
@@ -739,7 +738,7 @@
         });
 
         // 总重复
-        $('#zcfz').change(function () {
+        $('#zcfz').bind('input porpertychange',function(){
 
             var yzs = $.trim($('#yzs').val());
             var zcfz = $.trim($('#zcfz').val());
@@ -753,7 +752,7 @@
         });
 
         // 扣除字数
-        $('#kczs').change(function () {
+        $('#kczs').bind('input porpertychange',function(){
 
             var yzs = $.trim($('#yzs').val());
             var zcfz = $.trim($('#zcfz').val());
