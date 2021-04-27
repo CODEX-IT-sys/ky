@@ -706,8 +706,13 @@
 			ybcfz?ybcfz:0; jwcfz?jwcfz:0;
 
 			var zcfz = Number(ybcfz) + Number(jwcfz);
-
 			$('#zcfz').val(zcfz);
+			var yzs = $.trim($('#yzs').val());
+			var zcfz = $.trim($('#zcfz').val());
+			var kczs = $.trim($('#kczs').val());
+			yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs)) ;
+			$('#sjyzs').val(sjyzs);
 		});
 
         // 95-99%
@@ -721,6 +726,12 @@
 			var zcfz = Number(ybcfz) + Number(jwcfz);
 
 			$('#zcfz').val(zcfz);
+			var yzs = $.trim($('#yzs').val());
+			var zcfz = $.trim($('#zcfz').val());
+			var kczs = $.trim($('#kczs').val());
+			yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs)) ;
+			$('#sjyzs').val(sjyzs);
 		});
 
         // 实际源语数量 自动计算
@@ -732,7 +743,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs)) ;
 
             $('#sjyzs').val(sjyzs);
         });
@@ -746,7 +757,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+			var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs)) ;
 
             $('#sjyzs').val(sjyzs);
         });
@@ -760,7 +771,7 @@
 
             yzs?yzs:0; zcfz?zcfz:0; kczs?kczs:0;
 
-            var sjyzs = Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs);
+            var sjyzs =Math.round(Number(yzs) * ((100 - Number(zcfz))/100) - Number(kczs)) ;
 
             $('#sjyzs').val(sjyzs);
         });
