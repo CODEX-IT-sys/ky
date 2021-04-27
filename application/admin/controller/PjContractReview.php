@@ -594,19 +594,15 @@ class PjContractReview extends Common
         Db::name('pj_project_database')
             ->where('Filing_Code', $data['Filing_Code'])
             ->update($db_data);
-
-
         // 同步更新 项目描述表
-        $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty',
+        $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty','Comment',
             'Pre_Format_Delivery_Time','Translation_Delivery_Time',
             'Revision_Delivery_Time','Post_Format_Delivery_Time'];
-
         foreach ($data as $k => $v){
             if(in_array($k, $f)){
                 $f_data[$k] = $v;
             }
         }
-
         Db::name('pj_project_profile')
             ->where('Filing_Code', $data['Filing_Code'])
             ->update($f_data);
@@ -776,11 +772,9 @@ class PjContractReview extends Common
             }
             $arr1=$arr;
             $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update($arr);
-
             $Filing_Code=Db::name('pj_contract_review')->wherein('id',$data['arr'])->field('Filing_Code')->select();
-
             // 同步更新 项目描述表复制上面的
-            $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty',
+            $f = ['Pre_Formatter','Translator','Reviser','Post_Formatter','Language','File_Type','File_Category','Format_Difficulty','Translation_Difficulty','Comment',
                 'Pre_Format_Delivery_Time','Translation_Delivery_Time',
                 'Revision_Delivery_Time','Post_Format_Delivery_Time'];
             foreach ($field as $key=>$val){
