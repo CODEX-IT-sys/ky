@@ -176,7 +176,6 @@ class Statistics extends Controller
 
         // 去除 键值下标 (因为图表数据格式要求 纯数值不带键值)
         $chart_data = array_values($chart_data);
-
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', [
@@ -306,7 +305,6 @@ class Statistics extends Controller
         $a['code'] = 0;
         $a['msg'] = '成功';
         $a['data'] = $arr;
-
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
             return view('', ['s_year'=>$s_year, 'year'=>$year, 'a'=>json_encode($a)]);
@@ -848,4 +846,107 @@ class Statistics extends Controller
     }
 
 
+
+    public function pagesum()
+    {
+        $data=request()->get();
+        if(isset($data['month'])){
+            $time= strtotime($data['month']);
+            $year = date("Y", $time);
+            $month = date("m", $time);
+            $day = date("d", $time);
+            // 本月一共有几天
+            $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+            $day = date('t',$firstTime);
+            $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+            $firstTime=intval(date("Ymd",$firstTime));
+            $lastTime=intval(date("Ymd",$lastTime));
+        }else{
+            $firstTime=19701201;
+            $lastTime=20351201;
+        }
+
+        //每天要完成多少页
+        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('date',$firstTime,$lastTime)->field('Date,sum(Pages) as sumpage')->group('Date')->select();
+      //预排页数Work_Content
+        $yp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('Work_Content','Preformat')->field('Work_Date,sum(Number_of_Pages_Completed) as yppage')
+            ->group('Work_Date')->select();
+        //后排页数Work_Content
+        $hp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('Work_Content','Postformat')->field('Work_Date,sum(Number_of_Pages_Completed) as hppage')
+            ->group('Work_Date')->select();
+        //翻译页数Work_Content
+        $tr=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->wherein('Work_Content',['Translate','TR Modify','TR Finalize'])->where('Category','TR')
+            ->field('Work_Date,sum(Number_of_Pages_Completed) as trpage')
+            ->group('Work_Date')->select();
+        //校对页数Work_Content
+        $xd=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->wherein('Work_Content',['Revise','RE Modify','RE (Sampling)','RE (Highlight)','RE (Sampling_Highlight)','RE Finalize'])->where('Category','RE')
+            ->field('Work_Date,sum(Number_of_Pages_Completed) as xdpage')
+            ->group('Work_Date')->select();
+        foreach($mt as $k=>$v){
+            $mt[$k]['Work_Date']=$v['Date'];
+            unset($mt[$k]['Date']);
+        }
+        $hb=[];
+        $c = array_merge($hp,$yp,$mt,$tr,$xd);
+        foreach ($c as $k1=>$v1)
+        {
+            if(isset($v1['yppage'])){
+                $hb[$v1['Work_Date']]['yppage']= $v1['yppage'];
+            }
+            if(isset($v1['hppage'])){
+                $hb[$v1['Work_Date']]['hppage']= $v1['hppage'];
+            }
+            if(isset($v1['trpage'])){
+                $hb[$v1['Work_Date']]['trpage']= $v1['trpage'];
+            }
+            if(isset($v1['xdpage'])){
+                $hb[$v1['Work_Date']]['xdpage']= $v1['xdpage'];
+            }
+            if(isset($v1['sumpage'])){
+                $hb[$v1['Work_Date']]['sumpage']= $v1['sumpage'];
+            }
+
+        }
+
+
+        foreach ($hb as $k2=>$v)
+        {
+            $hb[$k2]['date']=$k2;
+            $list[]=$hb[$k2];
+        }
+        if(!isset($list)){
+            return '该月无数据';
+        }
+        foreach ($list as $key => $row) {
+            $id[$key]  = $row['date'];
+        }
+        array_multisort($id, SORT_DESC , $list);
+        $mon=[];
+        foreach ($list as $k=>$v)
+        {
+            $mon[]=$v['date'];
+        }
+
+        $char=[];
+        foreach ($list as $k=>$v)
+        {
+            unset($v['hppage']);
+            unset($v['yppage']);
+            unset($v['trpage']);
+            unset($v['xdpage']);
+            unset($v['date']);
+            if(!isset($v['sumpage']))
+            {
+                $v['sumpage']=0;
+            }else{
+                $v['sumpage']=intval( $v['sumpage']);
+            }
+            $char['name']='页数';
+            $char['type']= 'bar';
+            $char['data'][]=$v['sumpage'];
+        }
+
+        $this->assign(['list'=>$list,'mon'=>json_encode($mon),'char'=>json_encode($char)]);
+        return $this->fetch();
+    }
 }
