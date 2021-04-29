@@ -3,7 +3,7 @@
 {block name="body"}
 <div class="layui-card">
     <div class="layui-card-body">
-        <blockquote class="layui-elem-quote news_search">
+
             <form class="layui-form layui-inline" action="/admin/statistics/pagesum" id="sub">
                 <div class="layui-form-item">
                     <label class="layui-form-label">选择月份</label>
@@ -12,9 +12,8 @@
                     </div>
                 </div>
             </form>
-        </blockquote>
         <div class="layui-form">
-            <table class="layui-table" lay-filter="demo">
+            <table class="layui-table" lay-filter="demo" lay-data="{ url:'/admin/statistics/pagesum?month={:input('month')}',id:'test',page:'false',limit:99999,}">
                 <thead >
                 <tr>
                     <th lay-data="{field:'date',sort: true}">日期</th>
@@ -25,18 +24,18 @@
                     <th lay-data="{field:'hppage',sort: true}">后排完成页数</th>
                 </tr>
                 </thead>
-                <tbody>
-                {foreach $list as $key=>$vo }
-                <tr>
-                     <td>{$vo.date}</td>
-                     <td>{$vo.sumpage|default=''}  </td>
-                     <td>{$vo.yppage|default=''}  </td>
-                     <td>{$vo.trpage|default=''}  </td>
-                     <td>{$vo.xdpage|default=''}  </td>
-                     <td>{$vo.hppage|default=''}  </td>
-                </tr>
-                {/foreach}
-                </tbody>
+                <!--<tbody>-->
+                <!--&lt;!&ndash;{foreach $list as $key=>$vo }&ndash;&gt;-->
+                <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                     <!--&lt;!&ndash;<td>{$vo.date}</td>&ndash;&gt;-->
+                     <!--&lt;!&ndash;<td>{$vo.sumpage|default=0}  </td>&ndash;&gt;-->
+                     <!--&lt;!&ndash;&lt;!&ndash;<td>{$vo.yppage|default=0}  </td>&ndash;&gt;&ndash;&gt;-->
+                     <!--&lt;!&ndash;&lt;!&ndash;<td>{$vo.trpage|default=0}  </td>&ndash;&gt;&ndash;&gt;-->
+                     <!--&lt;!&ndash;&lt;!&ndash;<td>{$vo.xdpage|default=0}  </td>&ndash;&gt;&ndash;&gt;-->
+                     <!--&lt;!&ndash;&lt;!&ndash;<td>{$vo.hppage|default=0}  </td>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                <!--&lt;!&ndash;{/foreach}&ndash;&gt;-->
+                <!--</tbody>-->
             </table>
         </div>
     </div>
@@ -59,13 +58,15 @@
 <script>
     layui.use('table', function() {
         var table = layui.table;
-        console.log(table);
-//转换静态表格
-        table.init('demo', {
-            toolbar: true,
-            title:'页数统计表',
-            limit:999999
-        });
+        // console.log(table);
+//转换静态表格(排序有问题)
+//         table.init('demo', {
+//             toolbar: true,
+//             title:'页数统计表',
+//             limit:300,
+//         });
+
+
     });
 </script>
 
@@ -75,8 +76,6 @@
     var myChart = echarts.init(document.getElementById('main'));
     var mon = {$mon|raw};
     var char = {$char|raw};
-    console.log(mon);
-    console.log(char);
     // 指定图表的配置项和数据
     var option = {
 

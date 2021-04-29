@@ -849,9 +849,10 @@ class Statistics extends Controller
 
     public function pagesum()
     {
-        $data=request()->get();
-        if(isset($data['month'])){
-            $time= strtotime($data['month']);
+        $data=request()->param('month');
+
+        if(isset($data)){
+            $time= strtotime($data);
             $year = date("Y", $time);
             $month = date("m", $time);
             $day = date("d", $time);
@@ -861,6 +862,10 @@ class Statistics extends Controller
             $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
             $firstTime=intval(date("Ymd",$firstTime));
             $lastTime=intval(date("Ymd",$lastTime));
+            if($data==''){
+                $firstTime=19701201;
+                $lastTime=20351201;
+            }
         }else{
             $firstTime=19701201;
             $lastTime=20351201;
@@ -888,39 +893,42 @@ class Statistics extends Controller
         }
         $hb=[];
         $c = array_merge($hp,$yp,$mt,$tr,$xd);
+
         foreach ($c as $k1=>$v1)
         {
             if(isset($v1['yppage'])){
-                $hb[$v1['Work_Date']]['yppage']= $v1['yppage'];
+                $hb[$v1['Work_Date']]['yppage']= intval($v1['yppage']);
             }
             if(isset($v1['hppage'])){
-                $hb[$v1['Work_Date']]['hppage']= $v1['hppage'];
+                $hb[$v1['Work_Date']]['hppage']= intval($v1['hppage']);
             }
             if(isset($v1['trpage'])){
-                $hb[$v1['Work_Date']]['trpage']= $v1['trpage'];
+                $hb[$v1['Work_Date']]['trpage']= intval($v1['trpage']);
             }
             if(isset($v1['xdpage'])){
-                $hb[$v1['Work_Date']]['xdpage']= $v1['xdpage'];
+                $hb[$v1['Work_Date']]['xdpage']= intval($v1['xdpage']);
             }
             if(isset($v1['sumpage'])){
-                $hb[$v1['Work_Date']]['sumpage']= $v1['sumpage'];
+                $hb[$v1['Work_Date']]['sumpage']= intval($v1['sumpage']);
             }
 
         }
-
-
+        $list=[];
         foreach ($hb as $k2=>$v)
         {
             $hb[$k2]['date']=$k2;
             $list[]=$hb[$k2];
         }
         if(!isset($list)){
-            return '该月无数据';
+             return '无数据';
         }
+
+        $id=[];
         foreach ($list as $key => $row) {
             $id[$key]  = $row['date'];
         }
         array_multisort($id, SORT_DESC , $list);
+
         $mon=[];
         foreach ($list as $k=>$v)
         {
@@ -945,8 +953,16 @@ class Statistics extends Controller
             $char['type']= 'bar';
             $char['data'][]=$v['sumpage'];
         }
+        if (!request()->isAjax()) {
+            $this->assign(['list'=>$list,'mon'=>json_encode($mon),'char'=>json_encode($char)]);
+            return $this->fetch();
+        }
+        return [
+            'code'  => 0,
+            'msg'   => '',
+            'count' => 0,
+            'data'  =>$list,
+        ];
 
-        $this->assign(['list'=>$list,'mon'=>json_encode($mon),'char'=>json_encode($char)]);
-        return $this->fetch();
     }
 }
