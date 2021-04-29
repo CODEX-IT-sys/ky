@@ -61,6 +61,7 @@ class PjProjectProfile extends Model
                     ->whereXor('Pre_Formatter', 'in', $a)
                      ->whereOr('Pre_Formatter', 'like', "程君%")
                     ->whereOr('Pre_Formatter', 'like', "张攀%")
+                    ->whereOr('Post_Formatter', 'like', "张攀%")
                 ->whereOr('Reviser', 'like', "程君%")
                     ->whereOr('Reviser', 'like', "张攀%")
                 ->whereOr('Translator', 'like', "程君%")
