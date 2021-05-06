@@ -872,7 +872,7 @@ class Statistics extends Controller
         }
 
         //每天要完成多少页
-        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('date',$firstTime,$lastTime)->field('Date,sum(Pages) as sumpage')->group('Date')->select();
+        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->field('Completed,sum(Pages) as sumpage')->group('Completed')->select();
       //预排页数Work_Content
         $yp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('Work_Content','Preformat')->field('Work_Date,sum(Number_of_Pages_Completed) as yppage')
             ->group('Work_Date')->select();
@@ -888,8 +888,8 @@ class Statistics extends Controller
             ->field('Work_Date,sum(Number_of_Pages_Completed) as xdpage')
             ->group('Work_Date')->select();
         foreach($mt as $k=>$v){
-            $mt[$k]['Work_Date']=$v['Date'];
-            unset($mt[$k]['Date']);
+            $mt[$k]['Work_Date']=$v['Completed'];
+            unset($mt[$k]['Completed']);
         }
         $hb=[];
         $c = array_merge($hp,$yp,$mt,$tr,$xd);
