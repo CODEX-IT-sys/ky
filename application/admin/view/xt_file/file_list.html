@@ -212,7 +212,7 @@
 
                     // 向服务器发送删除请求
                     $.ajax({
-                        type: 'delete',
+                        type: 'get',
                         contentType: 'application/json',
                         url: replaceEditUrlId("{:url('xt_file/delete', ['id' => 1])}", id),
                         dataType: 'json',
