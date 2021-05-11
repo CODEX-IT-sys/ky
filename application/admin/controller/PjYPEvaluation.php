@@ -97,7 +97,9 @@ class PjYPEvaluation extends Common
         $data['Filled_by'] = session('administrator')['name'];
 
         /*计算 整体评价*/
-        $f = [$data['Layout_and_Format'],$data['Content_Check'],$data['Customer_Requirements']];
+        $f = [$data['Layout_and_Format'],$data['Content_Check'],$data['Customer_Requirements']
+        ,$data['directory_link'],$data['table_img'],$data['font']
+        ];
 
         // 对数组中的所有值进行计数
         $num = array_count_values($f);
@@ -107,20 +109,34 @@ class PjYPEvaluation extends Common
         $n['C'] = isset($num['C']) ? $num['C'] : 0;
         $n['D'] = isset($num['D']) ? $num['D'] : 0;
 
-        if($n['A'] == 3){
 
+
+        if($n['A']>=5&& $n['C']==0&& $n['D']==0){
             $data['Overall_Evaluation'] = 'A';
-
-        }elseif ($n['A'] + $n['B'] >= 2 && $n['D'] == 0){
-
+        }elseif ($n['A'] + $n['B'] >= 5&& $n['D'] == 0){
             $data['Overall_Evaluation'] = 'B';
-
         }elseif ($n['C'] + $n['D'] == 3 or $n['D'] >= 2){
-
             $data['Overall_Evaluation'] = 'D';
         }else{
             $data['Overall_Evaluation'] = 'C';
         }
+//        dump($n);2020.5.11更新计算规则_cc
+//        dump( $data['Overall_Evaluation']);
+//        die;
+//        if($n['A'] == 3){
+//
+//            $data['Overall_Evaluation'] = 'A';
+//
+//        }elseif ($n['A'] + $n['B'] >= 2 && $n['D'] == 0){
+//
+//            $data['Overall_Evaluation'] = 'B';
+//
+//        }elseif ($n['C'] + $n['D'] == 3 or $n['D'] >= 2){
+//
+//            $data['Overall_Evaluation'] = 'D';
+//        }else{
+//            $data['Overall_Evaluation'] = 'C';
+//        }
 
         // 保存
         PjPreFormatEvaluationModel::create($data);
@@ -136,7 +152,9 @@ class PjYPEvaluation extends Common
         $data = $request->post();
 
         /*计算 整体评价*/
-        $f = [$data['Layout_and_Format'],$data['Content_Check'],$data['Customer_Requirements']];
+        $f = [$data['Layout_and_Format'],$data['Content_Check'],$data['Customer_Requirements']
+            ,$data['directory_link'],$data['table_img'],$data['font']
+        ];
 
         // 对数组中的所有值进行计数
         $num = array_count_values($f);
@@ -146,16 +164,11 @@ class PjYPEvaluation extends Common
         $n['C'] = isset($num['C']) ? $num['C'] : 0;
         $n['D'] = isset($num['D']) ? $num['D'] : 0;
 
-        if($n['A'] == 3){
-
+        if($n['A']>=5&& $n['C']==0&& $n['D']==0){
             $data['Overall_Evaluation'] = 'A';
-
-        }elseif ($n['A'] + $n['B'] >= 2 && $n['D'] == 0){
-
+        }elseif ($n['A'] + $n['B'] >= 5&& $n['D'] == 0){
             $data['Overall_Evaluation'] = 'B';
-
         }elseif ($n['C'] + $n['D'] == 3 or $n['D'] >= 2){
-
             $data['Overall_Evaluation'] = 'D';
         }else{
             $data['Overall_Evaluation'] = 'C';

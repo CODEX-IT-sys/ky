@@ -99,29 +99,97 @@
 							            {:session('language') == '中文'? '布局格式' : 'Layout and Format'}
 							        </label>
 							        <div class="layui-input-block">
-							            <input name="Layout_and_Format" lay-verify="required" value="{$info.Layout_and_Format|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+							            <!--<input name="Layout_and_Format" lay-verify="required" value="{$info.Layout_and_Format|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">-->
+										<select name="Layout_and_Format" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.Layout_and_Format eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.Layout_and_Format eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.Layout_and_Format eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.Layout_and_Format eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
 							        </div>
 							    </div>
 							</div>
-
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '字体段落' : 'font'}">
+										{:session('language') == '中文'? '字体段落' : 'font'}
+									</label>
+									<div class="layui-input-block">
+										<select name="font" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.font eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.font eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.font eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.font eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '图片、表格和文本框' : 'table_img'}">
+										{:session('language') == '中文'? '图片、表格和文本框' : 'table_img'}
+									</label>
+									<div class="layui-input-block">
+										<select name="table_img" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.table_img eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.table_img eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.table_img eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.table_img eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '目录、超链接和交叉引用' : 'directory_link'}">
+										{:session('language') == '中文'? '目录、超链接和交叉引用' : 'directory_link'}
+									</label>
+									<div class="layui-input-block">
+										<select name="directory_link" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.directory_link eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.directory_link eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.directory_link eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.directory_link eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="layui-col-xs4">
 								<div class="layui-form-item">
 									<label class="layui-form-label" title="{:session('language') == '中文'? '内容检查' : 'Content Check'}">
 										{:session('language') == '中文'? '内容检查' : 'Content Check'}
 									</label>
 									<div class="layui-input-block">
-										<input name="Content_Check" lay-verify="required" value="{$info.Content_Check|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+										<!--<input name="Content_Check" lay-verify="required" value="{$info.Content_Check|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">-->
+										<select name="Content_Check" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.Content_Check eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.Content_Check eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.Content_Check eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.Content_Check eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
 									</div>
 								</div>
 							</div>
 
 							<div class="layui-col-xs4">
 								<div class="layui-form-item">
-									<label class="layui-form-label" title="{:session('language') == '中文'? '客户要求' : 'Customer Requirements'}">
-										{:session('language') == '中文'? '客户要求' : 'Customer Requirements'}
+									<label class="layui-form-label" title="{:session('language') == '中文'? '特殊要求' : 'Customer Requirements'}">
+										{:session('language') == '中文'? '特殊要求' : 'Customer Requirements'}
 									</label>
 									<div class="layui-input-block">
-										<input placeholder="" value="{$info.Customer_Requirements|default=''}" id="Customer_Requirements" name="Customer_Requirements" class="layui-input" type="text">
+										<!--<input placeholder="" value="{$info.Customer_Requirements|default=''}" id="Customer_Requirements" name="Customer_Requirements" class="layui-input" type="text">-->
+										<select name="Customer_Requirements" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A"{if condition="$info.Customer_Requirements eq 'A'" } selected="selected" {/if}>A</option>
+											<option value="B"{if condition="$info.Customer_Requirements eq 'B'" } selected="selected" {/if}>B</option>
+											<option value="C"{if condition="$info.Customer_Requirements eq 'C'" } selected="selected" {/if}>C</option>
+											<option value="D"{if condition="$info.Customer_Requirements eq 'D'" } selected="selected" {/if}>D</option>
+										</select>
 									</div>
 								</div>
 							</div>
@@ -132,7 +200,7 @@
 										{:session('language') == '中文'? '整体评价' : 'Overall Evaluation'}
 									</label>
 									<div class="layui-input-block">
-										<input name="Overall_Evaluation" lay-verify="required" disabled value="{$info.Overall_Evaluation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
+										<input name="Overall_Evaluation" lay-verify="required" readonly value="{$info.Overall_Evaluation|default=''}" autocomplete="off" placeholder="" class="layui-input" type="text">
 									</div>
 								</div>
 							</div>

@@ -121,7 +121,54 @@
 							        </div>
 							    </div>
 							</div>
-
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '字体段落' : 'font'}">
+										{:session('language') == '中文'? '字体段落' : 'font'}
+									</label>
+									<div class="layui-input-block">
+										<select name="font" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A">A</option>
+											<option value="B">B</option>
+											<option value="C">C</option>
+											<option value="D">D</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '图片、表格和文本框' : 'table_img'}">
+										{:session('language') == '中文'? '图片、表格和文本框' : 'table_img'}
+									</label>
+									<div class="layui-input-block">
+										<select name="table_img" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A">A</option>
+											<option value="B">B</option>
+											<option value="C">C</option>
+											<option value="D">D</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="layui-col-xs4">
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '目录、超链接和交叉引用' : 'directory_link'}">
+										{:session('language') == '中文'? '目录、超链接和交叉引用' : 'directory_link'}
+									</label>
+									<div class="layui-input-block">
+										<select name="directory_link" lay-filter="Customer_Requirements" lay-search>
+											<option value="">{:session('language') == '中文'? '请选择' : 'Please Select'}</option>
+											<option value="A">A</option>
+											<option value="B">B</option>
+											<option value="C">C</option>
+											<option value="D">D</option>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="layui-col-xs4">
 								<div class="layui-form-item">
 									<label class="layui-form-label" title="{:session('language') == '中文'? '内容检查' : 'Content Check'}">
@@ -141,8 +188,8 @@
 							
 							<div class="layui-col-xs4">
 							    <div class="layui-form-item">
-							        <label class="layui-form-label" title="{:session('language') == '中文'? '客户要求' : 'Customer Requirements'}">
-							            {:session('language') == '中文'? '客户要求' : 'Customer Requirements'}
+							        <label class="layui-form-label" title="{:session('language') == '中文'? '特殊要求' : 'Customer Requirements'}">
+							            {:session('language') == '中文'? '特殊要求' : 'Customer Requirements'}
 							        </label>
 							        <div class="layui-input-block">
 										<select name="Customer_Requirements" lay-filter="Customer_Requirements" lay-search>

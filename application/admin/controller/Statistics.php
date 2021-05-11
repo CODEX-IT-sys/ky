@@ -641,38 +641,38 @@ class Statistics extends Controller
                 $arr[$v['Pre_Formatter']]['cate'] = 'YP';
             }
 
-            foreach ($hp_arr as $key => $val){
-                $arr[$val['Post_Formatter']][$p[$n]] =
-                    Db::name('pj_h_p_evaluation')
-                        ->field("count(Overall_Evaluation) $p[$n]")
-                        ->where('Post_Formatter', $val['Post_Formatter'])
-                        ->where('Overall_Evaluation', $p[$n])
-                        ->whereBetweenTime('create_time', $s, $d)
-                        ->where('delete_time',0)
-                        ->group('Post_Formatter')
-                        ->find();
-
-                $arr[$val['Post_Formatter']]['cate'] = 'HP';
-            }
+//            foreach ($hp_arr as $key => $val){
+//                $arr[$val['Post_Formatter']][$p[$n]] =
+//                    Db::name('pj_h_p_evaluation')
+//                        ->field("count(Overall_Evaluation) $p[$n]")
+//                        ->where('Post_Formatter', $val['Post_Formatter'])
+//                        ->where('Overall_Evaluation', $p[$n])
+//                        ->whereBetweenTime('create_time', $s, $d)
+//                        ->where('delete_time',0)
+//                        ->group('Post_Formatter')
+//                        ->find();
+//
+//                $arr[$val['Post_Formatter']]['cate'] = 'HP';
+//            }
         }
-        //halt($arr);
+//        halt($arr);
 
         // 计算 ABCD 各自的总数 总评价数（数据条数）
         foreach ($arr as $key => $val){
-
-            if($arr[$key]['cate'] == 'YP'){
-                $total = Db::name('pj_y_p_evaluation')
-                    ->where('Pre_Formatter', $key)
-                    ->whereBetweenTime('create_time', $s, $d)
-                    ->where('delete_time',0)
-                    ->count();
-            }else{
-                $total = Db::name('pj_h_p_evaluation')
-                    ->where('Post_Formatter', $key)
-                    ->whereBetweenTime('create_time', $s, $d)
-                    ->where('delete_time',0)
-                    ->count();
-            }
+            $total = Db::name('pj_y_p_evaluation')
+                ->where('Pre_Formatter', $key)
+                ->whereBetweenTime('create_time', $s, $d)
+                ->where('delete_time',0)
+                ->count();
+//            if($arr[$key]['cate'] == 'YP'){
+//
+//            }else{
+//                $total = Db::name('pj_h_p_evaluation')
+//                    ->where('Post_Formatter', $key)
+//                    ->whereBetweenTime('create_time', $s, $d)
+//                    ->where('delete_time',0)
+//                    ->count();
+//            }
 
             foreach ($val as $k => $v) {
 
@@ -706,7 +706,7 @@ class Statistics extends Controller
                 $arr[$key]['result'] = '质量可接受';
             }
         }
-        //halt($arr);
+//        halt($arr);
 
         // 去掉 键值 只保留数据
         $arr = array_values($arr);
