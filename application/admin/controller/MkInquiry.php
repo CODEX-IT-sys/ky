@@ -875,6 +875,7 @@ class MkInquiry extends Common
             $fz_data['VAT_Amount']=$a['VAT_Amount'];
             $fz_data['Customer_Requirements']=$a['Customer_Requirements'];
             $fz_data['External_Reference_File']=$a['External_Reference_File'];
+            $fz_data['Remarks']=$a['Remarks'];
 
 
 
@@ -892,6 +893,7 @@ class MkInquiry extends Common
             $iz_data['VAT_Amount']=$a['VAT_Amount'];
             $iz_data['Customer_Requirements']=$a['Customer_Requirements'];
             $iz_data['External_Reference_File']=$a['External_Reference_File'];
+            $iz_data['Remarks']=$a['Remarks'];
             // 合并数组 得到 来稿确认表 关联写入的字段
             $f_data = array_merge($fz_data,$i);
             // 合并数组 得到 结算管理表 关联写入的字段
