@@ -865,12 +865,38 @@ class Statistics extends Controller
             if($data==''){
                 $firstTime=19701201;
                 $lastTime=20351201;
+                $time= time();
+                $year = date("Y", $time);
+
+                $month = date("m", $time);
+
+                $day = date("d", $time);
+                // 本月一共有几天
+                $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+                $day = date('t',$firstTime);
+                $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+                $firstTime=intval(date("Ymd",$firstTime));
+                $lastTime=intval(date("Ymd",$lastTime));
             }
         }else{
-            $firstTime=19701201;
-            $lastTime=20351201;
+            $time= time();
+            $year = date("Y", $time);
+
+            $month = date("m", $time);
+
+            $day = date("d", $time);
+            // 本月一共有几天
+            $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+            $day = date('t',$firstTime);
+            $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+            $firstTime=intval(date("Ymd",$firstTime));
+            $lastTime=intval(date("Ymd",$lastTime));
+
         }
 
+//        dump($firstTime);
+//        dump($lastTime);
+//        die;
         //每天要完成多少页
         $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->field('Completed,sum(Pages) as sumpage')->group('Completed')->select();
       //预排页数Work_Content

@@ -216,9 +216,9 @@
 									</label>
 									<div class="layui-input-block">
 										<select name="Update_Company_TM" lay-filter="Update_Company_TM" lay-search>
-											<option value="No" {$info.Update_Company_TM=="No"?'selected':''}>No</option>
-											<option value="Yes" {$info.Update_Company_TM=="Yes"?'selected':''}>Yes</option>
-											<option value="N/A" {$info.Update_Company_TM=="N/A"?'selected':''}>N/A</option>
+											{foreach $newarr as $key=>$v}
+											<option value="{$v.name}" {in name="$v.name" value="$info.Update_Company_TM"} selected=""{/in}>{$v.name}</option>
+											{/foreach}
 										</select>
 									</div>
 								</div>
@@ -231,9 +231,9 @@
 									</label>
 									<div class="layui-input-block">
 										<select name="Update_File_TM" lay-filter="Update_File_TM" lay-search>
-											<option value="No" {$info.Update_File_TM=="No"?'selected':''}>No</option>
-											<option value="Yes" {$info.Update_File_TM=="Yes"?'selected':''}>Yes</option>
-											<option value="N/A" {$info.Update_Company_TM=="N/A"?'selected':''}>N/A</option>
+											{foreach $newarr as $key=>$v}
+											<option value="{$v.name}" {in name="$v.name" value="$info.Update_File_TM"} selected=""{/in}>{$v.name}</option>
+											{/foreach}
 										</select>
 									</div>
 								</div>

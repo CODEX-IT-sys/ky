@@ -331,7 +331,14 @@ class PjProjectDatabase extends Common
         Db::name('pj_project_profile')->where('Filing_Code',$res['Filing_Code'])->update(['Product_Involved'=>$res['Product_Involved']]);
         // N/A 选项
         $na = [['value'=>0, 'name'=>'N/A']];
-		
+
+
+        $newarr=[
+            ['value'=>0, 'name'=>'N/A'],
+            ['value'=>1, 'name'=>'Yes'],
+            ['value'=>2, 'name'=>'No']
+        ];
+
 		// 文件类型
 		$File_Type = Db::name('xt_dict')->where('c_id',4)->select();
 
@@ -396,7 +403,7 @@ class PjProjectDatabase extends Common
 
         return view('form-project_database-view', [
             'info'=>$res,'File_Type'=>$File_Type,'document_type'=>json_encode($document_type), 'yy'=>$yy, 'up'=>$up,
-            'tr'=>json_encode($tr), 're'=>json_encode($re), 'yp'=>json_encode($yp), 'hp'=>json_encode($hp), 'pa'=>$pa
+            'tr'=>json_encode($tr), 're'=>json_encode($re), 'yp'=>json_encode($yp), 'hp'=>json_encode($hp), 'pa'=>$pa,'newarr'=>$newarr
         ]);
     }
 
