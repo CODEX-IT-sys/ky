@@ -82,6 +82,7 @@ class MkFeseability extends Common
                 case 'Project_Requirements':
                     $colsData[$k]['width']=180;
                     $colsData[$k]['sort']='true';
+                    $colsData[$k]['edit']='true';
                     break;
                 case 'Remarks':
                     $colsData[$k]['width']=180;

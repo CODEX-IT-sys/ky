@@ -898,19 +898,19 @@ class Statistics extends Controller
 //        dump($lastTime);
 //        die;
         //每天要完成多少页
-        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->field('Completed,sum(Pages) as sumpage')->group('Completed')->select();
+        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->where('delete_time',0)->field('Completed,sum(Pages) as sumpage')->group('Completed')->select();
       //预排页数Work_Content
-        $yp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('Work_Content','Preformat')->field('Work_Date,sum(Number_of_Pages_Completed) as yppage')
+        $yp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('delete_time',0)->where('Work_Content','Preformat')->field('Work_Date,sum(Number_of_Pages_Completed) as yppage')
             ->group('Work_Date')->select();
         //后排页数Work_Content
-        $hp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('Work_Content','Postformat')->field('Work_Date,sum(Number_of_Pages_Completed) as hppage')
+        $hp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('delete_time',0)->where('Work_Content','Postformat')->field('Work_Date,sum(Number_of_Pages_Completed) as hppage')
             ->group('Work_Date')->select();
         //翻译页数Work_Content
-        $tr=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->wherein('Work_Content',['Translate','TR Modify','TR Finalize'])->where('Category','TR')
+        $tr=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('delete_time',0)->wherein('Work_Content',['Translate','TR Modify','TR Finalize'])->where('Category','TR')
             ->field('Work_Date,sum(Number_of_Pages_Completed) as trpage')
             ->group('Work_Date')->select();
         //校对页数Work_Content
-        $xd=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->wherein('Work_Content',['Revise','RE Modify','RE (Sampling)','RE (Highlight)','RE (Sampling_Highlight)','RE Finalize'])->where('Category','RE')
+        $xd=Db::table('ky_pj_daily_progress_tr_re')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('delete_time',0)->wherein('Work_Content',['Revise','RE Modify','RE (Sampling)','RE (Highlight)','RE (Sampling_Highlight)','RE Finalize'])->where('Category','RE')
             ->field('Work_Date,sum(Number_of_Pages_Completed) as xdpage')
             ->group('Work_Date')->select();
         foreach($mt as $k=>$v){
@@ -1038,8 +1038,8 @@ class Statistics extends Controller
             $lastTime=intval(date("Ymd",$lastTime));
         }
 
-        $pa=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','<>','CXL')->where('PA','<>','')->whereBetweenTime('Date',$firstTime,$lastTime)->field('PA,sum(Pages) as sumpage,count(id) as num')->group('PA')->select();
-        $pa2=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','=','No')->where('PA','<>','')->whereBetweenTime('Date',19701201,20351201)->field('PA,sum(Pages) as sumpage1,count(id) as num1')->group('PA')->select();
+        $pa=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','<>','CXL')->where('delete_time',0)->where('PA','<>','')->whereBetweenTime('Date',$firstTime,$lastTime)->field('PA,sum(Pages) as sumpage,count(id) as num')->group('PA')->select();
+        $pa2=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','=','No')->where('delete_time',0)->where('PA','<>','')->whereBetweenTime('Date',19701201,20351201)->field('PA,sum(Pages) as sumpage1,count(id) as num1')->group('PA')->select();
         $list=[];
 
 //        dump($pa);

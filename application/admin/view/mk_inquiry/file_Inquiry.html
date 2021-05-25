@@ -197,7 +197,7 @@
 										{:session('language') == '中文'? '交付日期' : 'Delivery Date Expected'}
 									</label>
 									<div class="layui-input-block">
-										<input class="showDate layui-input" name="deliver_date" value="{$info.deliver_date|default=''}" type="text">
+										<input class="Date layui-input" name="deliver_date" value="{$info.deliver_date|default=''}" type="text">
 										<i class="layui-icon layui-icon-date"></i>
 									</div>
 								</div>
@@ -273,7 +273,18 @@
 	layui.use(['form','laydate'], function () {
 		var form = layui.form, laydate = layui.laydate,layer = layui.layer;
         var language = "{:session('language')}";
-
+		$('.Date').click(function () {
+			laydate.render({
+				elem: this
+				,trigger: 'click'
+				,theme: '#1B3382'
+				,position: 'fixed'
+				//,isInitValue: true
+				//,value: new Date()
+				//,type:'datetime'
+				,format: 'yyyyMMdd'
+			});
+		});
 		//同时绑定多个,单个日期选择，显示在input里面
 		$('.showDate').click(function () {
 			laydate.render({
