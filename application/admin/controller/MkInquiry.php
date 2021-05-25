@@ -364,7 +364,13 @@ class MkInquiry extends Common
 
 
             /*自动写入 来稿确认表 数据*/
+            if($data['deliver_date']!=''){
+                $f_data['Completed']=date('Ymd',strtotime($data['deliver_date']));
+                $in_data['Completed']=date('Ymd',strtotime($data['deliver_date']));
+            }
+
             Db::name('mk_feseability')->insert($f_data);
+
 
             /*自动写入 结算管理表 数据*/
             Db::name('mk_invoicing')->insert($in_data);
@@ -444,12 +450,12 @@ class MkInquiry extends Common
                 // 筛选 来稿确认表 字段
                 $f_field = ['Job_Name','Pages','Source_Text_Word_Count','File_Type','Service', 'VAT_Rate',
                     'Language','Currency','Unit_Price','Units','Quote_Quantity','Quote_Amount','VAT_Amount',
-                    'Delivery_Date_Expected','Customer_Requirements','External_Reference_File', 'Remarks'];
+                    'Delivery_Date_Expected','Customer_Requirements','External_Reference_File', 'Remarks',];
 
                 // 筛选 结算管理表 字段
                 $in_field = ['Job_Name','Pages','Source_Text_Word_Count','File_Type','Service', 'VAT_Rate',
                     'Language','Currency','Unit_Price','Units','Quote_Quantity','Quote_Amount','VAT_Amount',
-                    'Customer_Requirements','External_Reference_File', 'Remarks'];
+                    'Customer_Requirements','External_Reference_File', 'Remarks',];
 
                 // 筛选存在 来稿确认表、结算管理表 字段
                 $fz_data = []; $iz_data = [];
@@ -501,7 +507,10 @@ class MkInquiry extends Common
                 $in_data['Assigned_Date'] = date("Ymd");
                 // 结算 填表人
                 $in_data['Filled_by'] = session('administrator')['name'];
-
+                if($data['deliver_date']!=''){
+                    $f_data['Completed']=date('Ymd',strtotime($data['deliver_date']));
+                    $in_data['Completed']=date('Ymd',strtotime($data['deliver_date']));
+                }
 
                 /*自动写入 来稿确认表 数据*/
                 Db::name('mk_feseability')->insert($f_data);
@@ -794,7 +803,11 @@ class MkInquiry extends Common
                     $res_arr[$row-2]['Units']  = trim($sheet->getCell("J".$row)->getValue());
                     $res_arr[$row-2]['VAT_Rate']  = trim($sheet->getCell("K".$row)->getValue());
                     $res_arr[$row-2]['Quote_Quantity']  = trim($sheet->getCell("L".$row)->getValue());
-                    $res_arr[$row-2]['Delivery_Date_Expected']  =date('Y-m-d H:i',strtotime(gmdate('Y-m-d H:i',\PHPExcel_Shared_Date::ExcelToPHP($sheet->getCell("O".$row)->getValue()))));
+                    if($sheet->getCell("O".$row)->getValue()==''){
+                        $res_arr[$row-2]['Delivery_Date_Expected']  ='';
+                    }else{
+                        $res_arr[$row-2]['Delivery_Date_Expected']  =date('Y-m-d H:i',strtotime(gmdate('Y-m-d H:i',\PHPExcel_Shared_Date::ExcelToPHP($sheet->getCell("O".$row)->getValue()))));
+                    }
                     $res_arr[$row-2]['Customer_Requirements']  = trim($sheet->getCell("P".$row)->getValue());
                     $res_arr[$row-2]['External_Reference_File']  = trim($sheet->getCell("Q".$row)->getValue());
                     $res_arr[$row-2]['Order_Status']  = trim($sheet->getCell("R".$row)->getValue());
@@ -804,6 +817,12 @@ class MkInquiry extends Common
                     $res_arr[$row-2]['Update_Date']  = date("Ymd");
                     $res_arr[$row-2]['Quote_Amount']  = trim($sheet->getCell("M".$row)->getValue());
                     $res_arr[$row-2]['VAT_Amount']  = trim($sheet->getCell("N".$row)->getValue());
+                    if($sheet->getCell("W".$row)->getValue()==''){
+                        $res_arr[$row-2]['deliver_date']  ='';
+                    }else{
+                        $res_arr[$row-2]['deliver_date']  =date('Y-m-d H:i',strtotime(gmdate('Y-m-d H:i',\PHPExcel_Shared_Date::ExcelToPHP($sheet->getCell("W".$row)->getValue()))));
+                    }
+
                     $res_arr[$row-2]['i_id']  = $iid;
 
 
@@ -812,8 +831,9 @@ class MkInquiry extends Common
                 Db::name('mk_inquiry_file')->insertAll($res_arr);
 
             }
+
         }catch(\Exception $e){
-            $this->error('执行错误');
+            $this->error('执行错误',$e->getMessage());
         }
         return json(['code'=>1,'msg'=>'导入成功']);
 
@@ -894,6 +914,7 @@ class MkInquiry extends Common
             $iz_data['Customer_Requirements']=$a['Customer_Requirements'];
             $iz_data['External_Reference_File']=$a['External_Reference_File'];
             $iz_data['Remarks']=$a['Remarks'];
+
             // 合并数组 得到 来稿确认表 关联写入的字段
             $f_data = array_merge($fz_data,$i);
             // 合并数组 得到 结算管理表 关联写入的字段
@@ -933,7 +954,10 @@ class MkInquiry extends Common
             $in_data['Assigned_Date'] = date("Ymd");
             // 结算 填表人
             $in_data['Filled_by'] = session('administrator')['name'];
-
+            if($a['deliver_date']!=''){
+                $f_data['Completed']=date('Ymd',strtotime($a['deliver_date']));
+                $in_data['Completed']=date('Ymd',strtotime($a['deliver_date']));
+            }
 
             /*自动写入 来稿确认表 数据*/
             Db::name('mk_feseability')->insert($f_data);

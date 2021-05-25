@@ -23,7 +23,88 @@ class MkFeseability extends Common
     {
         // 数据库表字段集
         $colsData = getAllField('ky_mk_feseability');
+        foreach ($colsData as $k=>$v)
+        {
+            switch($v['Field']){
+                case 'Filing_Code':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['fixed']='left';
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Attention':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Company_Name':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Job_Name':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Pages':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Source_Text_Word_Count':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'File_Type':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Service':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Language':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Delivery_Date_Expected':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Completed':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Customer_Requirements':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'External_Reference_File':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Project_Requirements':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Remarks':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Filled_by':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Approval_Sales_Admin_Manager':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                case 'Approval_General_Manager':
+                    $colsData[$k]['width']=180;
+                    $colsData[$k]['sort']='true';
+                    break;
+                default:
+                    $colsData[$k]['width']=80;
+                    $colsData[$k]['hide']=true;
+            }
 
+        }
         // 查询文本说明信息
         $intro = Db::name('xt_table_text')->where('id',4)->value('intro');
 

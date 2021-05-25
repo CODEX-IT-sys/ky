@@ -991,4 +991,67 @@ class Statistics extends Controller
         ];
 
     }
+
+
+    public function pa()
+    {
+        $data=request()->param('month');
+
+        if(isset($data)){
+            $time= strtotime($data);
+            $year = date("Y", $time);
+            $month = date("m", $time);
+            $day = date("d", $time);
+            // 本月一共有几天
+            $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+            $day = date('t',$firstTime);
+            $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+            $firstTime=intval(date("Ymd",$firstTime));
+            $lastTime=intval(date("Ymd",$lastTime));
+            if($data==''){
+
+                $time= time();
+                $year = date("Y", $time);
+
+                $month = date("m", $time);
+
+                $day = date("d", $time);
+                // 本月一共有几天
+                $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+                $day = date('t',$firstTime);
+                $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+                $firstTime=intval(date("Ymd",$firstTime));
+                $lastTime=intval(date("Ymd",$lastTime));
+            }
+        }else{
+            $time= time();
+            $year = date("Y", $time);
+
+            $month = date("m", $time);
+
+            $day = date("d", $time);
+            // 本月一共有几天
+            $firstTime = mktime(0, 0, 0, $month, 1, $year);     // 创建本月开始时间
+            $day = date('t',$firstTime);
+            $lastTime = $firstTime + 86400 * $day  - 1; //结束时间戳
+            $firstTime=intval(date("Ymd",$firstTime));
+            $lastTime=intval(date("Ymd",$lastTime));
+        }
+
+        $pa=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','<>','CXL')->where('PA','<>','')->whereBetweenTime('Date',$firstTime,$lastTime)->field('PA,sum(Pages) as sumpage,count(id) as num')->group('PA')->select();
+        $pa2=  Db::table('ky_pj_contract_review')->where('Delivered_or_Not','=','No')->where('PA','<>','')->whereBetweenTime('Date',19701201,20351201)->field('PA,sum(Pages) as sumpage1,count(id) as num1')->group('PA')->select();
+        $list=[];
+
+//        dump($pa);
+        if (!request()->isAjax()) {
+            $this->assign(['pa2'=>$pa2]);
+            return $this->fetch();
+        }
+        return [
+            'code'  => 0,
+            'msg'   => '',
+            'count' => 0,
+            'data'  =>$pa,
+        ];
+    }
 }

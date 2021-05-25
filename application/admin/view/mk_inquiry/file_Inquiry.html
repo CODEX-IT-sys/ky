@@ -191,7 +191,17 @@
 									</div>
 								</div>
 							</div>
-
+							<div class="layui-col-xs4">
+								<div class="layui-form-item layui_ic">
+									<label class="layui-form-label" title="{:session('language') == '中文'? '交付日期' : 'Delivery Date Expected'}">
+										{:session('language') == '中文'? '交付日期' : 'Delivery Date Expected'}
+									</label>
+									<div class="layui-input-block">
+										<input class="showDate layui-input" name="deliver_date" value="{$info.deliver_date|default=''}" type="text">
+										<i class="layui-icon layui-icon-date"></i>
+									</div>
+								</div>
+							</div>
 							<div class="layui-col-xs4">
 								<div class="layui-form-item">
 									<label class="layui-form-label" title="{:session('language') == '中文'? '订单状态（接受/拒绝/未确定）' : 'Order Status'}">

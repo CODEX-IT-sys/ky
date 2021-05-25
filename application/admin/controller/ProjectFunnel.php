@@ -270,8 +270,10 @@ class ProjectFunnel extends Controller
         
 
         // 待提交 总页数
-        $arr['Total_Pages_submitted'] = $arr['a_Total_Pages_Process'] + $arr['b_Total_Pages_Process'] + $arr['c_Total_Pages_Translated'];
-        
+//        $arr['Total_Pages_submitted'] = $arr['a_Total_Pages_Process'] + $arr['b_Total_Pages_Process'] + $arr['c_Total_Pages_Translated'];
+        $arr['Total_Pages_submitted'] = Db::name('pj_contract_review')->where('Delivered_or_Not', 'No')->where('delete_time','')->sum('pages');
+
+
 
         /*
          * 翻译、校对、排版 人数统计
@@ -387,6 +389,7 @@ class ProjectFunnel extends Controller
         $a['code'] = 0;
         $a['msg'] = '成功';
         $a['data'][] = $arr;
+
 
         // 非Ajax请求，直接返回视图
         if (!$request->isAjax()) {
