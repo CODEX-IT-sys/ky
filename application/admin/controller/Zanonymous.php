@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Common;
+use app\common\model\Zanonymoucontent;
 use think\Db;
 
 use app\common\model\Zanonymou;
@@ -26,14 +27,28 @@ class Zanonymous extends Common
                 $v->save();
             }
         }
-
         $data = \request()->param('status','2,1');
         $ft=Zanonymou::with('admin,content')->where('auth|sponsor','like','%'.session('administrator')['id'].'%')->where('status','in',$data)->all();
 //        dump($ft);
-        $this->assign(['ft'=>$ft]);
+        $this->assign(['ft'=>$ft,'user'=> session('administrator')['id']]);
         return $this->fetch();
     }
 
+
+    public function del($id)
+    {
+        $zanonymou = Zanonymou::get($id,'content');
+        $zanonymou ->together('content')->delete();
+        if ($zanonymou) {
+            return redirect('admin/zanonymous/');
+        }
+    }
+
+    public function delcontent($id)
+    {
+        Zanonymoucontent::destroy($id);
+        echo "<script>history.go(-1);</script>";
+    }
 
 //    发布帖子
     public function add()
@@ -68,13 +83,13 @@ class Zanonymous extends Common
     public function show($id)
     {
         $zanonymou = Zanonymou::find($id);
-        $content= $zanonymou->content()->where('user_id',session('administrator')['id'])->order('id','desc')->select();
-        if(session('administrator')['job_id']==8||session('administrator')['id']==1)
+        $content= $zanonymou->content()->where('read',0)->whereOr('user_id',session('administrator')['id'])->order('id','desc')->select();
+        if(session('administrator')['job_id']==8||session('administrator')['id']==1||session('administrator')['id']==$zanonymou['sponsor'])
         {
             $content= $zanonymou->content()->order('id','desc')->select();
         }
 
-        $this->assign(['content'=>$content,'zanonymou'=>$zanonymou]);
+        $this->assign(['content'=>$content,'zanonymou'=>$zanonymou,'user'=> session('administrator')['id']]);
         return $this->fetch();
     }
     public function comment()
@@ -87,7 +102,7 @@ class Zanonymous extends Common
             return json(['msg'=>'已超过截止时间!无法提交','code'=>200]);
         }
 
-        $zanonymou->content()->save(['content'=>$data['content'],'user_id'=>session('administrator')['id']]);
+        $zanonymou->content()->save(['content'=>$data['content'],'user_id'=>session('administrator')['id'],'read'=>$data['read']]);
         return json(['msg'=>'匿名提交成功','code'=>200]);
 
     }

@@ -35,15 +35,18 @@
                         </h2>
                         <div class="fly-list-info">
 
-                            <a  link>
+                            <a href="{:url('show')}?id={$v.id}" link>
                                 <cite>{$v.admin.name}</cite>
                                 <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                 <span>发起时间:{$v.create_time}</span>
-                            </a>
-
                             <i class="layui-badge fly-badge-vip">截止时间:{$v.endtime}</i>
+                            </a>
                         </div>
-
+                        {if $v.sponsor==$user}
+                        <div class="fly-list-badge">
+                            <a href="{:url('del')}?id={$v.id}" class="layui-badge layui-bg-red">删除</a>
+                        </div>
+                        {/if}
                     </li>
                     {/foreach}
 

@@ -21,11 +21,12 @@
 
                 <em>{$v.create_time}</em>
               </span>
-
                     <div class="jieda-admin">
+                        {if $v.user_id==$user}
                         <!--<span type="edit">编辑</span>-->
-                        <!--<span type="del">删除</span>-->
+                        <a type="del" href="{:url('delcontent')}?id={$v.id}">删除</a>
                         <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+                        {/if}
                     </div>
                 </div>
             </li>
@@ -46,7 +47,13 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width:200px">仅回复至发帖人</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="read" value="0" title="否" checked>
+                        <input type="radio" name="read" value="1" title="是" >
+                    </div>
+                </div>
                 <input type="hidden" name="id" value="{:input('id')}">
                 <div class="layui-form-item">
                     <button class="layui-btn" type="button" id="sub">提交</button>
@@ -72,8 +79,10 @@
             async: false,
             data: $('#form1').serialize(),
             success: function (result) {
-                layer.msg(result.msg)
+               alert(result.msg)
+
                 location.reload();
+
             },
             error:function () {
                 alert("出错");
