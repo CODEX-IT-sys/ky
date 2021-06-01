@@ -1,0 +1,71 @@
+{extend name="./layout/list.html" /}
+
+{block name="body"}
+<link rel="stylesheet" href="/static/res/layui/css/layui.css">
+<link rel="stylesheet" href="/static/res/css/global.css">
+
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="fly-panel" style="margin-bottom: 0;">
+
+                <div class="fly-panel-title fly-filter">
+                    <a href="{:url('index')}" {if $Request.param.status==''} class="layui-this" {/if}>全部</a>
+                    <span class="fly-mid"></span>
+                    <a href="{:url('index')}?status=1" {if $Request.param.status==1} class="layui-this" {/if}>进行中</a>
+                    <span class="fly-mid"></span>
+                    <a href="{:url('index')}?status=2" {if $Request.param.status==2} class="layui-this" {/if}>已结束</a>
+
+                    <span class="fly-filter-right layui-hide-xs">
+            <!--<a href="" class="layui-this">按最新</a>-->
+            <span class="fly-mid"></span>
+            <a href="{:url('add')}" class="layui-btn">发表新帖</a>
+          </span>
+                </div>
+
+                <ul class="fly-list">
+
+                    {foreach $ft as $key=>$v }
+                    <li>
+                        <a class="fly-avatar">
+                            <img src="{$v.admin.sign}" alt="{$v.admin.name}">
+                        </a>
+                        <h2>
+                            <a href="{:url('show')}?id={$v.id}">{$v.title}</a>
+                        </h2>
+                        <div class="fly-list-info">
+
+                            <a  link>
+                                <cite>{$v.admin.name}</cite>
+                                <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+                                <span>发起时间:{$v.create_time}</span>
+                            </a>
+
+                            <i class="layui-badge fly-badge-vip">截止时间:{$v.endtime}</i>
+                        </div>
+
+                    </li>
+                    {/foreach}
+
+
+                </ul>
+
+                 <!--<div class="fly-none">没有相关数据</div>-->
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+{js href="__JS__/jquery-3.3.1.min.js"}
+{js href="__JS__/xm-select.js"}
+
+
+
+
+{/block}
