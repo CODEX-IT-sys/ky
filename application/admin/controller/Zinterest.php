@@ -68,6 +68,31 @@ class Zinterest extends Controller
     }
 
 
+    public function add($id)
+    {
+        $da2 = Ztitle::select();
+        $da = Zuser::with('title')->where('id',$id)->find();
+        $arr=[];
+        foreach ($da['title'] as $k=>$v)
+        {
+            $arr[]=$v['id'];
+        }
+
+        foreach ($da2 as $k=>$v)
+        {
+            if(in_array($v['id'],$arr))
+            {
+
+                unset($da2[$k]);
+            }
+        }
+        $this->assign(['title'=>$da2,'id'=>$id]);
+        return $this->fetch();
+    }
+
+
+
+
     public function title()
     {
 
@@ -78,10 +103,17 @@ class Zinterest extends Controller
     {
 
         $data = \request()->post();
+
+        if(empty($data['title'])){
+            echo '<script>
+   alert(\'领域未选择\');
+                </script>';
+            echo "<script>history.go(-1);</script>";
+            return;
+        }
         $user = Zuser::find($data['id']);
         $user->title()->attach($data['title'], ['type' => $data['type']]);
-
-        return json(['data' => $user, 'code' => 200, 'msg' => '新增成功']);
+        echo "<script>window.parent.location.reload()</script>";
 
     }
 

@@ -7,6 +7,7 @@ use app\common\model\Zanonymoucontent;
 use think\Db;
 
 use app\common\model\Zanonymou;
+use think\db\Where;
 use think\Session;
 
 //
@@ -83,9 +84,13 @@ class Zanonymous extends Common
     public function show($id)
     {
         $zanonymou = Zanonymou::find($id);
-        $content= $zanonymou->content()->where('read',0)->whereOr('user_id',session('administrator')['id'])->order('id','desc')->select();
-        if(session('administrator')['job_id']==8||session('administrator')['id']==1||session('administrator')['id']==$zanonymou['sponsor'])
+        $content= $zanonymou->content()->where(function ($query){
+            $query->where('user_id',session('administrator')['id'])->whereOr('read',0);
+        })->order('id','desc')->select();
+
+        if(session('administrator')['job_id']==8||session('administrator')['id']==$zanonymou['sponsor'])
         {
+            $zanonymou = Zanonymou::find($id);
             $content= $zanonymou->content()->order('id','desc')->select();
         }
 

@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" />
+
+<form  action="{:url('addtitle')}" method="post">
+<div class="layui-form-item">
+
+    <input type="hidden" name="id" value="{$id}">
+    <label class="layui-form-label">领域:</label>
+    <div class="layui-input-inline ">
+        <select name="title[]" lay-verify="" lay-search class="layui-input" multiple="multiple" size="30"
+                style="height: 180px">
+            {foreach $title as $k=>$v }
+            <option value="{$v.id}">{$v.title}</option>
+            {/foreach}
+        </select>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">兴趣类型:</label>
+    <div class="layui-input-inline ">
+        <select name="type" lay-verify="" lay-search class="layui-input">
+            <option value="1" selected>擅长</option>
+            <option value="0">感兴趣</option>
+        </select>
+    </div>
+</div>;
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" lay-submit >立即提交</button>
+    </div>
+</div>
+</form>
+
+{js href="__JS__/jquery-3.3.1.min.js"}
