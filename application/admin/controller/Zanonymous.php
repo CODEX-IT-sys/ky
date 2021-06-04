@@ -30,6 +30,12 @@ class Zanonymous extends Common
         }
         $data = \request()->param('status','2,1');
         $ft=Zanonymou::with('admin,content')->where('auth|sponsor','like','%'.session('administrator')['id'].'%')->where('status','in',$data)->all();
+
+        if(session('administrator')['job_id']==8)
+        {
+
+            $ft=Zanonymou::with('admin,content')->where('status','in',$data)->all();
+        }
 //        dump($ft);
         $this->assign(['ft'=>$ft,'user'=> session('administrator')['id']]);
         return $this->fetch();
