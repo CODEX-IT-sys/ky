@@ -94,7 +94,7 @@ class Zanonymous extends Common
             $query->where('user_id',session('administrator')['id'])->whereOr('read',0);
         })->order('id','desc')->select();
 
-        if(session('administrator')['job_id']==8||session('administrator')['id']==$zanonymou['sponsor'])
+        if(session('administrator')['job_id']==8||session('administrator')['id']==$zanonymou['sponsor']||session('administrator')['id']==162)
         {
             $zanonymou = Zanonymou::find($id);
             $content= $zanonymou->content()->order('id','desc')->select();
