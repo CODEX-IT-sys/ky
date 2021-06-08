@@ -898,7 +898,8 @@ class Statistics extends Controller
 //        dump($lastTime);
 //        die;
         //每天要完成多少页
-        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->where('delete_time',0)->field('Completed,sum(Pages) as sumpage')->group('Completed')->select();
+        $mt=  Db::table('ky_pj_contract_review')->whereBetweenTime('Completed',$firstTime,$lastTime)->where('delete_time',0)->field('Completed,sum(Pages) as sumpage')
+            ->where('Delivered_or_Not','<>','CXL')->group('Completed')->select();
       //预排页数Work_Content
         $yp=Db::table('ky_pj_daily_progress_dtp')->whereBetweenTime('Work_Date',$firstTime,$lastTime)->where('delete_time',0)->where('Work_Content','Preformat')->field('Work_Date,sum(Number_of_Pages_Completed) as yppage')
             ->group('Work_Date')->select();
