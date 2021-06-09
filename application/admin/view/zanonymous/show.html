@@ -14,9 +14,7 @@
             <li data-id="111" class="jieda-daan">
                 <a name="item-1111111111"></a>
                 <div class="detail-body jieda-body photos">
-                    <p>
-                        <textarea name="content" placeholder="请输入内容" class="layui-textarea" readonly>{$v.content}</textarea>
-                    </p>
+                    <p style="white-space:pre-wrap" class="layui-text">{$v.content}</p>
                 </div>
                 <div class="jieda-reply">
 
@@ -24,11 +22,15 @@
                 <em>{$v.create_time}</em>
               </span>
                     <div class="jieda-admin">
-                        {if $v.user_id==$user}
-                        <!--<span type="edit">编辑</span>-->
-                        <a type="del" href="{:url('delcontent')}?id={$v.id}">删除</a>
-                        <!-- <span class="jieda-accept" type="accept">采纳</span> -->
+                        {if $zanonymou.sponsor==$user}
+                        <form class="layui-form layui-inline">
+                            <input type="number" name="order" placeholder="" value="{$v.order}" autocomplete="off" class="layui-input order" data-id="{$v.id}">
+                        </form>
                         {/if}
+                        {if $v.user_id==$user}
+                        <a type="del" href="{:url('delcontent')}?id={$v.id}">删除</a>
+                        {/if}
+
                     </div>
                 </div>
             </li>
@@ -44,8 +46,7 @@
 
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <!--<input type="text" name="customer_file_remark" class="layui-input" lay-verify="required" placeholder="请输入客户参考文件备注" value="{$row.customer_file_remark|default=''}">-->
-                            <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            <textarea name="content" placeholder="请输入内容" class="layui-textarea" rows="8"></textarea>
                         </div>
                     </div>
                 </div>
@@ -82,8 +83,7 @@
             data: $('#form1').serialize(),
             success: function (result) {
                alert(result.msg)
-
-                location.reload();
+                window.location.reload();
 
             },
             error:function () {
@@ -93,6 +93,28 @@
     });
 
 
+</script>
+<script>
+    $('.order').change(function () {
+        var id = $(this).attr("data-id");
+        var val = $(this).val();
+        $.ajax({
+            //几个参数需要注意一下
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{:url('order')}",//url
+            async: false,
+            data: {id:id,val:val},
+            success: function (result) {
+                alert(result.msg)
+                window.location.reload();
+
+            },
+            error:function () {
+                alert("出错");
+            }
+        });
+    })
 </script>
 
 

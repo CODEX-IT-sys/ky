@@ -42,9 +42,14 @@
                             <i class="layui-badge fly-badge-vip">截止时间:{$v.endtime}</i>
                             </a>
                         </div>
-                        {if $v.sponsor==$user}
+                        {if $v.sponsor==$user.id}
                         <div class="fly-list-badge">
                             <a href="{:url('del')}?id={$v.id}" class="layui-badge layui-bg-red">删除</a>
+                        </div>
+                        {/if}
+                        {if $user.job_id==8}
+                        <div class="fly-list-badge">
+                            <a href="{:url('word')}?id={$v.id}" class="layui-badge layui-bg-red">下载</a>
                         </div>
                         {/if}
                     </li>

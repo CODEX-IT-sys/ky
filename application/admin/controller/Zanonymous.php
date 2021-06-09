@@ -9,8 +9,7 @@ use think\Db;
 use app\common\model\Zanonymou;
 use think\db\Where;
 use think\Session;
-
-//
+use word\Word;
 
 class Zanonymous extends Common
 {
@@ -37,7 +36,7 @@ class Zanonymous extends Common
             $ft=Zanonymou::with('admin,content')->where('status','in',$data)->all();
         }
 //        dump($ft);
-        $this->assign(['ft'=>$ft,'user'=> session('administrator')['id']]);
+        $this->assign(['ft'=>$ft,'user'=> session('administrator')]);
         return $this->fetch();
     }
 
@@ -92,12 +91,12 @@ class Zanonymous extends Common
         $zanonymou = Zanonymou::find($id);
         $content= $zanonymou->content()->where(function ($query){
             $query->where('user_id',session('administrator')['id'])->whereOr('read',0);
-        })->order('id','desc')->select();
+        })->order('order','desc')->select();
 
         if(session('administrator')['job_id']==8||session('administrator')['id']==$zanonymou['sponsor']||session('administrator')['id']==162)
         {
             $zanonymou = Zanonymou::find($id);
-            $content= $zanonymou->content()->order('id','desc')->select();
+            $content= $zanonymou->content()->order('order','desc')->select();
         }
 
         $this->assign(['content'=>$content,'zanonymou'=>$zanonymou,'user'=> session('administrator')['id']]);
@@ -116,6 +115,34 @@ class Zanonymous extends Common
         $zanonymou->content()->save(['content'=>$data['content'],'user_id'=>session('administrator')['id'],'read'=>$data['read']]);
         return json(['msg'=>'匿名提交成功','code'=>200]);
 
+    }
+
+    public function word($id)
+    {
+        $zanonymou = Zanonymou::find($id);
+        $content= $zanonymou->content()->order('id','desc')->select();
+        $html = '';
+        foreach ($content as $k=>$v )
+        {
+            $html.=''.$v['content'].'<hr>';
+        }
+        $word = new Word();
+        $word->start();
+        $wordname = $zanonymou['title'].".doc";
+        echo $html;
+        $word->save($wordname);
+        ob_flush();//每次执行前刷新缓存
+        flush();
+    }
+
+
+    public function order()
+    {
+        $data = \request()->param();
+        $content=Zanonymoucontent::find($data['id']);
+        $content->order=$data['val'];
+        $content->save();
+        return json(['msg'=>'排序修改成功','code'=>200]);
     }
 
 }
