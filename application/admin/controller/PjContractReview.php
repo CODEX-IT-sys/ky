@@ -151,6 +151,10 @@ class PjContractReview extends Common
                 'Comment'=>'翻译难易程度'
             ],
             [
+                'Field'=>'Completed',
+                'Comment'=>'交付日期'
+            ],
+            [
                 'Field'=>'Translator',
                 'Comment'=>'翻译人员'
             ],
@@ -771,6 +775,9 @@ class PjContractReview extends Common
                 }
             }
             $arr1=$arr;
+            if(!isset($arr['Completed'])){
+                $arr['Completed']=(int)$arr['Completed'];
+            }
             $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update($arr);
             $Filing_Code=Db::name('pj_contract_review')->wherein('id',$data['arr'])->field('Filing_Code')->select();
             // 同步更新 项目描述表复制上面的
