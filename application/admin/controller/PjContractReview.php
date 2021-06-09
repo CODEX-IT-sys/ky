@@ -775,7 +775,7 @@ class PjContractReview extends Common
                 }
             }
             $arr1=$arr;
-            if(!isset($arr['Completed'])){
+            if(isset($arr['Completed'])){
                 $arr['Completed']=(int)$arr['Completed'];
             }
             $res = Db::name('pj_contract_review')->wherein('id',$data['arr'])->update($arr);
