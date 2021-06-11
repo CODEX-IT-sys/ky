@@ -773,7 +773,17 @@ class PjContractReview extends Common
                         $arr[$v]=$v1;
                     }
                 }
+
             }
+//            历史中不存在的值,不允许修改
+            foreach ($arr as $k4=>$v4)
+            {
+                   $num= Db::name('pj_contract_review')->where($k4,$v4)->count();
+                    if($num<=0){
+                        unset($arr[$k4]);
+                    }
+            }
+
             $arr1=$arr;
             if(isset($arr['Completed'])){
                 $arr['Completed']=(int)$arr['Completed'];
