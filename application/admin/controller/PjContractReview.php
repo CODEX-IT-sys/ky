@@ -775,9 +775,13 @@ class PjContractReview extends Common
                 }
 
             }
+            //Translation_Start_Time  Translation_Delivery_Time  Pre_Format_Delivery_Time Revision_Start_Time Revision_Delivery_Time Post_Format_Delivery_Time
 //            历史中不存在的值,不允许修改
             foreach ($arr as $k4=>$v4)
             {
+                if(in_array($k4,['Completed','Translation_Start_Time','Translation_Delivery_Time','Pre_Format_Delivery_Time','Revision_Start_Time','Revision_Delivery_Time','Post_Format_Delivery_Time'])){
+                    continue;
+                }
                    $num= Db::name('pj_contract_review')->where($k4,$v4)->count();
                     if($num<=0){
                         unset($arr[$k4]);
