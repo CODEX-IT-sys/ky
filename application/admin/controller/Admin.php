@@ -6,7 +6,7 @@ use think\Controller;
 use think\Request;
 use think\Db;
 
-// 用户 账号管理
+// 用户 账号管理(提交操作演示,本push不提交代码,纯演示操作)
 class Admin extends Controller
 {
     // 用户的验证器名称
