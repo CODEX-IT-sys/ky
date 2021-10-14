@@ -9,6 +9,7 @@ use think\Db;
 use think\Env;
 
 // 页面框架控制器
+//测试git提交
 class Index extends Controller
 {
     public function index($language = '', $if_url = '')
