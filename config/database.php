@@ -19,9 +19,9 @@ return [
     'database'        => 'ky',
 
     // 用户名
-    'username'        => 'root',
+    'username'        => 'ky',
     // 密码
-    'password'        => 'root',
+    'password'        => 'kyroot',
 
     // 端口
     'hostport'        => '',
