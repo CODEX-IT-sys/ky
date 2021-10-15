@@ -148,11 +148,12 @@ layui.use(['table','form'], function(){
             ,defaultToolbar: ['filter', 'exports', 'print']
             ,title: '项目描述表'
             ,cols : commonCols(language, colsData)
-        	, limit:50,			height: 'full-200',
+        	, limit:100,			height: 'full-200',
 		even: true,
 		page: {
 			curr:location.hash.replace('#!fenye=', ''),
-			hash:'fenye'
+			hash:'fenye',
+			limits:[10,20,30,40,50,60,70,80,90,100]
 		},
     });
 
